@@ -1,0 +1,35 @@
+/.CFUserTextEncoding
+/.MacOSX/
+/.account
+/.anyconnect
+/.bash_secrets
+/.bash_history
+/.berkshelf/
+/.cache/
+/.chef/
+/.config/
+/.cups/
+/.dropbox/
+/.gem/
+/.gnupg/
+/.local/
+/.npm/
+/.rbenv/
+/.sh_history
+/.ssh/
+/.vagrant.d/
+/Desktop/
+/Documents/
+/Downloads/
+/Dropbox/
+/Library/
+/Movies/
+/Music/
+/Pictures/
+/Public/
+/Virtual Machines/
+/VirtualBox VMs/
+/bin/
+/bower_components/
+/md5
+/mypasswdfile
