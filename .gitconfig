@@ -2,3 +2,7 @@
 	email = scott@willeke.com
 	name = Scott Willeke
 	
+[push]
+	default = simple
+[color]
+	ui = true
