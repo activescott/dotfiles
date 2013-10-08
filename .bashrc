@@ -52,7 +52,7 @@ then
 fi
 
 
-export PATH=/Users/swilleke/bin/Sencha/Cmd/3.1.2.342:$PATH
+export PATH=$PATH:/Users/swilleke/bin/Sencha/Cmd/3.1.2.342
 export SENCHA_CMD_3_0_0="/Users/swilleke/bin/Sencha/Cmd/3.1.2.342"
 export VAGRANT_LOG=INFO
 export LATEST_PPM_PACKAGE=7.0.0.1897 #get it from http://teamcity.hq.daptiv.com/viewType.html?buildTypeId=bt1427
