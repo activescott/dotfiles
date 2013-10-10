@@ -1,9 +1,4 @@
-/.CFUserTextEncoding
 /.MacOSX/
-/.account
-/.anyconnect
-/.bash_secrets
-/.bash_history
 /.berkshelf/
 /.cache/
 /.chef/
@@ -31,5 +26,10 @@
 /VirtualBox VMs/
 /bin/
 /bower_components/
+/.CFUserTextEncoding
+/.account
+/.anyconnect
+/.bash_secrets
+/.bash_history
 /md5
 /mypasswdfile

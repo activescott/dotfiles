@@ -1,18 +1,16 @@
 #!/bin/bash
 
-# if [ "$(uname)" == "Darwin" ]; then
-#     # Do something under Mac OS X platform        
-# elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
-#     # Do something under Linux platform
-# elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW32_NT" ]; then
-#     # Do something under Windows NT platform
-# fi
-# IS_WINDOWS="$(expr substr $(uname -s) 1 10)" == "MINGW32_NT"
-# IS_WINDOWS="$(expr substr $(uname -s) 1 6)" == "CYGWIN"
+#NOTE: .bash_profile vs .bashrc: http://www.joshstaiger.org/archives/2005/07/bash_profile_vs.html
 
+####
+# constants
+####
 FALSE=
 TRUE=0
 
+#####
+# detect host OS
+#####
 IS_WINDOWS=$FALSE
 IS_MAC=$FALSE
 
@@ -30,11 +28,15 @@ then
 fi
 
 #####
-
+# aliases
+#####
 alias ls='ls -AlG'
 alias rm='rm -i'
 alias gdiff='git diff --color --cached'
 
+#####
+# windows (cygwin) vs mac specific stuff
+#####
 if [ $IS_WINDOWS ]
 then
 	#echo "RUNNING UNDER WINDOWS!?"
@@ -51,8 +53,16 @@ then
 	export EDITOR='subl -w'
 fi
 
-
-export PATH=$PATH:/Users/swilleke/bin/Sencha/Cmd/3.1.2.342
+#####
+# PATH variable
+#####
+# NOTE: About paths: http://serverfault.com/a/146142/28798 (i.e. drop files /etc/paths.d $PATH only works in terminal )
+export PATH=~/.rbenv/shims:~/bin:$PATH # standard path: (note rbenv shims in front as it needs to be in front: https://github.com/sstephenson/rbenv#understanding-shims)
+export PATH=$PATH:/opt/subversion/bin:/Users/swilleke/bin/Sencha/Cmd/3.1.2.342 # app-specific paths
+#####
+# other variables
+#####
 export SENCHA_CMD_3_0_0="/Users/swilleke/bin/Sencha/Cmd/3.1.2.342"
 export VAGRANT_LOG=INFO
 export LATEST_PPM_PACKAGE=7.0.0.1897 #get it from http://teamcity.hq.daptiv.com/viewType.html?buildTypeId=bt1427
+export VAGRANT_LOG=warn # debug|info|warn|error http://docs.vagrantup.com/v2/debugging.html
