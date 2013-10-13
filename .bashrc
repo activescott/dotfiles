@@ -41,10 +41,10 @@ if [ $IS_WINDOWS ]
 then
 	#echo "RUNNING UNDER WINDOWS!?"
 	alias subl='/c/Program\ Files/Sublime\ Text\ 2/sublime_text.exe'
-elif [ $IS_MAC ] && [ ! -f ~/bin/subl ]
+elif [ $IS_MAC ] && [ ! -f /usr/local/bin/subl ]
 then
-	echo linking subl command
-	ln -s "/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl" ~/bin/subl
+	echo "linking subl command (enter password for sudo)..."
+	sudo ln -s "/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl" /usr/local/bin/subl
 fi
 
 if [ $IS_MAC ]
@@ -57,7 +57,7 @@ fi
 # PATH variable
 #####
 # NOTE: About paths: http://serverfault.com/a/146142/28798 (i.e. drop files /etc/paths.d $PATH only works in terminal )
-export PATH=~/.rbenv/shims:~/bin:$PATH # standard path: (note rbenv shims in front as it needs to be in front: https://github.com/sstephenson/rbenv#understanding-shims)
+export PATH=~/.rbenv/shims:~/bin::/usr/local/bin/:/opt/local/bin:$PATH # standard path: (note rbenv shims in front as it needs to be in front: https://github.com/sstephenson/rbenv#understanding-shims)
 export PATH=$PATH:/opt/subversion/bin:/Users/swilleke/bin/Sencha/Cmd/3.1.2.342 # app-specific paths
 #####
 # other variables
