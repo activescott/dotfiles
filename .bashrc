@@ -51,20 +51,6 @@ if [ $IS_MAC ]
 then
 	alias nuget='mono /usr/local/bin/nuget.exe'
 	export EDITOR='subl -w'
-	
-	#####
-	# ensure homebrew installed:
-	# BUT WHY?? Is a useful way to get git but not any "better" than macports. Besides, I like that macports puts everything in /opt/local
-	#####
-	# brew info || { 
-	# 	exitCode=$?
-	# 	if [ $exitCode == 127 ]
-	# 	then
-	# 		echo "brew command not found. Homebrew not installed. Installing homebrew..."
-	# 		ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"
-	# 		echo "Homebrew install attempt complete. Exit code was: $?"
-	# 		brew doctor #reveals any troubling config issues that might cause problems with homebrew
-	# 	fi
 	}
 fi
 
