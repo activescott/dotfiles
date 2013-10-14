@@ -1,3 +1,4 @@
+.android/
 .berkshelf/
 .cache/
 .chef/
@@ -5,17 +6,20 @@
 .cups/
 .dropbox/
 .DS_Store
+.dvdcss/
 .filezilla/
 .gem/
 .gnupg/
 .hgcookies/
 .local/
+.macports/
 .npm/
 .MacOSX/
 .mono/
 .node-gyp/
 .rarregkey
 .rbenv/
+.recently-used/
 .sh_history
 .ssh/
 .subversion/
@@ -31,6 +35,8 @@ Movies/
 Music/
 Pictures/
 Public/
+smtp_out/
+tools-win/
 Virtual Machines/
 VirtualBox VMs/
 bin/
@@ -43,6 +49,8 @@ tools/
 .bash_history
 .CFUserTextEncoding
 .eclipse_keyring
+.lesshst
+.recently-used
 .viminfo
 md5
 mypasswdfile

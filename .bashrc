@@ -51,14 +51,31 @@ if [ $IS_MAC ]
 then
 	alias nuget='mono /usr/local/bin/nuget.exe'
 	export EDITOR='subl -w'
+	
+	#####
+	# ensure homebrew installed:
+	# BUT WHY?? Is a useful way to get git but not any "better" than macports. Besides, I like that macports puts everything in /opt/local
+	#####
+	# brew info || { 
+	# 	exitCode=$?
+	# 	if [ $exitCode == 127 ]
+	# 	then
+	# 		echo "brew command not found. Homebrew not installed. Installing homebrew..."
+	# 		ruby -e "$(curl -fsSL https://raw.github.com/mxcl/homebrew/go)"
+	# 		echo "Homebrew install attempt complete. Exit code was: $?"
+	# 		brew doctor #reveals any troubling config issues that might cause problems with homebrew
+	# 	fi
+	}
 fi
 
 #####
 # PATH variable
 #####
 # NOTE: About paths: http://serverfault.com/a/146142/28798 (i.e. drop files /etc/paths.d $PATH only works in terminal )
-export PATH=~/.rbenv/shims:~/bin::/usr/local/bin/:/opt/local/bin:$PATH # standard path: (note rbenv shims in front as it needs to be in front: https://github.com/sstephenson/rbenv#understanding-shims)
-export PATH=$PATH:/opt/subversion/bin:/Users/swilleke/bin/Sencha/Cmd/3.1.2.342 # app-specific paths
+export PATH=~/.rbenv/shims:~/bin:/usr/local/bin:$PATH # standard path: (note rbenv shims in front as it needs to be in front: https://github.com/sstephenson/rbenv#understanding-shims)
+#for macports (see http://guide.macports.org/#installing.shell)
+export PATH=/opt/local/bin:/opt/local/sbin:$PATH
+export PATH=$PATH:/Users/swilleke/bin/Sencha/Cmd/3.1.2.342 # app-specific paths
 #####
 # other variables
 #####
