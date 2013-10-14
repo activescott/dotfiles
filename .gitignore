@@ -25,6 +25,7 @@
 .subversion/
 .Trash/
 .vagrant.d/
+android-sdk-mac_x86
 bower_components/
 Desktop/
 Documents/
@@ -42,6 +43,7 @@ VirtualBox VMs/
 bin/
 projects/
 Sites/
+src/
 tools/
 .account
 .anyconnect
