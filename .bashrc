@@ -51,7 +51,6 @@ if [ $IS_MAC ]
 then
 	alias nuget='mono /usr/local/bin/nuget.exe'
 	export EDITOR='subl -w'
-	}
 fi
 
 #####
