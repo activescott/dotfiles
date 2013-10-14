@@ -59,8 +59,9 @@ fi
 #####
 # NOTE: About paths: http://serverfault.com/a/146142/28798 (i.e. drop files /etc/paths.d $PATH only works in terminal )
 export PATH=~/.rbenv/shims:~/bin:/usr/local/bin:$PATH # standard path: (note rbenv shims in front as it needs to be in front: https://github.com/sstephenson/rbenv#understanding-shims)
-#for macports (see http://guide.macports.org/#installing.shell)
+#for macports (macports owns /opt/local/, see http://guide.macports.org/#installing.shell)
 export PATH=/opt/local/bin:/opt/local/sbin:$PATH
+export MANPATH=/opt/local/share/man:$MANPATH
 export PATH=$PATH:/Users/swilleke/bin/Sencha/Cmd/3.1.2.342 # app-specific paths
 #####
 # other variables
