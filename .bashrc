@@ -33,6 +33,7 @@ fi
 alias ls='ls -AlG'
 alias rm='rm -i'
 alias gdiff='git diff --color --cached'
+alias sha256='shasum -a 256'
 
 #####
 # windows (cygwin) vs mac specific stuff
