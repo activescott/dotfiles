@@ -6,3 +6,6 @@
 	default = simple
 [color]
 	ui = true
+[alias]
+	outgoing = log origin/HEAD..HEAD
+	st = status
