@@ -55,6 +55,12 @@ then
 fi
 
 #####
+# rvm
+#####
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
+#####
+
+#####
 # PATH variable
 #####
 # NOTE: About paths: http://serverfault.com/a/146142/28798 (i.e. drop files /etc/paths.d $PATH only works in terminal )
@@ -62,7 +68,8 @@ export PATH=~/.rbenv/shims:~/bin:/usr/local/bin:$PATH # standard path: (note rbe
 #for macports (macports owns /opt/local/, see http://guide.macports.org/#installing.shell)
 export PATH=/opt/local/bin:/opt/local/sbin:$PATH
 export MANPATH=/opt/local/share/man:$MANPATH
-export PATH=$PATH:/Users/swilleke/bin/Sencha/Cmd/3.1.2.342 # app-specific paths
+export SCALA_HOME=/usr/local/share/scala
+export PATH=$PATH:$SCALA_HOME/bin:/Users/swilleke/bin/Sencha/Cmd/3.1.2.342 # app-specific paths
 #####
 # other variables
 #####
@@ -70,3 +77,5 @@ export SENCHA_CMD_3_0_0="/Users/swilleke/bin/Sencha/Cmd/3.1.2.342"
 export VAGRANT_LOG=INFO
 export LATEST_PPM_PACKAGE=7.0.0.1897 #get it from http://teamcity.hq.daptiv.com/viewType.html?buildTypeId=bt1427
 export VAGRANT_LOG=warn # debug|info|warn|error http://docs.vagrantup.com/v2/debugging.html
+
+PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
