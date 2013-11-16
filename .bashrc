@@ -72,6 +72,7 @@ export SCALA_HOME=/usr/local/share/scala # http://www.scala-lang.org/documentati
 export PATH=$PATH:$SCALA_HOME/bin
 export GOROOT=/usr/local/go # http://golang.org/doc/install
 export PATH=$PATH:$GOROOT/bin
+export PATH=$PATH:/opt/chef/embedded/bin:$PATH
 export PATH=$PATH:/Users/swilleke/bin/Sencha/Cmd/3.1.2.342 # app-specific paths
 #####
 # other variables
