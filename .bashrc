@@ -55,10 +55,10 @@ then
 fi
 
 #####
-# rvm
+# rvm NONONONOO RVM!!! Use rbenv!
 #####
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
-#####
+# [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
+# /rvm 
 
 #####
 # PATH variable
@@ -74,6 +74,8 @@ export GOROOT=/usr/local/go # http://golang.org/doc/install
 export PATH=$PATH:$GOROOT/bin
 export PATH=$PATH:/opt/chef/embedded/bin:$PATH
 export PATH=$PATH:/Users/swilleke/bin/Sencha/Cmd/3.1.2.342 # app-specific paths
+# /PATH variable
+
 #####
 # other variables
 #####
@@ -82,4 +84,12 @@ export VAGRANT_LOG=INFO
 export LATEST_PPM_PACKAGE=7.0.0.1897 #get it from http://teamcity.hq.daptiv.com/viewType.html?buildTypeId=bt1427
 export VAGRANT_LOG=warn # debug|info|warn|error http://docs.vagrantup.com/v2/debugging.html
 
-PATH=$PATH:$HOME/.rvm/bin # Add RVM to PATH for scripting
+#####
+# Ruby versions
+#  Nothing in ruby ecosystem works together, so using the below vars just to track versions that I happen to find worked at some point:
+#
+#  As of 2013-11-16 this was working. To switch run:
+#	`rbenv rehash; rbenv install $RUBY_FOR_CHEF; rbenv shell $RUBY_FOR_CHEF; rbenv global $RUBY_FOR_CHEF; gem install chef; rbenv rehash`
+#
+export RUBY_FOR_CHEF=1.9.3-p385 
+# /Ruby versions
