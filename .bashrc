@@ -34,15 +34,14 @@ alias ls='ls -AlG'
 alias rm='rm -i'
 alias gdiff='git diff --color --cached'
 alias sha256='shasum -a 256'
-
 #####
 # windows (cygwin) vs mac specific stuff
 #####
-if [ $IS_WINDOWS ]
+if [ $IS_WINDOWS ] && [ -f '/c/Program\ Files/Sublime\ Text\ 2/sublime_text.exe' ]
 then
 	#echo "RUNNING UNDER WINDOWS!?"
 	alias subl='/c/Program\ Files/Sublime\ Text\ 2/sublime_text.exe'
-elif [ $IS_MAC ] && [ ! -f /usr/local/bin/subl ]
+elif [ $IS_MAC ] && [ ! -f /usr/local/bin/subl ] && [ -f "/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl" ]
 then
 	echo "linking subl command (enter password for sudo)..."
 	sudo ln -s "/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl" /usr/local/bin/subl

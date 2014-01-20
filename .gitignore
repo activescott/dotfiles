@@ -27,6 +27,7 @@
 /.subversion/
 /.Trash/
 /.vagrant.d/
+/.vim/
 /android-sdk-mac_x86
 /bower_components/
 /Desktop/
