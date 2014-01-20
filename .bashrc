@@ -31,6 +31,7 @@ fi
 # aliases
 #####
 alias ls='ls -AlG'
+alias ll='ls -AlG'
 alias rm='rm -i'
 alias gdiff='git diff --color --cached'
 alias sha256='shasum -a 256'
@@ -41,10 +42,25 @@ if [ $IS_WINDOWS ] && [ -f '/c/Program\ Files/Sublime\ Text\ 2/sublime_text.exe'
 then
 	#echo "RUNNING UNDER WINDOWS!?"
 	alias subl='/c/Program\ Files/Sublime\ Text\ 2/sublime_text.exe'
-elif [ $IS_MAC ] && [ ! -f /usr/local/bin/subl ] && [ -f "/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl" ]
+elif [ $IS_MAC ] && [ ! -f /usr/local/bin/subl ]
 then
-	echo "linking subl command (enter password for sudo)..."
-	sudo ln -s "/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl" /usr/local/bin/subl
+	echo "No \`subl\` link. Looking for sublime text..."
+	
+	SUBL2="/Applications/Sublime Text 2.app/Contents/SharedSupport/bin/subl"
+	SUBL3="/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl"
+
+	if [ -f "$SUBL3" ]
+	then
+		echo "linking subl command v3 (enter password for sudo)..."
+		sudo ln -fs "$SUBL3" /usr/local/bin/subl
+	elif [ -f "$SUBL2" ]
+	then
+		echo "linking subl command v2 (enter password for sudo)..."
+		sudo ln -fs "$SUBL2" /usr/local/bin/subl
+	else
+		echo "No Sublimetext install found. \`subl\` won't work!"
+	fi
+
 fi
 
 if [ $IS_MAC ]
