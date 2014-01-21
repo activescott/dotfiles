@@ -2,6 +2,9 @@
 
 #NOTE: .bash_profile vs .bashrc: http://www.joshstaiger.org/archives/2005/07/bash_profile_vs.html
 
+# If not running interactively, don't do anything
+[ -z "$PS1" ] && return
+
 ####
 # constants
 ####
@@ -30,9 +33,10 @@ fi
 #####
 # aliases
 #####
-alias ls='ls -AlG'
-alias ll='ls -AlG'
+alias ls='ls -AlGF'
+alias ll='ls -AlGF'
 alias rm='rm -i'
+alias grep='grep --color=auto'
 alias gdiff='git diff --color --cached'
 alias sha256='shasum -a 256'
 #####
