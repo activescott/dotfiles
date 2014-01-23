@@ -42,27 +42,33 @@ alias sha256='shasum -a 256'
 #####
 # windows (cygwin) vs mac specific stuff
 #####
+# NOTE: Using /usr/LOCAL/bin per http://unix.stackexchange.com/questions/8656/usr-bin-vs-usr-local-bin-on-linux (not managed by distro)
+SUBL_LINK=/usr/local/bin/subl
+
 if [ $IS_WINDOWS ] && [ -f '/c/Program\ Files/Sublime\ Text\ 2/sublime_text.exe' ]
 then
 	#echo "RUNNING UNDER WINDOWS!?"
 	alias subl='/c/Program\ Files/Sublime\ Text\ 2/sublime_text.exe'
-elif [ $IS_MAC ] && [ ! -f /usr/local/bin/subl ]
+elif [ $IS_MAC ] && [ ! -f $SUBL_LINK ]
 then
 	echo "No \`subl\` link. Looking for sublime text..."
 	
 	SUBL2="/Applications/Sublime Text 2.app/Contents/SharedSupport/bin/subl"
 	SUBL3="/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl"
+	
+	# On a fresh mac, /usr/local doesn't exist.
+	[ -d "/usr/local/bin" ] || sudo mkdir -pv "/usr/local/bin"
 
 	if [ -f "$SUBL3" ]
 	then
-		echo "linking subl command v3 (enter password for sudo)..."
-		sudo ln -fs "$SUBL3" /usr/local/bin/subl
+		echo "linking subl command to Sublime Text 3 (enter password for sudo)..."
+		sudo ln -fs "$SUBL3" $SUBL_LINK
 	elif [ -f "$SUBL2" ]
 	then
-		echo "linking subl command v2 (enter password for sudo)..."
-		sudo ln -fs "$SUBL2" /usr/local/bin/subl
+		echo "linking subl command to Sublime Text 2 (enter password for sudo)..."
+		sudo ln -fs "$SUBL2" $SUBL_LINK
 	else
-		echo "No Sublimetext install found. \`subl\` won't work!"
+		echo "No Sublime Text install found. \`subl\` won't work!"
 	fi
 
 fi
