@@ -77,6 +77,7 @@ if [ $IS_MAC ]
 then
 	alias nuget='mono /usr/local/bin/nuget.exe'
 	export EDITOR='subl -w'
+	alias shred='rm -P' # mac doesn't include gnu shred, but uses -P with rm
 fi
 
 #####
@@ -84,6 +85,16 @@ fi
 #####
 # [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
 # /rvm 
+
+
+#####
+# Bash Customization:
+#####
+# Prevent some items from going into .bash_history: https://www.gnu.org/software/bash/manual/html_node/Bash-Variables.html
+export HISTSIZE=50
+export HISTFILESIZE=50
+export HISTIGNORE="bitcoind walletpassphrase*:./bitcoind walletpassphrase*:btc walletpassphrase*"
+
 
 #####
 # PATH variable
