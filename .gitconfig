@@ -9,3 +9,16 @@
 [alias]
 	outgoing = log origin/HEAD..HEAD
 	st = status
+	logg = log --graph
+	logsl = log --oneline --decorate
+	who = shortlog -s
+	logfg = log --pretty=oneline --abbrev-commit --graph --decorate --all
+
+[credential]
+helper = /opt/boxen/bin/boxen-git-credential
+
+[core]
+excludesfile = /opt/boxen/config/git/gitignore
+
+[hub]
+protocol = https
