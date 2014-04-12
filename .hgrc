@@ -4,8 +4,8 @@ username= scott willeke <scott@willeke.com>
 
 
 [auth]
-gc.prefix=code.datadynamics.com/kiln
-gc.username=scott.willeke@grapecity.com
+#gc.prefix=code.datadynamics.com/kiln
+#gc.username=scott.willeke@grapecity.com
 #gc.password=
 
 bb.prefix=bitbucket.org
@@ -36,6 +36,6 @@ developers.kilnhg.com = fe:ab:65:89:7c:6f:1a:21:a8:39:54:6c:2a:cb:ca:ae:e9:e5:f0
 
 [web]
 # This fixes a problem with self-signed certs and is woefully insecure.
-cacerts =
-# this is the secure way but it won't work with certs issued by IIS7. So i'm INSECURE and I like it.
+#cacerts =
+# this is the secure way but it won't work with certs issued by IIS7. So if you use kiln on IIS7 self-signed certs, be INSECURE and like it by uncommenting the following line:
 #cacerts = c:\tools\code.datadynamics.com.x509.pem
