@@ -39,8 +39,8 @@ then
 	#####
 	# aliases
 	#####
-	alias ls='ls -AlGF'
-	alias ll='ls -AlGF'
+	alias ls='ls -AlGFh'
+	alias ll='ls -AlGFh'
 	alias rm='rm -i'
 	alias grep='grep --color=auto'
 	alias gdiff='git diff --color --cached'
