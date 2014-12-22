@@ -45,6 +45,7 @@ then
 	alias grep='grep --color=auto'
 	alias gdiff='git diff --color --cached'
 	alias sha256='shasum -a 256'
+	alias top='top -o cpu'
 	#####
 	# windows (cygwin) vs mac specific stuff
 	#####
@@ -107,7 +108,7 @@ then
 	# NOTE: About paths: http://serverfault.com/a/146142/28798 (i.e. drop files /etc/paths.d $PATH only works in terminal )
 	export PATH=~/.rbenv/shims:~/bin:/usr/local/bin:$PATH # standard path: (note rbenv shims in front as it needs to be in front: https://github.com/sstephenson/rbenv#understanding-shims)
 
-	export PATH=/opt/local/bin:/opt/local/sbin:$PATH # for macports (macports owns /opt/local/, see http://guide.macports.org/#installing.shell)
+	export PATH=$PATH:/opt/local/bin:/opt/local/sbin # for macports (macports owns /opt/local/, see http://guide.macports.org/#installing.shell)
 	export MANPATH=/opt/local/share/man:$MANPATH # for macports+man
 	export SCALA_HOME=/usr/local/share/scala # http://www.scala-lang.org/documentation/getting-started.html
 	export PATH=$PATH:$SCALA_HOME/bin
