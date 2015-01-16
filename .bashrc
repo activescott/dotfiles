@@ -141,6 +141,16 @@ then
 		echo "Boxen alert!"
 		source /opt/boxen/env.sh
 	fi
+	
+	##### Unload the IR Remote Control kernel Extension:
+	kextstat -l | grep AppleIRController
+	IS_IR_LOADED=$?
+	if [ $IS_MAC ] && [ $IS_IR_LOADED -eq 0 ]
+	then
+		echo "Infrared receiver is loaded. Enter sudo password to disable (or press Esc to leave it loaded)..."
+		sudo kextunload /System/Library/Extensions/AppleIRController.kext
+		echo "Infrared receiver should now be disabled."
+	fi
 else
 	echo "Someone tried to load .bashrc again. Denied!"
 fi
