@@ -84,6 +84,8 @@ then
 		alias nuget='mono /usr/local/bin/nuget.exe'
 		export EDITOR='subl -w'
 		alias shred='rm -P' # mac doesn't include gnu shred, but uses -P with rm
+		# VS Code: https://code.visualstudio.com/docs/editor/setup
+		code () { VSCODE_CWD="$PWD" open -n -b "com.microsoft.VSCode" --args $* ;}
 	fi
 
 	#####
