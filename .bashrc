@@ -145,8 +145,11 @@ then
 	fi
 	
 	##### Unload the IR Remote Control kernel Extension:
-	kextstat -l | grep AppleIRController
-	IS_IR_LOADED=$?
+	if [ $IS_MAC ]
+	then
+		kextstat -l | grep AppleIRController
+		IS_IR_LOADED=$?
+	fi
 	if [ $IS_MAC ] && [ $IS_IR_LOADED -eq 0 ]
 	then
 		echo "Infrared receiver is loaded. Enter sudo password to disable (or press Esc to leave it loaded)..."
