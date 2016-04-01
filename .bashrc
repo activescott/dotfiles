@@ -85,10 +85,8 @@ then
 		alias nuget='mono /usr/local/bin/nuget.exe'
 		export EDITOR='subl -w'
 		alias shred='rm -P' # mac doesn't include gnu shred, but uses -P with rm
-		# VS Code: https://code.visualstudio.com/docs/editor/setup
-		code () { VSCODE_CWD="$PWD" open -n -b "com.microsoft.VSCode" --args $* ;}
 	fi
-
+
 	#####
 	# rvm NONONONOO RVM!!! Use rbenv!
 	#####
@@ -128,6 +126,8 @@ then
 	export VAGRANT_LOG=INFO
 	export LATEST_PPM_PACKAGE=7.0.0.1897 #get it from http://teamcity.hq.daptiv.com/viewType.html?buildTypeId=bt1427
 	export VAGRANT_LOG=warn # debug|info|warn|error http://docs.vagrantup.com/v2/debugging.html
+    # Jira Develpoment: 
+    ATLAS_HOME='/usr/local/Cellar/atlassian-plugin-sdk/6.2.2/libexec'
 
 	#####
 	# Ruby versions
