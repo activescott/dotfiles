@@ -46,6 +46,7 @@ then
 	alias gdiff='git diff --color --cached'
 	alias sha256='shasum -a 256'
 	alias top='top -o cpu'
+    alias github='~/github.sh'
 	#####
 	# windows (cygwin) vs mac specific stuff
 	#####
@@ -87,7 +88,7 @@ then
 		# VS Code: https://code.visualstudio.com/docs/editor/setup
 		code () { VSCODE_CWD="$PWD" open -n -b "com.microsoft.VSCode" --args $* ;}
 	fi
-
+
 	#####
 	# rvm NONONONOO RVM!!! Use rbenv!
 	#####
@@ -152,9 +153,9 @@ then
 	fi
 	if [ $IS_MAC ] && [ $IS_IR_LOADED -eq 0 ]
 	then
-		echo "Infrared receiver is loaded. Enter sudo password to disable (or press Esc to leave it loaded)..."
+		echo "Infrared receiver is loaded. Enter sudo password to disable (or press ^C to leave it loaded)..."
 		sudo kextunload /System/Library/Extensions/AppleIRController.kext
-		echo "Infrared receiver should now be disabled."
+		echo "Infrared receiver should now be disabled (unless you pressed ^C)."
 	fi
 else
 	echo "Someone tried to load .bashrc again. Denied!"
