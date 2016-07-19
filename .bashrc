@@ -47,6 +47,7 @@ then
 	alias sha256='shasum -a 256'
 	alias top='top -o cpu'
     alias github='~/github.sh'
+	alias json='python -m json.tool' # http://stackoverflow.com/a/1920585/51061
 	#####
 	# windows (cygwin) vs mac specific stuff
 	#####
