@@ -84,7 +84,7 @@ then
 	if [ $IS_MAC ]
 	then
 		alias nuget='mono /usr/local/bin/nuget.exe'
-		export EDITOR='subl -w'
+		export EDITOR='code -w'
 		alias shred='rm -P' # mac doesn't include gnu shred, but uses -P with rm
 	fi
 
