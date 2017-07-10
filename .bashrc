@@ -127,19 +127,6 @@ then
 	# JIRA Develpoment: 
 	ATLAS_HOME='/usr/local/Cellar/atlassian-plugin-sdk/6.2.2/libexec'
 	
-	##### Unload the IR Remote Control kernel Extension:
-	if [ $IS_MAC ]
-	then
-		kextstat -l | grep AppleIRController
-		IS_IR_LOADED=$?
-	fi
-	if [ $IS_MAC ] && [ $IS_IR_LOADED -eq 0 ]
-	then
-		# this doesn't seem to work anymore on macOS Sierra?
-		# echo "Infrared receiver is loaded. Enter sudo password to disable (or press ^C to leave it loaded)..."
-		# sudo kextunload /System/Library/Extensions/AppleIRController.kext
-		# echo "Infrared receiver should now be disabled (unless you pressed ^C)."
-	fi
 else
 	echo "Someone tried to load .bashrc again. Denied!"
 fi
