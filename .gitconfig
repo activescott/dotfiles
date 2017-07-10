@@ -7,7 +7,7 @@
 [color]
 	ui = true
 [alias]
-	outgoing = log origin/HEAD..HEAD
+	outgoing = log @{upstream}.. #https://stackoverflow.com/a/6389348/51061
 	st = status
 	logg = log --pretty=oneline --abbrev-commit --graph --decorate --all
 	who = shortlog -s

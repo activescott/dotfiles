@@ -153,9 +153,10 @@ then
 	fi
 	if [ $IS_MAC ] && [ $IS_IR_LOADED -eq 0 ]
 	then
-		echo "Infrared receiver is loaded. Enter sudo password to disable (or press ^C to leave it loaded)..."
-		sudo kextunload /System/Library/Extensions/AppleIRController.kext
-		echo "Infrared receiver should now be disabled (unless you pressed ^C)."
+		# this doesn't seem to work anymore on macOS Sierra?
+		# echo "Infrared receiver is loaded. Enter sudo password to disable (or press ^C to leave it loaded)..."
+		# sudo kextunload /System/Library/Extensions/AppleIRController.kext
+		# echo "Infrared receiver should now be disabled (unless you pressed ^C)."
 	fi
 else
 	echo "Someone tried to load .bashrc again. Denied!"
