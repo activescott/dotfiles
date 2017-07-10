@@ -46,7 +46,10 @@ then
 	alias gdiff='git diff --color --cached'
 	alias sha256='shasum -a 256'
 	alias top='top -o cpu'
-    alias github='~/github.sh'
+  alias github='~/github.sh'
+	alias json='python -m json.tool' # http://stackoverflow.com/a/1920585/51061
+	alias lso="ls -alG | awk '{k=0;for(i=0;i<=8;i++)k+=((substr(\$1,i+2,1)~/[rwx]/)*2^(8-i));if(k)printf(\" %0o \",k);print}'" #http://agileadam.com/2011/02/755-style-permissions-with-ls/
+
 	#####
 	# windows (cygwin) vs mac specific stuff
 	#####
@@ -83,7 +86,7 @@ then
 	if [ $IS_MAC ]
 	then
 		alias nuget='mono /usr/local/bin/nuget.exe'
-		export EDITOR='subl -w'
+		export EDITOR='code -w'
 		alias shred='rm -P' # mac doesn't include gnu shred, but uses -P with rm
 	fi
 
@@ -115,35 +118,14 @@ then
 	export PATH=$PATH:$SCALA_HOME/bin
 	export GOROOT=/usr/local/go # http://golang.org/doc/install
 	export PATH=$PATH:$GOROOT/bin
-	export PATH=$PATH:/opt/chef/embedded/bin:$PATH
-	export PATH=$PATH:/Users/swilleke/bin/Sencha/Cmd/3.1.2.342 # app-specific paths
+  export PATH=$PATH:/usr/local/opt/node/bin #node/npm
 	# /PATH variable
 
 	#####
 	# other variables
 	#####
-	export SENCHA_CMD_3_0_0="/Users/swilleke/bin/Sencha/Cmd/3.1.2.342"
-	export VAGRANT_LOG=INFO
-	export LATEST_PPM_PACKAGE=7.0.0.1897 #get it from http://teamcity.hq.daptiv.com/viewType.html?buildTypeId=bt1427
-	export VAGRANT_LOG=warn # debug|info|warn|error http://docs.vagrantup.com/v2/debugging.html
-    # Jira Develpoment: 
-    ATLAS_HOME='/usr/local/Cellar/atlassian-plugin-sdk/6.2.2/libexec'
-
-	#####
-	# Ruby versions
-	#  Nothing in ruby ecosystem works together, so using the below vars just to track versions that I happen to find worked at some point:
-	#
-	#  As of 2013-11-16 this was working. To switch run:
-	#	`rbenv rehash; rbenv install $RUBY_FOR_CHEF; rbenv shell $RUBY_FOR_CHEF; rbenv global $RUBY_FOR_CHEF; gem install chef; rbenv rehash`
-	#
-	export RUBY_FOR_CHEF=1.9.3-p385 
-	# /Ruby versions
-
-	if [ $IS_MAC ] && [ -f /opt/boxen/env.sh ]
-	then
-		echo "Boxen alert!"
-		source /opt/boxen/env.sh
-	fi
+	# JIRA Develpoment: 
+	ATLAS_HOME='/usr/local/Cellar/atlassian-plugin-sdk/6.2.2/libexec'
 	
 	##### Unload the IR Remote Control kernel Extension:
 	if [ $IS_MAC ]
