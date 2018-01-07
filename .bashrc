@@ -2,9 +2,10 @@
 
 #NOTE: .bash_profile vs .bashrc: http://www.joshstaiger.org/archives/2005/07/bash_profile_vs.html
 
-# Boxen at Daptiv edits /etc/profile to reload ~/.bashrc (incorrectly on mac IMHO!), I 
+# Boxen at Daptiv edits /etc/profile to reload ~/.bashrc (incorrectly on mac IMHO!),
 #  and load ~/.bashrc from ~/.bash_profile, which caused .bashrc to load twice. This is a way to prevent it:
-if [[ -z "$BASHRC_LOADED" ]]
+# Update: VSCode seems to import the var, but not the environment, so we allow it to load if VSCODE_CLI is defined.
+if [[ (-z ${BASHRC_LOADED}) || (-n ${VSCODE_CLI}) ]]
 then
 	export BASHRC_LOADED=1 
 
@@ -130,3 +131,10 @@ then
 else
 	echo "Someone tried to load .bashrc again. Denied!"
 fi
+
+# tabtab source for serverless package
+# uninstall by removing these lines or running `tabtab uninstall serverless`
+[ -f /Users/scott/src/sheetmonkey-server/server/node_modules/tabtab/.completions/serverless.bash ] && . /Users/scott/src/sheetmonkey-server/server/node_modules/tabtab/.completions/serverless.bash
+# tabtab source for sls package
+# uninstall by removing these lines or running `tabtab uninstall sls`
+[ -f /Users/scott/src/sheetmonkey-server/server/node_modules/tabtab/.completions/sls.bash ] && . /Users/scott/src/sheetmonkey-server/server/node_modules/tabtab/.completions/sls.bash
