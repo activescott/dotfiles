@@ -2,10 +2,10 @@
 
 #NOTE: .bash_profile vs .bashrc: http://www.joshstaiger.org/archives/2005/07/bash_profile_vs.html
 
-# Boxen at Daptiv edits /etc/profile to reload ~/.bashrc (incorrectly on mac IMHO!),
-#  and load ~/.bashrc from ~/.bash_profile, which caused .bashrc to load twice. This is a way to prevent it:
-# Update: VSCode seems to import the var, but not the environment, so we allow it to load if VSCODE_CLI is defined.
-if [[ (-z ${BASHRC_LOADED}) || (-n ${VSCODE_CLI}) ]]
+# Some apps reload ~/.bashrc eventhough it has already been run in a parent environment (incorrectly on mac IMHO!),
+# This is a way to prevent it:
+# Update: VSCode seems to import the var, but not the environment, so we allow it to load if one of the VSCODE_* vars are defined defined.
+if [[ (-z ${BASHRC_LOADED}) || (-n ${VSCODE_CLI}) || (-n ${VSCODE_PID}) || (-n ${VSCODE_IPC_HOOK}) ]]
 then
 	export BASHRC_LOADED=1 
 
@@ -131,10 +131,3 @@ then
 else
 	echo "Someone tried to load .bashrc again. Denied!"
 fi
-
-# tabtab source for serverless package
-# uninstall by removing these lines or running `tabtab uninstall serverless`
-[ -f /Users/scott/src/sheetmonkey-server/server/node_modules/tabtab/.completions/serverless.bash ] && . /Users/scott/src/sheetmonkey-server/server/node_modules/tabtab/.completions/serverless.bash
-# tabtab source for sls package
-# uninstall by removing these lines or running `tabtab uninstall sls`
-[ -f /Users/scott/src/sheetmonkey-server/server/node_modules/tabtab/.completions/sls.bash ] && . /Users/scott/src/sheetmonkey-server/server/node_modules/tabtab/.completions/sls.bash
