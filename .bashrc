@@ -47,7 +47,7 @@ then
 	alias gdiff='git diff --color --cached'
 	alias sha256='shasum -a 256'
 	alias top='top -o cpu'
-  	alias github='~/github.sh'
+	alias github='~/github.sh'
 	alias json='python -m json.tool' # http://stackoverflow.com/a/1920585/51061
 	alias lso="ls -alG | awk '{k=0;for(i=0;i<=8;i++)k+=((substr(\$1,i+2,1)~/[rwx]/)*2^(8-i));if(k)printf(\" %0o \",k);print}'" #http://agileadam.com/2011/02/755-style-permissions-with-ls/
 
@@ -55,34 +55,6 @@ then
 	# windows (cygwin) vs mac specific stuff
 	#####
 	# NOTE: Using /usr/LOCAL/bin per http://unix.stackexchange.com/questions/8656/usr-bin-vs-usr-local-bin-on-linux (not managed by distro)
-	SUBL_LINK=/usr/local/bin/subl
-
-	if [ $IS_WINDOWS ] && [ -f '/c/Program\ Files/Sublime\ Text\ 2/sublime_text.exe' ]
-	then
-		#echo "RUNNING UNDER WINDOWS!?"
-		alias subl='/c/Program\ Files/Sublime\ Text\ 2/sublime_text.exe'
-	elif [ $IS_MAC ] && [ ! -f $SUBL_LINK ]
-	then
-		echo "No \`subl\` link. Looking for sublime text..."
-		SUBL2="/Applications/Sublime Text 2.app/Contents/SharedSupport/bin/subl"
-		SUBL3="/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl"
-		
-		# On a fresh mac, /usr/local doesn't exist.
-		[ -d "/usr/local/bin" ] || sudo mkdir -pv "/usr/local/bin"
-
-		if [ -f "$SUBL3" ]
-		then
-			echo "linking subl command to Sublime Text 3 (enter password for sudo)..."
-			sudo ln -fs "$SUBL3" $SUBL_LINK
-		elif [ -f "$SUBL2" ]
-		then
-			echo "linking subl command to Sublime Text 2 (enter password for sudo)..."
-			sudo ln -fs "$SUBL2" $SUBL_LINK
-		else
-			echo "No Sublime Text install found. \`subl\` won't work!"
-		fi
-
-	fi
 
 	if [ $IS_MAC ]
 	then
@@ -125,8 +97,9 @@ then
 	export PATH=$PATH:$SCALA_HOME/bin
 	export GOROOT=/usr/local/go # http://golang.org/doc/install
 	export PATH=$PATH:$GOROOT/bin
-  	export PATH=$PATH:/usr/local/opt/node/bin #node/npm
+	export PATH=$PATH:/usr/local/opt/node/bin #node/npm
 	export PATH="$JAVA_HOME/bin:$PATH"
+	export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
 	# /PATH variable
 
 	#####

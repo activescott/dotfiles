@@ -4,8 +4,10 @@
 	
 [push]
 	default = simple
+
 [color]
 	ui = true
+
 [alias]
 	outgoing = log @{upstream}.. #https://stackoverflow.com/a/6389348/51061
 	st = status
@@ -19,6 +21,13 @@
 [core]
 	excludesfile = /opt/boxen/config/git/gitignore
 	autocrlf = input
+	editor = code --wait
+
+[diff]
+	tool = default-difftool
+
+[difftool "default-difftool"]
+	cmd = code --wait --diff $LOCAL $REMOTE
 
 [hub]
 	protocol = https
