@@ -47,7 +47,7 @@ then
 	alias gdiff='git diff --color --cached'
 	alias sha256='shasum -a 256'
 	alias top='top -o cpu'
-  alias github='~/github.sh'
+  	alias github='~/github.sh'
 	alias json='python -m json.tool' # http://stackoverflow.com/a/1920585/51061
 	alias lso="ls -alG | awk '{k=0;for(i=0;i<=8;i++)k+=((substr(\$1,i+2,1)~/[rwx]/)*2^(8-i));if(k)printf(\" %0o \",k);print}'" #http://agileadam.com/2011/02/755-style-permissions-with-ls/
 
@@ -105,6 +105,12 @@ then
 	export HISTSIZE=50
 	export HISTFILESIZE=50
 	export HISTIGNORE="bitcoind walletpassphrase*:./bitcoind walletpassphrase*:btc walletpassphrase*"
+	
+	#####
+	# ss dev:
+	export JAVA_HOME=$(/System/Library/Frameworks/JavaVM.framework/Versions/Current/Commands/java_home)
+	export GIT_ROOT=~/git
+	export GIT_APP_CORE=${GIT_ROOT}/app-core
 
 
 	#####
@@ -119,7 +125,8 @@ then
 	export PATH=$PATH:$SCALA_HOME/bin
 	export GOROOT=/usr/local/go # http://golang.org/doc/install
 	export PATH=$PATH:$GOROOT/bin
-  export PATH=$PATH:/usr/local/opt/node/bin #node/npm
+  	export PATH=$PATH:/usr/local/opt/node/bin #node/npm
+	export PATH="$JAVA_HOME/bin:$PATH"
 	# /PATH variable
 
 	#####
