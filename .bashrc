@@ -100,6 +100,7 @@ then
 	export PATH=$PATH:/usr/local/opt/node/bin #node/npm
 	export PATH="$JAVA_HOME/bin:$PATH"
 	export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+	export PATH="$PATH:~/.config/yarn/global/node_modules/.bin" #yarn global installs
 	# /PATH variable
 
 	#####
