@@ -21,3 +21,7 @@ cpsafe "$DIR/.gitconfig" ~/.gitconfig
 cpsafe "$DIR/.hgrc" ~/.hgrc
 cpsafe "$DIR/.bash_secrets" ~/.bash_secrets
 cpsafe "$DIR/github.sh" ~/github.sh
+cpsafe "$DIR/.config/mc/ini" ~/.config/mc/ini
+cpsafe "$DIR/.config/mc/mc.keymap" ~/.config/mc/mc.keymap
+cpsafe "$DIR/.config/mc/menu" ~/.config/mc/menu
+cpsafe "$DIR/.config/mc/panels.ini" ~/.config/mc/panels.ini
