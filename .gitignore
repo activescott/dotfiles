@@ -3,7 +3,6 @@
 /.bundler/
 /.cache/
 /.chef/
-/.config/
 /.cups/
 /.dropbox/
 /.dropbox-master/
