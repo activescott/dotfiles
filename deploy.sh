@@ -16,10 +16,19 @@ function cpsafe() {
 }
 DIR=$(cd $(dirname "$0"); pwd) #this script's directory
 
+# Midnight Commander:
+[[ -d "$DIR/.config/mc" ]] || mkdir -p "$DIR/.config/mc"
+[[ -d "$DIR/.local/share/mc" ]] || mkdir -p "$DIR/.config/mc"
+
 for filepath in $DIR/.config/mc/*; do
     filename=`basename $filepath`
     # echo "hi $filepath -> $filename"
     cpsafe "$filepath" ~/.config/mc/$filename
+done 
+for filepath in $DIR/.local/share/mc/*; do
+    filename=`basename $filepath`
+    # echo "hi $filepath -> $filename"
+    cpsafe "$filepath" ~/.local/share/mc/$filename
 done 
 
 exit
