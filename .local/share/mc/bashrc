@@ -1,0 +1,2 @@
+IS_MC=1 # let bashrc know it's MC
+source ~/.bashrc
