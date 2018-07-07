@@ -5,7 +5,8 @@
 # Some apps reload ~/.bashrc eventhough it has already been run in a parent environment (incorrectly on mac IMHO!),
 # This is a way to prevent it:
 # Update: VSCode seems to import the var, but not the environment, so we allow it to load if one of the VSCODE_* vars are defined defined.
-if [[ (-z ${BASHRC_LOADED}) || (-n ${VSCODE_CLI}) || (-n ${VSCODE_PID}) || (-n ${VSCODE_IPC_HOOK}) ]]
+# Update: Gnome's terminal keeps the BASHRC_LOADED var around but doesn't import the rest. So we alos lod if GNOME_SHELL_SESSION_MODE is defined.
+if [[ (-z ${BASHRC_LOADED}) || (-n ${VSCODE_CLI}) || (-n ${VSCODE_PID}) || (-n ${VSCODE_IPC_HOOK}) || (-n ${GNOME_SHELL_SESSION_MODE}) ]]
 then
 	export BASHRC_LOADED=1 
 
@@ -80,7 +81,15 @@ then
 	
 	#####
 	# ss dev:
-	export JAVA_HOME=$(/System/Library/Frameworks/JavaVM.framework/Versions/Current/Commands/java_home)
+	if [ $IS_MAC ]
+	then
+		export JAVA_HOME=$(/System/Library/Frameworks/JavaVM.framework/Versions/Current/Commands/java_home)
+	else
+		# assuming linux
+		export JAVA_HOME=~/apps/java
+		export PATH="$PATH:$JAVA_HOME"
+		
+	fi
 	export GIT_ROOT=~/git
 	export GIT_APP_CORE=${GIT_ROOT}/app-core
 
@@ -98,6 +107,7 @@ then
 	export GOROOT=/usr/local/go # http://golang.org/doc/install
 	export PATH=$PATH:$GOROOT/bin
 	export PATH=$PATH:/usr/local/opt/node/bin #node/npm
+	export PATH=$PATH:~/.npm-global/bin # requires setting npm config set prefix '~/.npm-global'; See https://docs.npmjs.com/getting-started/fixing-npm-permissions
 	export PATH="$JAVA_HOME/bin:$PATH"
 	export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
 	export PATH="$PATH:~/.config/yarn/global/node_modules/.bin" #yarn global installs
@@ -108,7 +118,12 @@ then
 	#####
 	# JIRA Develpoment: 
 	ATLAS_HOME='/usr/local/Cellar/atlassian-plugin-sdk/6.2.2/libexec'
-	
+
+	##### DOCKER @ smartsheet
+    export COMPOSE_PROJECT_NAME=smartsheet
+    export GIT_ROOT=/home/${USER}/git
+    export GIT_APP_CORE=${GIT_ROOT}/app-core
+    export COMPOSE_FILE=${GIT_APP_CORE}/docker-compose.yml
 else
 	echo "Someone tried to load .bashrc again. Denied!"
 fi
