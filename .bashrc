@@ -93,8 +93,14 @@ then
     BLINK=5 # (This does not work in most terminal emulators.)
     INVERSECOLOR=7 # (This inverts the foreground and background colors, so you’ll see black text on a white background if the current text is white text on a black background.)
     HIDDEN=8
-
-	PS1="\[\033[${DIM};${PURPLE}m\]\u@\h:\[\033[${DIM};${BLUE}m\]\w \$ \[\033[${NORMAL};${DEFAULTCOLOR}m\]"
+	
+	if [[ (-n ${IS_MC}) ]]
+	then
+		# if midnight commander's subshell we append (mc) to prompt
+		PS1="\[\033[${DIM};${PURPLE}m\]\u@\h:\[\033[${DIM};${BLUE}m\]\w (mc) \$ \[\033[${NORMAL};${DEFAULTCOLOR}m\]"
+	else
+		PS1="\[\033[${DIM};${PURPLE}m\]\u@\h:\[\033[${DIM};${BLUE}m\]\w \$ \[\033[${NORMAL};${DEFAULTCOLOR}m\]"
+	fi
 
 	# Prevent some items from going into .bash_history: https://www.gnu.org/software/bash/manual/html_node/Bash-Variables.html
 	export HISTSIZE=50
