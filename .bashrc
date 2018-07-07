@@ -73,6 +73,7 @@ then
 	#####
 	# Bash Customization:
 	#####
+	PS1='\u@\h:\w \$'
 	# Prevent some items from going into .bash_history: https://www.gnu.org/software/bash/manual/html_node/Bash-Variables.html
 	export HISTSIZE=50
 	export HISTFILESIZE=50
