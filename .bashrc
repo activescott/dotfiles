@@ -5,7 +5,8 @@
 # Some apps reload ~/.bashrc eventhough it has already been run in a parent environment (incorrectly on mac IMHO!),
 # This is a way to prevent it:
 # Update: VSCode seems to import the var, but not the environment, so we allow it to load if one of the VSCODE_* vars are defined defined.
-if [[ (-z ${BASHRC_LOADED}) || (-n ${VSCODE_CLI}) || (-n ${VSCODE_PID}) || (-n ${VSCODE_IPC_HOOK}) ]]
+# We set IS_MC in ~/.config/mc/bashrc to let this file know it's midnight commander's subshell.
+if [[ (-z ${BASHRC_LOADED}) || (-n ${VSCODE_CLI}) || (-n ${VSCODE_PID}) || (-n ${VSCODE_IPC_HOOK}) || (-n ${IS_MC}) ]]
 then
 	export BASHRC_LOADED=1 
 

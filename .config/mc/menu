@@ -30,10 +30,10 @@ p       Copy file + path to clipboard
         printf %d/%f | pbcopy
 
 o       Open file with macOS
-	open "%f"
+        open "%f"
 
-q	Quicklook file
-	qlmanage -p %d/%f 2>/dev/null 1>/dev/null
+q	    Quicklook file
+	    qlmanage -p %d/%f 2>/dev/null 1>/dev/null
 
 @       Do something on the current file
         CMD=%{Enter command}
