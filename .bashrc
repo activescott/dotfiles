@@ -73,7 +73,28 @@ then
 	#####
 	# Bash Customization:
 	#####
-	PS1='\u@\h:\w \$'
+	# SIMPLE: PS1='\u@\h:\w \$ '
+	# with color:
+    BLACK=30
+    BLUE=34
+    CYAN=36
+    GREEN=32
+    PURPLE=35
+    RED=31
+    WHITE=37
+    YELLOW=33
+	DEFAULTCOLOR=00
+
+    NORMAL=0
+    BOLD=1 # (It depends on the terminal emulator.)
+    DIM=2
+    UNDERLINE=4
+    BLINK=5 # (This does not work in most terminal emulators.)
+    INVERSECOLOR=7 # (This inverts the foreground and background colors, so you’ll see black text on a white background if the current text is white text on a black background.)
+    HIDDEN=8
+
+	PS1="\[\033[${DIM};${PURPLE}m\]\u@\h:\[\033[${DIM};${BLUE}m\]\w \$ \[\033[${NORMAL};${DEFAULTCOLOR}m\]"
+
 	# Prevent some items from going into .bash_history: https://www.gnu.org/software/bash/manual/html_node/Bash-Variables.html
 	export HISTSIZE=50
 	export HISTFILESIZE=50
