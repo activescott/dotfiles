@@ -54,16 +54,22 @@ then
 	alias github='~/github.sh'
 	alias json='python -m json.tool' # http://stackoverflow.com/a/1920585/51061
 	alias lso="ls -alG | awk '{k=0;for(i=0;i<=8;i++)k+=((substr(\$1,i+2,1)~/[rwx]/)*2^(8-i));if(k)printf(\" %0o \",k);print}'" #http://agileadam.com/2011/02/755-style-permissions-with-ls/
-	# code is a function to support passing the arguments
+	# code is a function to support passing the arguments; also use CODE_PATH to set EDITOR (which git uses for merge comments)
+	if [ $IS_LINUX ]
+	then
+		CODE_PATH=/snap/bin/code
+	elif [ $IS_MAC ]
+	then
+		CODE_PATH=/usr/local/bin/code
+	else
+		CODE_PATH=/usr/local/bin/code
+	fi
+
 	function code() {
-		if [ $IS_LINUX ]
-		then
-			/snap/bin/code --disable-gpu $@ ;
-		elif [ $IS_MAC ]
-		then
-			/usr/local/bin/code --disable-gpu $@ ;
-		fi
+		$CODE_PATH --disable-gpu $@ ;
 	}
+
+	export EDITOR='$CODE_PATH --disable-gpu -w $@ ;'
 
 	#####
 	# windows (cygwin) vs mac specific stuff
@@ -73,7 +79,6 @@ then
 	if [ $IS_MAC ]
 	then
 		alias nuget='mono /usr/local/bin/nuget.exe'
-		export EDITOR='code -w'
 		alias shred='rm -P' # mac doesn't include gnu shred, but uses -P with rm
 	fi
 
