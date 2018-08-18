@@ -27,7 +27,7 @@
 	tool = default-difftool
 
 [difftool "default-difftool"]
-	cmd = code --wait --diff $LOCAL $REMOTE
+	cmd = code --disable-gpu --wait --diff $LOCAL $REMOTE
 
 [hub]
 	protocol = https

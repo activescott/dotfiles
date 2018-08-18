@@ -9,7 +9,7 @@
 # Update: We set IS_MC in ~/.config/mc/bashrc to let this file know it's midnight commander's subshell.
 if [[ (-z ${BASHRC_LOADED}) || (-n ${VSCODE_CLI}) || (-n ${VSCODE_PID}) || (-n ${VSCODE_IPC_HOOK}) || (-n ${IS_MC}) || (-n ${GNOME_SHELL_SESSION_MODE}) ]]
 then
-	export BASHRC_LOADED=1 
+	export BASHRC_LOADED=1
 
 	# If not running interactively, don't do anything
 	[ -z "$PS1" ] && return
@@ -25,6 +25,7 @@ then
 	#####
 	IS_WINDOWS=$FALSE
 	IS_MAC=$FALSE
+	IS_LINUX=$FALSE
 
 	if [ "$(uname)" == "Darwin" ]
 	then
@@ -32,9 +33,10 @@ then
 		IS_MAC=$TRUE
 	elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]
 	then
+		IS_LINUX=$TRUE
 		echo running under Linux platform
 	elif [ -n "$COMSPEC" -a -x "$COMSPEC" ]
-	then 
+	then
 		echo $0: running under Windows
 		IS_WINDOWS=$TRUE
 	fi
@@ -52,6 +54,16 @@ then
 	alias github='~/github.sh'
 	alias json='python -m json.tool' # http://stackoverflow.com/a/1920585/51061
 	alias lso="ls -alG | awk '{k=0;for(i=0;i<=8;i++)k+=((substr(\$1,i+2,1)~/[rwx]/)*2^(8-i));if(k)printf(\" %0o \",k);print}'" #http://agileadam.com/2011/02/755-style-permissions-with-ls/
+	# code is a function to support passing the arguments
+	function code() {
+		if [ $IS_LINUX ]
+		then
+			/snap/bin/code --disable-gpu $@ ;
+		elif [ $IS_MAC ]
+		then
+			/usr/local/bin/code --disable-gpu $@ ;
+		fi
+	}
 
 	#####
 	# windows (cygwin) vs mac specific stuff
@@ -69,7 +81,7 @@ then
 	# rvm NONONONOO RVM!!! Use rbenv!
 	#####
 	# [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
-	# /rvm 
+	# /rvm
 
 
 	#####
@@ -94,7 +106,7 @@ then
     BLINK=5 # (This does not work in most terminal emulators.)
     INVERSECOLOR=7 # (This inverts the foreground and background colors, so you’ll see black text on a white background if the current text is white text on a black background.)
     HIDDEN=8
-	
+
 	if [[ (-n ${IS_MC}) ]]
 	then
 		# if midnight commander's subshell we append (mc) to prompt
@@ -107,7 +119,7 @@ then
 	export HISTSIZE=50
 	export HISTFILESIZE=50
 	export HISTIGNORE="bitcoind walletpassphrase*:./bitcoind walletpassphrase*:btc walletpassphrase*"
-	
+
 	#####
 	# ss dev:
 	if [ $IS_MAC ]
@@ -117,7 +129,7 @@ then
 		# assuming linux
 		export JAVA_HOME=~/apps/java
 		export PATH="$PATH:$JAVA_HOME"
-		
+
 	fi
 	export GIT_ROOT=~/git
 	export GIT_APP_CORE=${GIT_ROOT}/app-core
@@ -145,7 +157,7 @@ then
 	#####
 	# other variables
 	#####
-	# JIRA Develpoment: 
+	# JIRA Develpoment:
 	ATLAS_HOME='/usr/local/Cellar/atlassian-plugin-sdk/6.2.2/libexec'
 
 	##### DOCKER @ smartsheet
