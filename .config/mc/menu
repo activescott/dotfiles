@@ -35,9 +35,8 @@ o       Open file with macOS
 q	    Quicklook file
 	    qlmanage -p %f
 
-@       Do something on the current file
-        CMD=%{Enter command}
-        $CMD %f
+r       Reveal file in finder
+        open -R %f
 
 + t t
 @       Do something on the tagged files
