@@ -66,10 +66,26 @@ then
 	fi
 
 	function code() {
-		$CODE_PATH --disable-gpu $@ ;
+		if [ $IS_LINUX ]
+		then
+			$CODE_PATH --disable-gpu $@ ;
+		elif [ $IS_MAC ]
+		then
+			$CODE_PATH $@ ;
+		else
+			$CODE_PATH $@ ;
+		fi
 	}
 
-	export EDITOR='$CODE_PATH --disable-gpu -w $@ ;'
+		if [ $IS_LINUX ]
+		then
+			export EDITOR='$CODE_PATH --disable-gpu -w $@ ;'
+		elif [ $IS_MAC ]
+		then
+			export EDITOR='$CODE_PATH -w $@ ;'
+		else
+			export EDITOR='$CODE_PATH -w $@ ;'
+		fi
 
 	#####
 	# windows (cygwin) vs mac specific stuff
