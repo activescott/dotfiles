@@ -118,7 +118,7 @@ then
     RED=31
     WHITE=37
     YELLOW=33
-	DEFAULTCOLOR=00
+		DEFAULTCOLOR=00
 
     NORMAL=0
     BOLD=1 # (It depends on the terminal emulator.)
@@ -131,9 +131,9 @@ then
 	if [[ (-n ${IS_MC}) ]]
 	then
 		# if midnight commander's subshell we append (mc) to prompt
-		PS1="\[\033[${DIM};${PURPLE}m\]\u@\h:\[\033[${DIM};${BLUE}m\]\w (mc) \$ \[\033[${NORMAL};${DEFAULTCOLOR}m\]"
+		PS1="\[\033[${DIM};${PURPLE}m\]\u@\h:\[\033[${DIM};${GREEN}m\]\w (mc) \$ \[\033[${NORMAL};${DEFAULTCOLOR}m\]"
 	else
-		PS1="\[\033[${DIM};${PURPLE}m\]\u@\h:\[\033[${DIM};${BLUE}m\]\w \$ \[\033[${NORMAL};${DEFAULTCOLOR}m\]"
+		PS1="\[\033[${DIM};${PURPLE}m\]\u@\h:\[\033[${DIM};${GREEN}m\]\w \$ \[\033[${NORMAL};${DEFAULTCOLOR}m\]"
 	fi
 
 	# Prevent some items from going into .bash_history: https://www.gnu.org/software/bash/manual/html_node/Bash-Variables.html
