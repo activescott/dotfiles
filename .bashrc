@@ -62,8 +62,8 @@ then
 	then
 		CODE_PATH=/usr/local/bin/code
 	else
+		CODE_PATH="/c/Program Files/Microsoft VS Code/bin/code"
 	fi
-		CODE_PATH=/c/Program Files/Microsoft VS Code/bin/code
 
 	function code() {
 		if [ $IS_LINUX ]
