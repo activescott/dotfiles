@@ -32,11 +32,14 @@ p       Copy file + path to clipboard
 o       Open file with macOS
         open %f
 
-q	    Quicklook file
-	    qlmanage -p %f
+q       Quicklook file
+        qlmanage -p %f
 
 r       Reveal file in finder
         open -R %f
+
+s       SHA256 of selected file
+        %view shasum -a256 %f
 
 + t t
 @       Do something on the tagged files
