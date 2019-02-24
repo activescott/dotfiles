@@ -85,6 +85,8 @@ skin=default
 
 filepos_max_saved_entries=1024
 
+safe_overwrite=false
+
 [Layout]
 message_visible=1
 keybar_visible=1
@@ -95,7 +97,7 @@ menubar_visible=1
 free_space=1
 horizontal_split=0
 vertical_equal=1
-left_panel_size=88
+left_panel_size=106
 horizontal_equal=1
 top_panel_size=1
 
@@ -120,7 +122,7 @@ color_terminals=
 [Panels]
 simple_swap=false
 show_mini_info=true
-kilobyte_si=false
+kilobyte_si=true
 mix_all_files=false
 show_backups=true
 show_dot_files=true
@@ -134,7 +136,7 @@ panel_scroll_pages=true
 panel_scroll_center=false
 mouse_move_pages=true
 filetype_mode=true
-permission_mode=false
+permission_mode=true
 torben_fj_mode=false
 quick_search_mode=0
 select_flags=6
