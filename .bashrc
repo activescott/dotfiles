@@ -159,8 +159,6 @@ export PATH=$PATH:/opt/local/bin:/opt/local/sbin # for macports (macports owns /
 export MANPATH=/opt/local/share/man:$MANPATH # for macports+man
 export SCALA_HOME=/usr/local/share/scala # http://www.scala-lang.org/documentation/getting-started.html
 export PATH=$PATH:$SCALA_HOME/bin
-export GOROOT=/usr/local/go # http://golang.org/doc/install
-export PATH=$PATH:$GOROOT/bin
 export PATH=$PATH:/usr/local/opt/node/bin #node/npm
 export PATH=$PATH:~/.npm-global/bin # requires setting npm config set prefix '~/.npm-global'; See https://docs.npmjs.com/getting-started/fixing-npm-permissions
 export PATH="$JAVA_HOME/bin:$PATH"
@@ -172,8 +170,10 @@ export PATH="$PATH:~/Library/Python/2.7/bin"
 #####
 # other variables
 #####
-# JIRA Develpoment:
-ATLAS_HOME='/usr/local/Cellar/atlassian-plugin-sdk/6.2.2/libexec'
+# golang:
+export GOPATH=$HOME/go # https://golang.org/cmd/go/#hdr-GOPATH_environment_variable
+export GOROOT="$(brew --prefix golang)/libexec" # only works if installed via homebrew
+#####
 
 ##### DOCKER @ smartsheet
 	export COMPOSE_PROJECT_NAME=smartsheet
