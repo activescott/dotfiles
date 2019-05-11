@@ -141,13 +141,18 @@ then
 	export JAVA_HOME=$(/System/Library/Frameworks/JavaVM.framework/Versions/Current/Commands/java_home)
 else
 	# assuming linux
-	export JAVA_HOME=~/apps/java
+	if [[ -d /usr/lib/jvm/default ]]
+	then
+		echo "Setting JAVA_HOME for arch/manjaro"
+		export JAVA_HOME=/usr/lib/jvm/default
+	elif [[ -d ~/apps/java ]]
+	then
+		echo "Setting JAVA_HOME for ~/apps/java"
+		export JAVA_HOME=~/apps/java
+	fi
 	export PATH="$PATH:$JAVA_HOME"
 
 fi
-export GIT_ROOT=~/git
-export GIT_APP_CORE=${GIT_ROOT}/app-core
-
 
 #####
 # PATH variable
@@ -176,7 +181,14 @@ export GOROOT="$(brew --prefix golang)/libexec" # only works if installed via ho
 #####
 
 ##### DOCKER @ smartsheet
-	export COMPOSE_PROJECT_NAME=smartsheet
-	export GIT_ROOT=/home/${USER}/git
-	export GIT_APP_CORE=${GIT_ROOT}/app-core
-	export COMPOSE_FILE=${GIT_APP_CORE}/docker-compose.yml
+export GIT_ROOT=/home/${USER}/git
+export GIT_APP_CORE=${GIT_ROOT}/app-core
+export COMPOSE_PROJECT_NAME=smartsheet
+export COMPOSE_FILE=${GIT_APP_CORE}/docker-compose.yml
+# ss aliases
+alias uber='cd $HOME/git/app-core/; ./src/main/build/build.sh -u'
+alias reset-uber='./src/main/vagrant/helperscripts/docker/resetAll.sh && uber'
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
