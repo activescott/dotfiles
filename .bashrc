@@ -178,7 +178,7 @@ export PATH="$PATH:~/Library/Python/2.7/bin"
 #####
 # golang:
 export GOPATH=$HOME/go # https://golang.org/cmd/go/#hdr-GOPATH_environment_variable
-export GOROOT="$(brew --prefix golang)/libexec" # only works if installed via homebrew
+[ $IS_MAC ] && export GOROOT="$(brew --prefix golang)/libexec" # only works if installed via homebrew
 #####
 
 ##### DOCKER @ smartsheet
