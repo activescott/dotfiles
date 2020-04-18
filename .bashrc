@@ -43,7 +43,8 @@ alias rm='rm -i'
 alias grep='grep --color=auto'
 alias gdiff='git diff --color --cached'
 alias sha256='shasum -a 256'
-alias top='top -o cpu'
+[ $IS_MAC ] && alias top='top -o cpu'
+[ $IS_LINUX ] && alias top='top -o %CPU'
 alias github='~/github.sh'
 alias json='python -m json.tool' # http://stackoverflow.com/a/1920585/51061
 alias lso="ls -alG | awk '{k=0;for(i=0;i<=8;i++)k+=((substr(\$1,i+2,1)~/[rwx]/)*2^(8-i));if(k)printf(\" %0o \",k);print}'" #http://agileadam.com/2011/02/755-style-permissions-with-ls/
@@ -181,10 +182,10 @@ export GOROOT="$(brew --prefix golang)/libexec" # only works if installed via ho
 #####
 
 ##### DOCKER @ smartsheet
-export GIT_ROOT=/home/${USER}/git
-export GIT_APP_CORE=${GIT_ROOT}/app-core
-export COMPOSE_PROJECT_NAME=smartsheet
-export COMPOSE_FILE=${GIT_APP_CORE}/docker-compose.yml
+#export GIT_ROOT=/home/${USER}/git
+#export GIT_APP_CORE=${GIT_ROOT}/app-core
+#export COMPOSE_PROJECT_NAME=smartsheet
+#export COMPOSE_FILE=${GIT_APP_CORE}/docker-compose.yml
 # ss aliases
 alias uber='cd $HOME/git/app-core/; ./src/main/build/build.sh -u'
 alias reset-uber='./src/main/vagrant/helperscripts/docker/resetAll.sh && uber'
