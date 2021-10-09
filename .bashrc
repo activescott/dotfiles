@@ -7,6 +7,9 @@
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
+# because https://support.apple.com/en-us/HT208050
+export BASH_SILENCE_DEPRECATION_WARNING=1
+
 ####
 # constants
 ####
@@ -137,10 +140,9 @@ export HISTIGNORE="bitcoind walletpassphrase*:./bitcoind walletpassphrase*:btc w
 
 #####
 # ss dev:
-if [ $IS_MAC ]
+# no more java on mac host. run all java code in containers instead.
+if [ ! $IS_MAC ] 
 then
-	export JAVA_HOME=$(/System/Library/Frameworks/JavaVM.framework/Versions/Current/Commands/java_home)
-else
 	# assuming linux
 	if [[ -d /usr/lib/jvm/default ]]
 	then
@@ -152,7 +154,6 @@ else
 		export JAVA_HOME=~/apps/java
 	fi
 	export PATH="$PATH:$JAVA_HOME"
-
 fi
 
 #####
