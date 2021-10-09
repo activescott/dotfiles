@@ -34,6 +34,5 @@ done
 cpsafe "$DIR/.bashrc" ~/.bashrc
 cpsafe "$DIR/.bash_profile" ~/.bash_profile
 cpsafe "$DIR/.gitconfig" ~/.gitconfig
-cpsafe "$DIR/.hgrc" ~/.hgrc
 cpsafe "$DIR/.bash_secrets" ~/.bash_secrets
 cpsafe "$DIR/github.sh" ~/github.sh
