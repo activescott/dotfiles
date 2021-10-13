@@ -7,9 +7,6 @@
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
-# because https://support.apple.com/en-us/HT208050
-export BASH_SILENCE_DEPRECATION_WARNING=1
-
 ####
 # constants
 ####
@@ -36,6 +33,10 @@ then
 	echo $0: running under Windows
 	IS_WINDOWS=$TRUE
 fi
+
+# because https://support.apple.com/en-us/HT208050
+export BASH_SILENCE_DEPRECATION_WARNING=1
+echo "current shell is $SHELL"
 
 #####
 # aliases
