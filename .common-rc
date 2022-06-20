@@ -1,0 +1,86 @@
+# .<shell>rc stuff for bash and zsh
+
+FALSE=
+TRUE=0
+
+#####
+# detect host OS
+#####
+IS_WINDOWS=$FALSE
+IS_MAC=$FALSE
+IS_LINUX=$FALSE
+
+if [ "$(uname)" = "Darwin" ]
+then
+	echo running under Mac OS X platform
+	IS_MAC=$TRUE
+elif [ "$(expr substr $(uname -s) 1 5)" = "Linux" ]
+then
+	IS_LINUX=$TRUE
+	echo running under Linux platform
+elif [ -n "$COMSPEC" -a -x "$COMSPEC" ]
+then
+	echo $0: running under Windows?
+	IS_WINDOWS=$TRUE
+fi
+
+
+#####
+# aliases
+#####
+alias ls='ls -AlGFh'
+alias ll='ls -AlGFh'
+alias rm='rm -i'
+alias grep='grep --color=auto'
+alias gdiff='git diff --color --cached'
+alias sha256='shasum -a 256'
+[ $IS_MAC ] && alias top='top -o cpu'
+[ $IS_LINUX ] && alias top='top -o %CPU'
+alias github='~/github.sh'
+alias json='python -m json.tool' # http://stackoverflow.com/a/1920585/51061
+alias lso="ls -alG | awk '{k=0;for(i=0;i<=8;i++)k+=((substr(\$1,i+2,1)~/[rwx]/)*2^(8-i));if(k)printf(\" %0o \",k);print}'" #http://agileadam.com/2011/02/755-style-permissions-with-ls/
+
+# code is a function to support passing the arguments; also use CODE_PATH to set EDITOR (which git uses for merge comments)
+if [ $IS_LINUX ]
+then
+	CODE_PATH=/snap/bin/code
+elif [ $IS_MAC ]
+then
+	CODE_PATH=/usr/local/bin/code
+else
+	CODE_PATH="/c/Program Files/Microsoft VS Code/bin/code"
+fi
+
+function code() {
+	if [ $IS_LINUX ]
+	then
+		$CODE_PATH --disable-gpu $@ ;
+	elif [ $IS_MAC ]
+	then
+		$CODE_PATH $@ ;
+	else
+		"$CODE_PATH" $@ ;
+	fi
+}
+
+if [ $IS_LINUX ]
+then
+	export EDITOR='$CODE_PATH --disable-gpu -w $@ ;'
+elif [ $IS_MAC ]
+then
+	export EDITOR='$CODE_PATH -w $@ ;'
+else
+	export EDITOR='$CODE_PATH -w $@ ;'
+fi
+
+if [ $IS_MAC ]
+then
+	alias nuget='mono /usr/local/bin/nuget.exe'
+	alias shred='rm -P' # mac doesn't include gnu shred, but uses -P with rm
+fi
+
+# Prevent some items from going into .bash_history (https://www.gnu.org/software/bash/manual/html_node/Bash-Variables.html) 
+# Also works on zsh by looking at `man zshparam` and looking in there
+export HISTSIZE=50
+export HISTFILESIZE=50
+export HISTIGNORE="bitcoind walletpassphrase*:./bitcoind walletpassphrase*:btc walletpassphrase*"

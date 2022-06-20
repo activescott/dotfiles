@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env sh
 
 die () {
 	echo >&2 "$@"

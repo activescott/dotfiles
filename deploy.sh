@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env sh
 
 DATE=`date "+%Y-%m-%dT%H_%M_%S"`
 
@@ -31,8 +31,19 @@ for filepath in $DIR/.local/share/mc/*; do
     cpsafe "$filepath" ~/.local/share/mc/$filename
 done 
 
-cpsafe "$DIR/.bashrc" ~/.bashrc
-cpsafe "$DIR/.bash_profile" ~/.bash_profile
+# misc apps, etc.
 cpsafe "$DIR/.gitconfig" ~/.gitconfig
 cpsafe "$DIR/.bash_secrets" ~/.bash_secrets
 cpsafe "$DIR/github.sh" ~/github.sh
+
+# source common .<shell>rc stuff for bash and zsh:
+cpsafe "$DIR/.common-rc" ~/.common-rc
+
+# bash:
+cpsafe "$DIR/.bashrc" ~/.bashrc
+cpsafe "$DIR/.bash_profile" ~/.bash_profile
+
+# zsh: https://linuxhint.com/configure-setup-zshrc-zsh/
+cpsafe "$DIR/.zshrc" ~/.zshrc
+cpsafe "$DIR/.zprofile" ~/.zprofile
+

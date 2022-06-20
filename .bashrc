@@ -7,94 +7,21 @@
 # If not running interactively, don't do anything
 [ -z "$PS1" ] && return
 
+# source common .<shell>rc stuff for bash and zsh:
+source ~/.common-rc
+
 ####
 # constants
 ####
-FALSE=
-TRUE=0
-
-#####
-# detect host OS
-#####
-IS_WINDOWS=$FALSE
-IS_MAC=$FALSE
-IS_LINUX=$FALSE
-
-if [ "$(uname)" == "Darwin" ]
-then
-	echo running under Mac OS X platform
-	IS_MAC=$TRUE
-elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]
-then
-	IS_LINUX=$TRUE
-	echo running under Linux platform
-elif [ -n "$COMSPEC" -a -x "$COMSPEC" ]
-then
-	echo $0: running under Windows
-	IS_WINDOWS=$TRUE
-fi
 
 # because https://support.apple.com/en-us/HT208050
 export BASH_SILENCE_DEPRECATION_WARNING=1
 echo "current shell is $SHELL"
 
 #####
-# aliases
-#####
-alias ls='ls -AlGFh'
-alias ll='ls -AlGFh'
-alias rm='rm -i'
-alias grep='grep --color=auto'
-alias gdiff='git diff --color --cached'
-alias sha256='shasum -a 256'
-[ $IS_MAC ] && alias top='top -o cpu'
-[ $IS_LINUX ] && alias top='top -o %CPU'
-alias github='~/github.sh'
-alias json='python -m json.tool' # http://stackoverflow.com/a/1920585/51061
-alias lso="ls -alG | awk '{k=0;for(i=0;i<=8;i++)k+=((substr(\$1,i+2,1)~/[rwx]/)*2^(8-i));if(k)printf(\" %0o \",k);print}'" #http://agileadam.com/2011/02/755-style-permissions-with-ls/
-# code is a function to support passing the arguments; also use CODE_PATH to set EDITOR (which git uses for merge comments)
-if [ $IS_LINUX ]
-then
-	CODE_PATH=/snap/bin/code
-elif [ $IS_MAC ]
-then
-	CODE_PATH=/usr/local/bin/code
-else
-	CODE_PATH="/c/Program Files/Microsoft VS Code/bin/code"
-fi
-
-function code() {
-	if [ $IS_LINUX ]
-	then
-		$CODE_PATH --disable-gpu $@ ;
-	elif [ $IS_MAC ]
-	then
-		$CODE_PATH $@ ;
-	else
-		"$CODE_PATH" $@ ;
-	fi
-}
-
-	if [ $IS_LINUX ]
-	then
-		export EDITOR='$CODE_PATH --disable-gpu -w $@ ;'
-	elif [ $IS_MAC ]
-	then
-		export EDITOR='$CODE_PATH -w $@ ;'
-	else
-		export EDITOR='$CODE_PATH -w $@ ;'
-	fi
-
-#####
 # windows (cygwin) vs mac specific stuff
 #####
 # NOTE: Using /usr/LOCAL/bin per http://unix.stackexchange.com/questions/8656/usr-bin-vs-usr-local-bin-on-linux (not managed by distro)
-
-if [ $IS_MAC ]
-then
-	alias nuget='mono /usr/local/bin/nuget.exe'
-	alias shred='rm -P' # mac doesn't include gnu shred, but uses -P with rm
-fi
 
 #####
 # rvm NONONONOO RVM!!! Use rbenv!
@@ -134,27 +61,36 @@ else
 	PS1="\[\033[${DIM};${PURPLE}m\]\u@\h:\[\033[${DIM};${GREEN}m\]\w \$ \[\033[${NORMAL};${DEFAULTCOLOR}m\]"
 fi
 
-# Prevent some items from going into .bash_history: https://www.gnu.org/software/bash/manual/html_node/Bash-Variables.html
-export HISTSIZE=50
-export HISTFILESIZE=50
-export HISTIGNORE="bitcoind walletpassphrase*:./bitcoind walletpassphrase*:btc walletpassphrase*"
 
-#####
-# ss dev:
-# no more java on mac host. run all java code in containers instead.
-if [ ! $IS_MAC ] 
+##########
+# PROMPT
+##########
+# SIMPLE: PS1='\u@\h:\w \$ '
+# with color:
+BLACK=30
+BLUE=34
+CYAN=36
+GREEN=32
+PURPLE=35
+RED=31
+WHITE=37
+YELLOW=33
+DEFAULTCOLOR=00
+
+NORMAL=0
+BOLD=1 # (It depends on the terminal emulator.)
+DIM=2
+UNDERLINE=4
+BLINK=5 # (This does not work in most terminal emulators.)
+INVERSECOLOR=7 # (This inverts the foreground and background colors, so you’ll see black text on a white background if the current text is white text on a black background.)
+HIDDEN=8
+
+if [[ (-n ${IS_MC}) ]]
 then
-	# assuming linux
-	if [[ -d /usr/lib/jvm/default ]]
-	then
-		echo "Setting JAVA_HOME for arch/manjaro"
-		export JAVA_HOME=/usr/lib/jvm/default
-	elif [[ -d ~/apps/java ]]
-	then
-		echo "Setting JAVA_HOME for ~/apps/java"
-		export JAVA_HOME=~/apps/java
-	fi
-	export PATH="$PATH:$JAVA_HOME"
+	# if midnight commander's subshell we append (mc) to prompt
+	PS1="\[\033[${DIM};${PURPLE}m\]\u@\h:\[\033[${DIM};${GREEN}m\]\w (mc) \$ \[\033[${NORMAL};${DEFAULTCOLOR}m\]"
+else
+	PS1="\[\033[${DIM};${PURPLE}m\]\u@\h:\[\033[${DIM};${GREEN}m\]\w \$ \[\033[${NORMAL};${DEFAULTCOLOR}m\]"
 fi
 
 #####
