@@ -14,9 +14,6 @@ source ~/.common-rc
 # constants
 ####
 
-# because https://support.apple.com/en-us/HT208050
-export BASH_SILENCE_DEPRECATION_WARNING=1
-echo "current shell is $SHELL"
 
 #####
 # windows (cygwin) vs mac specific stuff
