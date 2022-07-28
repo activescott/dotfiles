@@ -91,21 +91,19 @@ else
 fi
 
 #####
-# PATH variable
+# PATH variable OLD use .common-rc
 #####
-# NOTE: About paths: http://serverfault.com/a/146142/28798 (i.e. drop files /etc/paths.d $PATH only works in terminal )
-export PATH=~/.rbenv/shims:~/bin:/usr/local/bin:$PATH # standard path: (note rbenv shims in front as it needs to be in front: https://github.com/sstephenson/rbenv#understanding-shims)
-
-export PATH=$PATH:/opt/local/bin:/opt/local/sbin # for macports (macports owns /opt/local/, see http://guide.macports.org/#installing.shell)
-export MANPATH=/opt/local/share/man:$MANPATH # for macports+man
-export SCALA_HOME=/usr/local/share/scala # http://www.scala-lang.org/documentation/getting-started.html
-export PATH=$PATH:$SCALA_HOME/bin
-export PATH=$PATH:/usr/local/opt/node/bin #node/npm
-export PATH=$PATH:~/.npm-global/bin # requires setting npm config set prefix '~/.npm-global'; See https://docs.npmjs.com/getting-started/fixing-npm-permissions
-export PATH="$JAVA_HOME/bin:$PATH"
-export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
-export PATH="$PATH:~/.config/yarn/global/node_modules/.bin" #yarn global installs
-export PATH="$PATH:~/Library/Python/2.7/bin"
+#export PATH=~/.rbenv/shims:~/bin:/usr/local/bin:$PATH # standard path: (note rbenv shims in front as it needs to be in front: https://github.com/sstephenson/rbenv#understanding-shims)
+#export PATH=$PATH:/opt/local/bin:/opt/local/sbin # for macports (macports owns /opt/local/, see http://guide.macports.org/#installing.shell)
+#export MANPATH=/opt/local/share/man:$MANPATH # for macports+man
+#export SCALA_HOME=/usr/local/share/scala # http://www.scala-lang.org/documentation/getting-started.html
+#export PATH=$PATH:$SCALA_HOME/bin
+#export PATH=$PATH:/usr/local/opt/node/bin #node/npm
+#export PATH=$PATH:~/.npm-global/bin # requires setting npm config set prefix '~/.npm-global'; See https://docs.npmjs.com/getting-started/fixing-npm-permissions
+#export PATH="$JAVA_HOME/bin:$PATH"
+#export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+#export PATH="$PATH:~/.config/yarn/global/node_modules/.bin" #yarn global installs
+#export PATH="$PATH:~/Library/Python/2.7/bin"
 # /PATH variable
 
 #####
