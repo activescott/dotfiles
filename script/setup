@@ -1,0 +1,51 @@
+#!/usr/bin/env sh
+THISDIR=$(cd $(dirname "$0"); pwd) #this script's directory
+
+DATE=`date "+%Y-%m-%dT%H_%M_%S"`
+
+function cpsafe() {
+ SRC=$1
+ DST=$2
+ if [ -f "$SRC" ]; then 
+  [ -L "$DST" ] && echo "removing link $DST" && rm "$DST" #rm if link
+  [ -f "$DST" ] && mv -v "$DST" "$DST.old-$DATE" #mv to "just in case" file
+  ln -vs "$SRC" "$DST"
+ else
+  printf "\n *WARNING*: $SRC doesn't exist!\n\n"
+  return 1
+ fi
+}
+
+DOTFILESDIR=$(dirname $THISDIR)
+
+# Midnight Commander:
+[ -d "$DOTFILESDIR/.config/mc" ] || mkdir -p "$DOTFILESDIR/.config/mc"
+[ -d "$DOTFILESDIR/.local/share/mc" ] || mkdir -p "$DOTFILESDIR/.config/mc"
+
+for filepath in $DOTFILESDIR/.config/mc/*; do
+    filename=`basename $filepath`
+    # echo "hi $filepath -> $filename"
+    cpsafe "$filepath" ~/.config/mc/$filename
+done 
+for filepath in $DOTFILESDIR/.local/share/mc/*; do
+    filename=`basename $filepath`
+    # echo "hi $filepath -> $filename"
+    cpsafe "$filepath" ~/.local/share/mc/$filename
+done 
+
+# misc apps, etc.
+cpsafe "$DOTFILESDIR/.gitconfig" ~/.gitconfig
+cpsafe "$DOTFILESDIR/.bash_secrets" ~/.bash_secrets
+cpsafe "$DOTFILESDIR/github.sh" ~/github.sh
+
+# source common .<shell>rc stuff for bash and zsh:
+cpsafe "$DOTFILESDIR/.shrc" ~/.shrc
+
+# bash:
+cpsafe "$DOTFILESDIR/.bashrc" ~/.bashrc
+cpsafe "$DOTFILESDIR/.bash_profile" ~/.bash_profile
+
+# zsh: https://linuxhint.com/configure-setup-zshrc-zsh/
+cpsafe "$DOTFILESDIR/.zshrc" ~/.zshrc
+cpsafe "$DOTFILESDIR/.zprofile" ~/.zprofile
+

@@ -8,7 +8,7 @@
 [ -z "$PS1" ] && return
 
 # source common .<shell>rc stuff for bash and zsh:
-source ~/.common-rc
+source ~/.shrc
 
 ####
 # constants
@@ -91,7 +91,7 @@ else
 fi
 
 #####
-# PATH variable OLD use .common-rc
+# PATH variable OLD use .shrc
 #####
 #export PATH=~/.rbenv/shims:~/bin:/usr/local/bin:$PATH # standard path: (note rbenv shims in front as it needs to be in front: https://github.com/sstephenson/rbenv#understanding-shims)
 #export PATH=$PATH:/opt/local/bin:/opt/local/sbin # for macports (macports owns /opt/local/, see http://guide.macports.org/#installing.shell)

@@ -7,7 +7,7 @@
 [ -z "$PS1" ] && return
 
 # source common .<shell>rc stuff for bash and zsh:
-source ~/.common-rc
+source ~/.shrc
 
 # zsh-specific stuff below here
 autoload -Uz compinit
