@@ -29,8 +29,9 @@ echo "current shell is $SHELL"
 # PATH variable
 #####
 # NOTE: About paths: http://serverfault.com/a/146142/28798 (i.e. drop files /etc/paths.d $PATH only works in terminal )
-export PATH="$PATH:/usr/local/sbin" # Homebrew's "sbin"
-export PATH="$PATH:$HOME/bin" # my user-local bin folder
+export PATH="$HOME/bin:$PATH" # my user-local bin folder
+export PATH="/usr/local/sbin:$PATH" # Homebrew's "sbin"
+[ $IS_LINUX ] && export PATH="$HOME/linuxbrew/.linuxbrew/bin/brew:$PATH" # homebrew bin folder on linux
 
 #####
 # aliases
