@@ -18,7 +18,18 @@ function cpsafe() {
 
 DOTFILESDIR=$(dirname $THISDIR)
 
+
+# ~/bin
+echo "\n##########" ; echo "Copying $DOTFILESDIR/bin files..."
+[ -d "$HOME/bin" ] || mkdir -p "$HOME/bin"
+for filepath in $DOTFILESDIR/bin/*; do
+    filename=`basename $filepath`
+    #echo "hi $filepath -> $filename"
+    cpsafe "$filepath" ~/bin/$filename
+done 
+
 # Midnight Commander:
+echo "\n##########" ; echo "Copying Midnight Commander files..."
 [ -d "$DOTFILESDIR/.config/mc" ] || mkdir -p "$DOTFILESDIR/.config/mc"
 [ -d "$DOTFILESDIR/.local/share/mc" ] || mkdir -p "$DOTFILESDIR/.config/mc"
 
@@ -34,9 +45,9 @@ for filepath in $DOTFILESDIR/.local/share/mc/*; do
 done 
 
 # misc apps, etc.
+echo "\n##########" ; echo "Copying misc files..."
 cpsafe "$DOTFILESDIR/.gitconfig" ~/.gitconfig
 cpsafe "$DOTFILESDIR/.bash_secrets" ~/.bash_secrets
-cpsafe "$DOTFILESDIR/github.sh" ~/github.sh
 
 # source common .<shell>rc stuff for bash and zsh:
 cpsafe "$DOTFILESDIR/.shrc" ~/.shrc
