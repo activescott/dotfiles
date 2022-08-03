@@ -1,5 +1,10 @@
+##################################################
 # regen with:
 # brew bundle dump --describe --force
+#
+# cleanup homebrew-installed shite with:
+# brew bundle --cleanup
+##################################################
 tap "homebrew/aliases"
 tap "homebrew/bundle"
 tap "homebrew/cask"
@@ -10,6 +15,8 @@ tap "linuxkit/linuxkit"
 brew "actionlint"
 # Official Amazon AWS command-line interface
 brew "awscli"
+# GNU File, Shell, and Text utilities
+brew "coreutils"
 # GNU Pretty Good Privacy (PGP) package
 brew "gnupg@2.2"
 # Open-source video transcoder available for Linux, Mac, and Windows
@@ -50,5 +57,7 @@ brew "yarn"
 cask "1password"
 # Open-source screen recorder built with web technology
 cask "kap"
+# Text expander
+cask "typeit4me"
 # Open-source code editor
 cask "visual-studio-code"
