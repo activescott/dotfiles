@@ -114,18 +114,7 @@ export GOPATH=$HOME/go # https://golang.org/cmd/go/#hdr-GOPATH_environment_varia
 [ $IS_MAC ] && export GOROOT="$(brew --prefix golang)/libexec" # only works if installed via homebrew
 #####
 
-##### DOCKER @ smartsheet
-#export GIT_ROOT=/home/${USER}/git
-#export GIT_APP_CORE=${GIT_ROOT}/app-core
-#export COMPOSE_PROJECT_NAME=smartsheet
-#export COMPOSE_FILE=${GIT_APP_CORE}/docker-compose.yml
-# ss aliases
-alias uber='cd $HOME/git/app-core/; ./src/main/build/build.sh -u'
-alias reset-uber='./src/main/vagrant/helperscripts/docker/resetAll.sh && uber'
-
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
 
-# for https://github.com/nvbn/thefuck
-eval "$(thefuck --alias)"

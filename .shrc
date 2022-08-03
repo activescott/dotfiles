@@ -92,3 +92,6 @@ fi
 export HISTSIZE=50
 export HISTFILESIZE=50
 export HISTIGNORE="bitcoind walletpassphrase*:./bitcoind walletpassphrase*:btc walletpassphrase*"
+
+# for https://github.com/nvbn/thefuck
+eval "$(thefuck --alias)"
