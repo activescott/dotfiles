@@ -57,6 +57,10 @@ brew "yarn"
 cask "1password"
 # Open-source screen recorder built with web technology
 cask "kap"
+# Audio tagger focusing on efficiency
+cask "kid3"
+# Instant messaging application focusing on security
+cask "signal"
 # Text expander
 cask "typeit4me"
 # Open-source code editor
