@@ -3,7 +3,7 @@ THISDIR=$(cd $(dirname "$0"); pwd) #this script's directory
 
 DATE=`date "+%Y-%m-%dT%H_%M_%S"`
 
-function cpsafe() {
+cpsafe() {
  SRC=$1
  DST=$2
  if [ -f "$SRC" ]; then 
@@ -17,7 +17,6 @@ function cpsafe() {
 }
 
 DOTFILESDIR=$(dirname $THISDIR)
-
 
 # ~/bin
 echo "\n##########" ; echo "Copying $DOTFILESDIR/bin files..."
