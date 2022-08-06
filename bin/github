@@ -6,16 +6,15 @@ die () {
 	exit 1
 }
 
-if ! [ `git rev-parse --is-inside-work-tree &> /dev/null` ] ; then
-	die 'Not a git repository.'
-fi
-# Some notes about why this so I don't forget:
-#    `egrep ^origin` to only open github if it is an origin (default) remote and it may not be the first remote in the list
-#    ` head -n1 is after the egrep so that we only output a single github http url
+# if this command returns a non-zero exit code, it's not git. 
+git rev-parse --is-inside-work-tree &> /dev/null || die 'Not a git repository.'
 
 git remote -v | egrep '^origin' | head -n1 | egrep '^origin\s+git\@github.com' > /dev/null
 if [ $? ]; then
 	# it's github:
+	# Some notes about why this so I don't forget:
+	#    `egrep ^origin` to only open github if it is an origin (default) remote and it may not be the first remote in the list
+	#    ` head -n1 is after the egrep so that we only output a single github http url
 	tmp=`git remote -v | egrep ^origin | head -n1 | perl -p -e 's/^origin\s+git\@github.com\:([^\/]+)\/(.+)\.git.*$/https:\/\/github.com\/$1\/$2/s'`
 	"$THISDIR/open" "$tmp"
 else 
