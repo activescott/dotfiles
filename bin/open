@@ -1,0 +1,14 @@
+#!/usr/bin/env sh
+
+die () {
+	echo >&2 "$@"
+	exit 1
+}
+
+if [ $(uname -s) = "Darwin" ]; then
+	/usr/bin/open $@
+elif [ $(uname -s) = "Linux" ]; then
+	xdg-open $@
+else
+	echo "Unknown system - open failed"
+fi
