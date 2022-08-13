@@ -66,6 +66,8 @@ brew "watch"
 brew "yarn"
 # Password manager that keeps all passwords secure behind one password
 cask "1password"
+# Web browser
+cask "firefox"
 # Open-source video transcoder
 cask "handbrake"
 # Open-source screen recorder built with web technology
