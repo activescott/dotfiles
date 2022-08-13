@@ -1,9 +1,12 @@
 ##################################################
+# install with
+# script/brewfile-install.sh (i.e. brew bundle install)
+# 
 # regen with:
-# brew bundle dump --describe --force
+# script/brewfile-generate.sh (i.e. brew bundle dump...)
 #
 # cleanup homebrew-installed shite with:
-# brew bundle --cleanup
+# script/brewfile-cleanup-apps.sh (i.e. brew bundle --cleanup)
 ##################################################
 tap "homebrew/aliases"
 tap "homebrew/bundle"
@@ -31,6 +34,8 @@ brew "jq"
 brew "kubernetes-cli"
 # Access DVDs as block devices without the decryption
 brew "libdvdcss"
+# Mac App Store command-line interface
+brew "mas"
 # Terminal-based visual file manager
 brew "midnight-commander"
 # Run a Kubernetes cluster locally
@@ -77,3 +82,5 @@ cask "signal"
 cask "typeit4me"
 # Open-source code editor
 cask "visual-studio-code"
+mas "Magnet", id: 441258766
+mas "NotePlan 3", id: 1505432629
