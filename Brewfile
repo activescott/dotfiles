@@ -15,6 +15,8 @@ tap "linuxkit/linuxkit"
 brew "actionlint"
 # Official Amazon AWS command-line interface
 brew "awscli"
+# Anti-virus software
+brew "clamav"
 # GNU File, Shell, and Text utilities
 brew "coreutils"
 # GNU Pretty Good Privacy (PGP) package
@@ -57,6 +59,8 @@ brew "watch"
 brew "yarn"
 # Password manager that keeps all passwords secure behind one password
 cask "1password"
+# Open-source video transcoder
+cask "handbrake"
 # Open-source screen recorder built with web technology
 cask "kap"
 # Audio tagger focusing on efficiency
