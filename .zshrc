@@ -14,6 +14,9 @@ autoload -Uz compinit
 compinit
 _comp_options+=(globdots)
 
+# rbenv:
+eval "$(rbenv init - zsh)"
+
 ##########
 # Prompt
 # https://voracious.dev/blog/a-guide-to-customizing-the-zsh-shell-prompt
