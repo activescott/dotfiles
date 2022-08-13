@@ -15,11 +15,7 @@
 	who = shortlog -s
 	serve = !git daemon --reuseaddr --verbose --base-path=. --export-all ./.git # https://git.wiki.kernel.org/index.php/Aliases#Serve_re
 
-[credential]
-	helper = /opt/boxen/bin/boxen-git-credential
-
 [core]
-	excludesfile = /opt/boxen/config/git/gitignore
 	autocrlf = input
 	editor = code --wait
 
