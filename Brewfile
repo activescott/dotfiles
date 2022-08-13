@@ -82,5 +82,6 @@ cask "signal"
 cask "typeit4me"
 # Open-source code editor
 cask "visual-studio-code"
+mas "1Password for Safari", id: 1569813296
 mas "Magnet", id: 441258766
 mas "NotePlan 3", id: 1505432629

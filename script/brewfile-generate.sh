@@ -1,9 +1,11 @@
 #!/usr/bin/env sh
 THISDIR=$(cd $(dirname "$0"); pwd) #this script's directory
 
-TEMP_BREWFILE=/tmp/Brewfile.tmp
+TEMP_BREWFILE=/tmp/Brewfile-$TSTAMP.tmp
 
-brew bundle dump -f --describe --all --file $TEMP_BREWFILE
+TSTAMP=$(date +"%Y-%m-%d-%H_%M_%S")
+
+brew bundle dump -f --all --describe --file $TEMP_BREWFILE
 
 cat << EOF > $THISDIR/../Brewfile
 ##################################################
