@@ -31,22 +31,24 @@ brew "jq"
 brew "kubernetes-cli"
 # Access DVDs as block devices without the decryption
 brew "libdvdcss"
-# Read the content info of a DVD
-brew "lsdvd"
 # Terminal-based visual file manager
 brew "midnight-commander"
 # Run a Kubernetes cluster locally
 brew "minikube"
-# Interpreted, interactive, object-oriented programming language
-brew "python@3.9"
 # Platform built on V8 to build network applications
 brew "node"
 # Middleware that lets you use OnlyKey as a hardware SSH/GPG device
 brew "onlykey-agent"
 # Show ps output as a tree
 brew "pstree"
+# Interpreted, interactive, object-oriented programming language
+brew "python@3.9"
+# Ruby version manager
+brew "rbenv"
 # Utility that provides fast incremental file transfer
 brew "rsync"
+# Powerful, clean, object-oriented scripting language
+brew "ruby"
 # Programmatically correct mistyped console commands
 brew "thefuck"
 # Display directories as trees (with optional color/HTML output)
@@ -65,6 +67,10 @@ cask "handbrake"
 cask "kap"
 # Audio tagger focusing on efficiency
 cask "kid3"
+# Video format converter (transcoder)
+cask "makemkv"
+# Home media player
+cask "plex"
 # Instant messaging application focusing on security
 cask "signal"
 # Text expander
