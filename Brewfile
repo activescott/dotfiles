@@ -14,6 +14,8 @@ tap "homebrew/cask"
 tap "homebrew/cask-versions"
 tap "homebrew/core"
 tap "linuxkit/linuxkit"
+# Better CD Encoder
+brew "abcde"
 # Static checker for GitHub Actions workflow files
 brew "actionlint"
 # Official Amazon AWS command-line interface
