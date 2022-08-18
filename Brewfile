@@ -72,6 +72,8 @@ cask "firefox"
 cask "handbrake"
 # Open-source screen recorder built with web technology
 cask "kap"
+# End-to-end encryption software
+cask "keybase"
 # Audio tagger focusing on efficiency
 cask "kid3"
 # Video format converter (transcoder)
