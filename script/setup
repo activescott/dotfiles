@@ -30,7 +30,7 @@ done
 # Midnight Commander:
 echo "\n##########" ; echo "Copying Midnight Commander files..."
 [ -d "$DOTFILESDIR/.config/mc" ] || mkdir -p "$DOTFILESDIR/.config/mc"
-[ -d "$DOTFILESDIR/.local/share/mc" ] || mkdir -p "$DOTFILESDIR/.config/mc"
+[ -d "$DOTFILESDIR/.local/share/mc" ] || mkdir -p "$DOTFILESDIR/.local/share/mc"
 
 for filepath in $DOTFILESDIR/.config/mc/*; do
     filename=`basename $filepath`

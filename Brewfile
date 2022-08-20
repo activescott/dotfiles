@@ -74,6 +74,8 @@ cask "firefox"
 cask "handbrake"
 # Open-source screen recorder built with web technology
 cask "kap"
+# End-to-end encryption software
+cask "keybase"
 # Audio tagger focusing on efficiency
 cask "kid3"
 # Video format converter (transcoder)
@@ -87,5 +89,6 @@ cask "typeit4me"
 # Open-source code editor
 cask "visual-studio-code"
 mas "1Password for Safari", id: 1569813296
+mas "Fresh", id: 1540622464
 mas "Magnet", id: 441258766
 mas "NotePlan 3", id: 1505432629
