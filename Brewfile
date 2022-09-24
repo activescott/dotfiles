@@ -14,6 +14,7 @@ tap "homebrew/cask"
 tap "homebrew/cask-versions"
 tap "homebrew/core"
 tap "linuxkit/linuxkit"
+tap "nrlquaker/createzap"
 # Better CD Encoder
 brew "abcde"
 # Static checker for GitHub Actions workflow files
@@ -56,6 +57,10 @@ brew "rbenv"
 brew "rsync"
 # Powerful, clean, object-oriented scripting language
 brew "ruby"
+# Add a public key to a remote machine's authorized_keys file
+brew "ssh-copy-id"
+# User interface to the TELNET protocol
+brew "telnet"
 # Programmatically correct mistyped console commands
 brew "thefuck"
 # Display directories as trees (with optional color/HTML output)
@@ -68,16 +73,32 @@ brew "watch"
 brew "yarn"
 # Password manager that keeps all passwords secure behind one password
 cask "1password"
+# Tool to flash OS images to SD cards & USB drives
+cask "balenaetcher"
+# API documentation browser and code snippet manager
+cask "dash5"
+# Matrix collaboration client
+cask "element"
 # Web browser
 cask "firefox"
+# Keep your recently modified files at hand and up-to-date
+cask "fresh"
 # Open-source video transcoder
 cask "handbrake"
+# Vector graphics editor
+cask "inkscape"
 # Open-source screen recorder built with web technology
 cask "kap"
 # End-to-end encryption software
 cask "keybase"
 # Audio tagger focusing on efficiency
 cask "kid3"
+# Tool to show what is persistently installed on the computer
+cask "knockknock"
+# Wallet desktop application to maintain multiple cryptocurrencies
+cask "ledger-live"
+# Open-source firewall to block unknown outgoing connections
+cask "lulu"
 # Video format converter (transcoder)
 cask "makemkv"
 # Home media player
@@ -89,6 +110,10 @@ cask "typeit4me"
 # Open-source code editor
 cask "visual-studio-code"
 mas "1Password for Safari", id: 1569813296
+mas "iMovie", id: 408981434
+mas "Keynote", id: 409183694
 mas "Magnet", id: 441258766
 mas "NotePlan 3", id: 1505432629
 mas "Numbers", id: 409203825
+mas "Pages", id: 409201541
+mas "Pixelmator", id: 407963104
