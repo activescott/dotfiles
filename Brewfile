@@ -25,6 +25,8 @@ brew "awscli"
 brew "clamav"
 # GNU File, Shell, and Text utilities
 brew "coreutils"
+# GitHub command-line tool
+brew "gh"
 # GNU Pretty Good Privacy (PGP) package
 brew "gnupg@2.2"
 # Open-source video transcoder available for Linux, Mac, and Windows
@@ -75,6 +77,8 @@ brew "yarn"
 cask "1password"
 # Tool to flash OS images to SD cards & USB drives
 cask "balenaetcher"
+# UI wireframing tool
+cask "balsamiq-wireframes"
 # API documentation browser and code snippet manager
 cask "dash5"
 # Matrix collaboration client
@@ -83,6 +87,8 @@ cask "element"
 cask "firefox"
 # Keep your recently modified files at hand and up-to-date
 cask "fresh"
+# Web browser
+cask "google-chrome"
 # Open-source video transcoder
 cask "handbrake"
 # Vector graphics editor
@@ -117,3 +123,4 @@ mas "NotePlan 3", id: 1505432629
 mas "Numbers", id: 409203825
 mas "Pages", id: 409201541
 mas "Pixelmator", id: 407963104
+mas "Slack", id: 803453959
