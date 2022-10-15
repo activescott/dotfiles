@@ -27,6 +27,14 @@ brew "clamav"
 brew "coreutils"
 # GitHub command-line tool
 brew "gh"
+# GNU Ubiquitous Intelligent Language for Extensions
+brew "guile"
+# Validating, recursive, caching DNS resolver
+brew "unbound"
+# GNU Transport Layer Security (TLS) Library
+brew "gnutls"
+# GNU Pretty Good Privacy (PGP) package
+brew "gnupg"
 # GNU Pretty Good Privacy (PGP) package
 brew "gnupg@2.2"
 # Open-source video transcoder available for Linux, Mac, and Windows
@@ -39,6 +47,8 @@ brew "jq"
 brew "kubernetes-cli"
 # Access DVDs as block devices without the decryption
 brew "libdvdcss"
+# Read the content info of a DVD
+brew "lsdvd"
 # Mac App Store command-line interface
 brew "mas"
 # Terminal-based visual file manager
@@ -49,16 +59,18 @@ brew "minikube"
 brew "node"
 # Middleware that lets you use OnlyKey as a hardware SSH/GPG device
 brew "onlykey-agent"
+# OpenBSD freely-licensed SSH connectivity tools
+brew "openssh"
 # Show ps output as a tree
 brew "pstree"
 # Interpreted, interactive, object-oriented programming language
 brew "python@3.9"
-# Ruby version manager
-brew "rbenv"
 # Utility that provides fast incremental file transfer
 brew "rsync"
 # Powerful, clean, object-oriented scripting language
 brew "ruby"
+# Install various Ruby versions and implementations
+brew "ruby-build"
 # Add a public key to a remote machine's authorized_keys file
 brew "ssh-copy-id"
 # User interface to the TELNET protocol
