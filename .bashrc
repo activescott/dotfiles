@@ -1,7 +1,6 @@
 #!/bin/bash
 
 #NOTE: .bash_profile vs .bashrc: http://www.joshstaiger.org/archives/2005/07/bash_profile_vs.html
-
 #NOTE: Some apps reload ~/.bashrc eventhough it has already been run in a parent environment (incorrectly on mac IMHO!),
 
 # If not running interactively, don't do anything
@@ -10,58 +9,12 @@
 # source common .<shell>rc stuff for bash and zsh:
 source ~/.shrc
 
-####
-# constants
-####
-
-
-#####
-# windows (cygwin) vs mac specific stuff
-#####
-# NOTE: Using /usr/LOCAL/bin per http://unix.stackexchange.com/questions/8656/usr-bin-vs-usr-local-bin-on-linux (not managed by distro)
-
-#####
-# rvm NONONONOO RVM!!! Use rbenv!
-#####
-# [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
-# /rvm
-
-
-#####
-# Bash Customization:
-#####
-# SIMPLE: PS1='\u@\h:\w \$ '
-# with color:
-	BLACK=30
-	BLUE=34
-	CYAN=36
-	GREEN=32
-	PURPLE=35
-	RED=31
-	WHITE=37
-	YELLOW=33
-	DEFAULTCOLOR=00
-
-	NORMAL=0
-	BOLD=1 # (It depends on the terminal emulator.)
-	DIM=2
-	UNDERLINE=4
-	BLINK=5 # (This does not work in most terminal emulators.)
-	INVERSECOLOR=7 # (This inverts the foreground and background colors, so you’ll see black text on a white background if the current text is white text on a black background.)
-	HIDDEN=8
-
-if [[ (-n ${IS_MC}) ]]
-then
-	# if midnight commander's subshell we append (mc) to prompt
-	PS1="\[\033[${DIM};${PURPLE}m\]\u@\h:\[\033[${DIM};${GREEN}m\]\w (mc) \$ \[\033[${NORMAL};${DEFAULTCOLOR}m\]"
-else
-	PS1="\[\033[${DIM};${PURPLE}m\]\u@\h:\[\033[${DIM};${GREEN}m\]\w \$ \[\033[${NORMAL};${DEFAULTCOLOR}m\]"
-fi
-
-
-##########
+##################################################
+# Bash-specific customizations:
+##################################################
+##################################################
 # PROMPT
-##########
+##################################################
 # SIMPLE: PS1='\u@\h:\w \$ '
 # with color:
 BLACK=30
@@ -89,32 +42,6 @@ then
 else
 	PS1="\[\033[${DIM};${PURPLE}m\]\u@\h:\[\033[${DIM};${GREEN}m\]\w \$ \[\033[${NORMAL};${DEFAULTCOLOR}m\]"
 fi
-
-#####
-# PATH variable OLD use .shrc
-#####
-#export PATH=~/.rbenv/shims:~/bin:/usr/local/bin:$PATH # standard path: (note rbenv shims in front as it needs to be in front: https://github.com/sstephenson/rbenv#understanding-shims)
-#export PATH=$PATH:/opt/local/bin:/opt/local/sbin # for macports (macports owns /opt/local/, see http://guide.macports.org/#installing.shell)
-#export MANPATH=/opt/local/share/man:$MANPATH # for macports+man
-#export SCALA_HOME=/usr/local/share/scala # http://www.scala-lang.org/documentation/getting-started.html
-#export PATH=$PATH:$SCALA_HOME/bin
-#export PATH=$PATH:/usr/local/opt/node/bin #node/npm
-#export PATH=$PATH:~/.npm-global/bin # requires setting npm config set prefix '~/.npm-global'; See https://docs.npmjs.com/getting-started/fixing-npm-permissions
-#export PATH="$JAVA_HOME/bin:$PATH"
-#export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
-#export PATH="$PATH:~/.config/yarn/global/node_modules/.bin" #yarn global installs
-#export PATH="$PATH:~/Library/Python/2.7/bin"
-# /PATH variable
-
-#####
-# other variables
-#####
-# golang:
-export GOPATH=$HOME/go # https://golang.org/cmd/go/#hdr-GOPATH_environment_variable
-[ $IS_MAC ] && export GOROOT="$(brew --prefix golang)/libexec" # only works if installed via homebrew
-#####
-
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
+##################################################
+# /PROMPT
+##################################################
