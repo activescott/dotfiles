@@ -15,6 +15,8 @@ tap "homebrew/cask-versions"
 tap "homebrew/core"
 tap "linuxkit/linuxkit"
 tap "nrlquaker/createzap"
+# Interpreted, interactive, object-oriented programming language
+brew "python@3.10"
 # Better CD Encoder
 brew "abcde"
 # Static checker for GitHub Actions workflow files
@@ -47,6 +49,8 @@ brew "jq"
 brew "kubernetes-cli"
 # Access DVDs as block devices without the decryption
 brew "libdvdcss"
+# Provides library functionality for FIDO U2F & FIDO 2.0, including USB
+brew "libfido2"
 # Read the content info of a DVD
 brew "lsdvd"
 # Mac App Store command-line interface
@@ -83,6 +87,8 @@ brew "tree"
 brew "wakeonlan"
 # Executes a program periodically, showing output fullscreen
 brew "watch"
+# Internet file retriever
+brew "wget"
 # JavaScript package manager
 brew "yarn"
 # Password manager that keeps all passwords secure behind one password
@@ -111,6 +117,8 @@ cask "kap"
 cask "keybase"
 # Audio tagger focusing on efficiency
 cask "kid3"
+# Interface for reading and syncing eBooks
+cask "kindle"
 # Tool to show what is persistently installed on the computer
 cask "knockknock"
 # Wallet desktop application to maintain multiple cryptocurrencies
@@ -123,15 +131,21 @@ cask "makemkv"
 cask "plex"
 # Instant messaging application focusing on security
 cask "signal"
+# Messaging app with a focus on speed and security
+cask "telegram"
+# Open-source BitTorrent client
+cask "transmission"
 # Text expander
 cask "typeit4me"
 # Open-source code editor
 cask "visual-studio-code"
+# Multimedia player
+cask "vlc"
 mas "1Password for Safari", id: 1569813296
 mas "iMovie", id: 408981434
 mas "Keynote", id: 409183694
 mas "Magnet", id: 441258766
-mas "NotePlan 3", id: 1505432629
+mas "NotePlan", id: 1505432629
 mas "Numbers", id: 409203825
 mas "Pages", id: 409201541
 mas "Pixelmator", id: 407963104
