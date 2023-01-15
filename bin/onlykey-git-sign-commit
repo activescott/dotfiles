@@ -1,0 +1,21 @@
+#!/usr/bin/env sh
+THISDIR=$(cd $(dirname "$0"); pwd)
+THISSCRIPT=$(basename $0)
+
+die () {
+	echo >&2 "ERROR: $@"
+	exit 1
+}
+
+
+cat <<- EOF > ~/src/activescott/dotfiles/THISSCRIPT.debug.log
+	##################################################
+	all arguments:
+	$@
+	##################################################
+EOF
+
+# note it passes args like this:
+# verify:
+# -Y verify -n git -f /Users/scott/.gitconfig.gpg.ssh.allowedSignersFile -I ################################################## -s /var/folders/kz/915hdnkj3xz0bxdxr9g_n_b40000gn/T//.git_vtag_tmpFiWCq1 -Overify-time=20230115113022
+ssh-keygen $@
