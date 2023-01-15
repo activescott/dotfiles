@@ -1,7 +1,14 @@
 [user]
 	email = scott@willeke.com
 	name = Scott Willeke
-	signingKey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIA8UwWAoWmmbgMeFbG531vlUHZju5cjw6B7oqS3Ni2V7 <ssh://git@github.com|ed25519>
+	# Generate user.signingkey like this (for onlykey): 
+	#  git config --global user.signingkey "key::$(onlykey-agent git@github.com)"
+	# NOTE: 
+	# > If gpg.format is set to ssh this can contain the path to either your private ssh key or the 
+	# > public key when ssh-agent is used. Alternatively it can contain a public key prefixed with 
+	# > key:: directly (e.g.: "key::ssh-rsa XXXXXX identifier"). The private key needs to be 
+	# > available via ssh-agent.
+	signingkey = key::ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIA8UwWAoWmmbgMeFbG531vlUHZju5cjw6B7oqS3Ni2V7 <ssh://git@github.com|ed25519>
 	
 [push]
 	default = simple
@@ -33,19 +40,14 @@
 	clean = git-lfs clean %f
 	smudge = git-lfs smudge %f
 	required = true
-
 [merge "npm-merge-driver"]
 	name = automatically merge npm lockfiles
 	driver = npx npm-merge-driver merge %A %O %B %P
-
 [init]
 	defaultBranch = main
-
 [pull]
 	ff = only
-
 [gpg]
 	format = ssh
-
-[gpg "ssh"]
-	program = /usr/local/bin/onlykey-agent
+[commit]
+	gpgsign = true
