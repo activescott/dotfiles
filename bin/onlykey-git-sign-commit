@@ -7,15 +7,33 @@ die () {
 	exit 1
 }
 
-
-cat <<- EOF > ~/src/activescott/dotfiles/THISSCRIPT.debug.log
-	##################################################
-	all arguments:
-	$@
-	##################################################
-EOF
+# FOR DEBUGGING
+#cat <<- EOF > ~/src/activescott/dotfiles/THISSCRIPT.debug.log
+#	##################################################
+#	all arguments:
+#	$@
+#	##################################################
+#EOF
 
 # note it passes args like this:
-# verify:
-# -Y verify -n git -f /Users/scott/.gitconfig.gpg.ssh.allowedSignersFile -I ################################################## -s /var/folders/kz/915hdnkj3xz0bxdxr9g_n_b40000gn/T//.git_vtag_tmpFiWCq1 -Overify-time=20230115113022
-ssh-keygen $@
+# for signing commit:
+#  -Y sign -n git -f /var/folders/kz/915hdnkj3xz0bxdxr9g_n_b40000gn/T//.git_signing_key_tmp3FePoQ /var/folders/kz/915hdnkj3xz0bxdxr9g_n_b40000gn/T//.git_signing_buffer_tmpFevuRt
+# verifying a signed commit:
+#  -Y verify -n git -f /Users/scott/.gitconfig.gpg.ssh.allowedSignersFile -I ################################################## -s /var/folders/kz/915hdnkj3xz0bxdxr9g_n_b40000gn/T//.git_vtag_tmpFiWCq1 -Overify-time=20230115113022
+
+
+# NOTE: verify works with this:
+#  ssh-keygen $@
+
+onlykey-agent git@github.com -- ssh-keygen $@
+OKRESULT=$?
+if [ $OKRESULT -eq 132 ]; then
+	# this is a crash on macOS that I see with onlykey-agent and I haven't dug into fix it so I ignore it
+	echo "\nWARN: Ignoring onlykey-agent crash (132)...\n"
+	exit 0
+elif [ $OKRESULT -ne 0 ]; then
+	echo "ERROR: onlykey-agent failed with unkonwn error: $OKRESULT"
+	exit $OKRESULT
+else
+	exit $OKRESULT
+fi
