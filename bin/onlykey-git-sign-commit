@@ -8,7 +8,7 @@ die () {
 }
 
 # FOR DEBUGGING
-#cat <<- EOF > ~/src/activescott/dotfiles/THISSCRIPT.debug.log
+#cat <<- EOF > ~/src/activescott/dotfiles/$THISSCRIPT.debug.log
 #	##################################################
 #	all arguments:
 #	$@
@@ -25,12 +25,33 @@ die () {
 # NOTE: verify works with this:
 #  ssh-keygen $@
 
-onlykey-agent git@github.com -- ssh-keygen $@
+TSTAMP=$(date +"%Y-%m-%d-%H_%M_%S")
+
+# we're running onlykey-agent but capturing stderr
+OKERR="$THISDIR/$THISSCRIPT.$TSTAMP.stderr.temp"
+onlykey-agent git@github.com -- ssh-keygen $@ \
+	2>$OKERR
+
 OKRESULT=$?
+
+# for debugging:
+echo "$OKRESULT" > ~/src/activescott/dotfiles/$THISSCRIPT.OKRESULT.debug.log
+echo "$OKERR" > ~/src/activescott/dotfiles/$THISSCRIPT.OKERR.debug.log
+
 if [ $OKRESULT -eq 132 ]; then
-	# this is a crash on macOS that I see with onlykey-agent and I haven't dug into fix it so I ignore it
-	echo "\nWARN: Ignoring onlykey-agent crash (132)...\n"
-	exit 0
+	# now print the stderr to stderr if there is anything:
+	OKERR_LINECOUNT=`wc -l < "$OKERR"`
+	if [ $OKERR_LINECOUNT -eq 2 ]; then
+		# a onlykey crash on macOS has exactly 2 lines in stderr and doesn't hurt anything: 
+		# error is described at https://github.com/trustcrypto/onlykey-agent/issues/38
+		# we ignore it and return success to git here so git will continue:
+		echo "WARN: Ignoring onlykey-agent crash 132..."
+		exit 0
+	else
+		# NOTE: one fix for a legitimate error is at https://github.com/onlykey/lib-agent/pull/9
+		echo "ERROR (onlykey-agent): $(cat $OKERR)" >&1
+		exit $OKRESULT
+	fi
 elif [ $OKRESULT -ne 0 ]; then
 	echo "ERROR: onlykey-agent failed with unkonwn error: $OKRESULT"
 	exit $OKRESULT
