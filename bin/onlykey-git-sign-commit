@@ -53,5 +53,7 @@ elif [ $OKRESULT -ne 0 ]; then
 	cat "$OKERR"
 	exit $OKRESULT
 else
+	# if the exit code is 0 we'll delete the stderr output
+	rm -f "$OKERR"
 	exit $OKRESULT
 fi
