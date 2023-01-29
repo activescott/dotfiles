@@ -16,32 +16,68 @@ source ~/.shrc
 # PROMPT
 ##################################################
 # SIMPLE: PS1='\u@\h:\w \$ '
-# with color:
-BLACK=30
-BLUE=34
-CYAN=36
-GREEN=32
-PURPLE=35
-RED=31
-WHITE=37
-YELLOW=33
-DEFAULTCOLOR=00
+# with color
+# ref: https://unix.stackexchange.com/a/720213/1862
+# Escape codes
+ESC_SEQ="\033["
+COL_RESET=$ESC_SEQ"0m"
 
-NORMAL=0
-BOLD=1 # (It depends on the terminal emulator.)
-DIM=2
-UNDERLINE=4
-BLINK=5 # (This does not work in most terminal emulators.)
-INVERSECOLOR=7 # (This inverts the foreground and background colors, so you’ll see black text on a white background if the current text is white text on a black background.)
-HIDDEN=8
+FG=$ESC_SEQ"38;5;"
+BG=$ESC_SEQ"48;5;"
 
-if [[ (-n ${IS_MC}) ]]
-then
-	# if midnight commander's subshell we append (mc) to prompt
-	PS1="\[\033[${DIM};${PURPLE}m\]\u@\h:\[\033[${DIM};${GREEN}m\]\w (mc) \$ \[\033[${NORMAL};${DEFAULTCOLOR}m\]"
-else
-	PS1="\[\033[${DIM};${PURPLE}m\]\u@\h:\[\033[${DIM};${GREEN}m\]\w \$ \[\033[${NORMAL};${DEFAULTCOLOR}m\]"
-fi
+# standard colors
+BLACK=$FG"0m"
+RED=$FG"1m"
+GREEN=$FG"2m"
+YELLOW=$FG"3m"
+BLUE=$FG"4m"
+MAGENTA=$FG"5m"
+CYAN=$FG"6m"
+WHITE=$FG"7m"
+
+# high intensity colors
+BRIGHT_BLACK=$FG"8m"; GRAY=$BRIGHT_BLACK; GREY=$GRAY
+BRIGHT_RED=$FG"9m"
+BRIGHT_GREEN=$FG"10m"
+BRIGHT_YELLOW=$FG"11m"
+BRIGHT_BLUE=$FG"12m"
+BRIGHT_MAGENTA=$FG"13m"
+BRIGHT_CYAN=$FG"14m"
+BRIGHT_WHITE=$FG"15m"
+
+# background standard colors
+BG_BLACK=$BG"0m"
+BG_RED=$BG"1m"
+BG_GREEN=$BG"2m"
+BG_YELLOW=$BG"3m"
+BG_BLUE=$BG"4m"
+BG_MAGENTA=$BG"5m"
+BG_CYAN=$BG"6m"
+BG_WHITE=$BG"7m"
+
+# background high intensity colors
+BG_BRIGHT_BLACK=$BG"8m"; BG_GRAY=$BG_BRIGHT_BLACK; BG_GREY=$BG_GRAY
+BG_BRIGHT_RED=$BG"9m"
+BG_BRIGHT_GREEN=$BG"10m"
+BG_BRIGHT_YELLOW=$BG"11m"
+BG_BRIGHT_BLUE=$BG"12m"
+BG_BRIGHT_MAGENTA=$BG"13m"
+BG_BRIGHT_CYAN=$BG"14m"
+BG_BRIGHT_WHITE=$BG"15m"
+
+
+# for git helpers (from https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh)
+
+source "${PWD}/lib/git-prompt.sh"
+
+P_GIT_BRANCH=`__git_ps1 "${RED}(%s)${COL_RESET}"`
+
+P_USER='\u'
+P_HOST='\h'
+P_PATH='\w'
+
+#WORKS: PROMPT_COMMAND='__git_ps1 "\u@\h:\w" "\\\$ "'
+PROMPT_COMMAND="__git_ps1 \"${MAGENTA}\u@\h:${GREEN}\w${RED}\" \" ${COL_RESET}\\\$ \""
 ##################################################
 # /PROMPT
 ##################################################
