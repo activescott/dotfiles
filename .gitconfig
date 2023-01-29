@@ -53,6 +53,7 @@
 	gpgsign = true
 
 [gpg "ssh"]
-	# these paths are relative to this file
-	program = bin/onlykey-git-sign-commit
-	allowedSignersFile = .gitconfig.gpg.ssh.allowedSignersFile
+	# git docs say that ~/ should work here but it doesn't :/ https://git-scm.com/docs/git-config#Documentation/git-config.txt-pathname
+	# TODO: so need to either submit a patch to git or generate this file in the ~/scripts/setup
+	program = /Users/scott/bin/onlykey-git-sign-commit
+	allowedSignersFile = /Users/scott/.gitconfig.gpg.ssh.allowedSignersFile
