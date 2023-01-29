@@ -34,10 +34,6 @@ onlykey-agent git@github.com -- ssh-keygen $@ \
 
 OKRESULT=$?
 
-# for debugging:
-echo "$OKRESULT" > ~/src/activescott/dotfiles/$THISSCRIPT.OKRESULT.debug.log
-echo "$OKERR" > ~/src/activescott/dotfiles/$THISSCRIPT.OKERR.debug.log
-
 if [ $OKRESULT -eq 132 ]; then
 	# now print the stderr to stderr if there is anything:
 	OKERR_LINECOUNT=`wc -l < "$OKERR"`
@@ -53,7 +49,8 @@ if [ $OKRESULT -eq 132 ]; then
 		exit $OKRESULT
 	fi
 elif [ $OKRESULT -ne 0 ]; then
-	echo "ERROR: onlykey-agent failed with unkonwn error: $OKRESULT"
+	echo "ERROR: onlykey-agent failed with unkonwn error code ${OKRESULT}. Detailed error: follows:"
+	cat "$OKERR"
 	exit $OKRESULT
 else
 	exit $OKRESULT

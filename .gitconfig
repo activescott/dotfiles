@@ -53,5 +53,6 @@
 	gpgsign = true
 
 [gpg "ssh"]
-	program = /Users/scott/bin/onlykey-git-sign-commit
-	allowedSignersFile = /Users/scott/.gitconfig.gpg.ssh.allowedSignersFile
+	# these paths are relative to this file
+	program = bin/onlykey-git-sign-commit
+	allowedSignersFile = .gitconfig.gpg.ssh.allowedSignersFile
