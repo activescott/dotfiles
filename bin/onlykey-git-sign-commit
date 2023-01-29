@@ -42,6 +42,8 @@ if [ $OKRESULT -eq 132 ]; then
 		# error is described at https://github.com/trustcrypto/onlykey-agent/issues/38
 		# we ignore it and return success to git here so git will continue:
 		echo "WARN: Ignoring onlykey-agent crash 132..."
+		# since exit code is successful-ish we'll delete the stderr output
+		rm -f "$OKERR"
 		exit 0
 	else
 		# NOTE: one fix for a legitimate error is at https://github.com/onlykey/lib-agent/pull/9
