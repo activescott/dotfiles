@@ -27,6 +27,15 @@ for filepath in $DOTFILESDIR/bin/*; do
     cpsafe "$filepath" ~/bin/$filename
 done 
 
+# ~/lib
+echo "\n##########" ; echo "Copying $DOTFILESDIR/lib files..."
+[ -d "$HOME/lib" ] || mkdir -p "$HOME/lib"
+for filepath in $DOTFILESDIR/lib/*; do
+    filename=`basename $filepath`
+    #echo "hi $filepath -> $filename"
+    cpsafe "$filepath" ~/lib/$filename
+done
+
 # Midnight Commander:
 echo "\n##########" ; echo "Copying Midnight Commander files..."
 [ -d "$DOTFILESDIR/.config/mc" ] || mkdir -p "$DOTFILESDIR/.config/mc"
