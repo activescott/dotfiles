@@ -15,20 +15,24 @@ compinit
 _comp_options+=(globdots)
 
 # rbenv:
-eval "$(rbenv init - zsh)"
+which -s rbenv && eval "$(rbenv init - zsh)"
 
 ##########
 # Prompt
+# https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh
+# https://digitalfortress.tech/tutorial/setting-up-git-prompt-step-by-step/
 # https://voracious.dev/blog/a-guide-to-customizing-the-zsh-shell-prompt
 # https://zsh.sourceforge.io/Doc/Release/Prompt-Expansion.html
-setopt PROMPT_SUBST
+if [ -f ~/lib/git-prompt.sh ]; then
+  GIT_PS1_SHOWDIRTYSTATE=true
+  #GIT_PS1_SHOWSTASHSTATE=true
+  #GIT_PS1_SHOWUNTRACKEDFILES=true
+  #GIT_PS1_SHOWUPSTREAM="auto"
+  #GIT_PS1_HIDE_IF_PWD_IGNORED=true
+  GIT_PS1_SHOWCOLORHINTS=true
+  . ~/lib/git-prompt.sh
+fi
 
-#autoload -Uz vcs_info # enable vcs_infoprecmd () { vcs_info } # always load before displaying the prompt
-#PS1='%n@%m %~ $ '
-autoload -Uz vcs_info # enable vcs_info
-precmd () { vcs_info } # always load before displaying the prompt
-zstyle ':vcs_info:*' formats '(%F{red}%b%f)' # git(main)
-#zstyle ':vcs_info:*' formats ' (%b)' # git(main)
-PS1='%F{magenta}%n@%m%f %F{green}%~%f ${vcs_info_msg_0_} $ ' # david@macbook /tmp/repo (main) $
+precmd () { __git_ps1 "%F{magenta}%n@%m%f" ": %~$ " " (%s)" }
 
 ##########

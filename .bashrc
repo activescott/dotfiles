@@ -65,10 +65,21 @@ BG_BRIGHT_MAGENTA=$BG"13m"
 BG_BRIGHT_CYAN=$BG"14m"
 BG_BRIGHT_WHITE=$BG"15m"
 
-
-# for git helpers (from https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh)
-
-source "${PWD}/lib/git-prompt.sh"
+##########
+# Prompt
+# https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh
+# https://digitalfortress.tech/tutorial/setting-up-git-prompt-step-by-step/
+# https://voracious.dev/blog/a-guide-to-customizing-the-zsh-shell-prompt
+# https://zsh.sourceforge.io/Doc/Release/Prompt-Expansion.html
+if [ -f ~/lib/git-prompt.sh ]; then
+  GIT_PS1_SHOWDIRTYSTATE=true
+  #GIT_PS1_SHOWSTASHSTATE=true
+  #GIT_PS1_SHOWUNTRACKEDFILES=true
+  #GIT_PS1_SHOWUPSTREAM="auto"
+  #GIT_PS1_HIDE_IF_PWD_IGNORED=true
+  GIT_PS1_SHOWCOLORHINTS=true
+  . ~/lib/git-prompt.sh
+fi
 
 P_GIT_BRANCH=`__git_ps1 "${RED}(%s)${COL_RESET}"`
 
@@ -76,8 +87,8 @@ P_USER='\u'
 P_HOST='\h'
 P_PATH='\w'
 
-#WORKS: PROMPT_COMMAND='__git_ps1 "\u@\h:\w" "\\\$ "'
-PROMPT_COMMAND="__git_ps1 \"${MAGENTA}\u@\h:${GREEN}\w${RED}\" \" ${COL_RESET}\\\$ \""
+PROMPT_COMMAND='__git_ps1 "${MAGENTA}\u@\h${COL_RESET}" ": \w$ " " (%s)"'
+
 ##################################################
 # /PROMPT
 ##################################################
