@@ -1,10 +1,12 @@
 #!/usr/bin/env sh
 THISDIR=$(cd $(dirname "$0"); pwd)
+THISSCRIPT=$(basename "$0")
 
 die () {
 	echo >&2 "ERROR: $@"
 	exit 1
 }
+
 
 if [ -z "$1" ]; then
 	die "you must specify a user@host value as first argument"
@@ -12,17 +14,18 @@ else
 	# we want something like: onlykey-agent scott@bitbox.activescott.com | ssh scott@bitbox.activescott.com "mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys"
 	# first ensure that this does not return an error:
 	TSTAMP=$(date +"%Y-%m-%d-%H_%M_%S")
-	TEMP_FILE="${THISDIR}/oksshcopyid${TSTAMP}.tmp"
+	TEMP_FILE="${THISDIR}/${THISSCRIPT}-${TSTAMP}.tmp"
 	HOST_SPEC=$1
 	onlykey-agent "$HOST_SPEC" > $TEMP_FILE
 	RET=$?
-	rm -rf "$TEMP_FILE"
 	if [ $RET -ne 0 ]; then
+		rm -rf "$TEMP_FILE"
 		die "onlykey-agent failed to provide the public key"
 	else
 		echo "Copying the public key to '$HOST_SPEC'..."
 		cat "$TEMP_FILE" | ssh "$HOST_SPEC" "mkdir -p ~/.ssh && cat >> ~/.ssh/authorized_keys"
+		rm -rf "$TEMP_FILE"
 		echo "Copying the public key to '$HOST_SPEC' complete!"
 		echo "Now you should be able to use 'okssh $HOST_SPEC' to connect to the remote host without a password."
-	fi	
+	fi
 fi

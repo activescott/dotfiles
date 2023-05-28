@@ -15,7 +15,7 @@ die () {
 #	##################################################
 #EOF
 
-# note it passes args like this:
+# note git passes args like this:
 # for signing commit:
 #  -Y sign -n git -f /var/folders/kz/915hdnkj3xz0bxdxr9g_n_b40000gn/T//.git_signing_key_tmp3FePoQ /var/folders/kz/915hdnkj3xz0bxdxr9g_n_b40000gn/T//.git_signing_buffer_tmpFevuRt
 # verifying a signed commit:
