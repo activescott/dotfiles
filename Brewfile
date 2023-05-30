@@ -79,8 +79,6 @@ brew "ruby-build"
 brew "ssh-copy-id"
 # User interface to the TELNET protocol
 brew "telnet"
-# Programmatically correct mistyped console commands
-brew "thefuck"
 # Display directories as trees (with optional color/HTML output)
 brew "tree"
 # Sends magic packets to wake up network-devices
