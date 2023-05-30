@@ -99,3 +99,13 @@ export HISTIGNORE="bitcoind walletpassphrase*:./bitcoind walletpassphrase*:btc w
 
 # for https://github.com/nvbn/thefuck
 eval "$(thefuck --alias)"
+
+function ghpr() {
+	# will list the PRs in the current repo, giving you a preview and selecting one will checkout that PR/branch for you
+  GH_FORCE_TTY=100% gh pr list | fzf --ansi --preview 'GH_FORCE_TTY=100% gh pr view {1}' --preview-window down --header-lines 3 | awk '{print $1}' | xargs gh pr checkout
+}
+
+function ghdev() {
+	# will list issues in the current repo with preview and selecting one will create and checkout a branch named after the issue, it also links the branch to the PR so github can automate ticket status.
+  GH_FORCE_TTY=100% gh issue list | fzf --ansi --preview 'GH_FORCE_TTY=100% gh issue view {1}' --preview-window down --header-lines 3 | awk '{print $1}' | sed 's/^#//g' | xargs gh issue develop -c
+}
