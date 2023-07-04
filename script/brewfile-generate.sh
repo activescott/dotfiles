@@ -5,7 +5,7 @@ TEMP_BREWFILE=/tmp/Brewfile-$TSTAMP.tmp
 
 TSTAMP=$(date +"%Y-%m-%d-%H_%M_%S")
 
-brew bundle dump -f --all --describe --file $TEMP_BREWFILE
+brew bundle dump -f --formula --cask --tap --mas --describe --file $TEMP_BREWFILE
 
 cat << EOF > $THISDIR/../Brewfile
 ##################################################
