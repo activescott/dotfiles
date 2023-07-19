@@ -31,6 +31,7 @@ echo "current shell is $SHELL"
 # NOTE: About paths: http://serverfault.com/a/146142/28798 (i.e. drop files /etc/paths.d $PATH only works in terminal )
 [ $IS_LINUX ] && export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH" # homebrew bin folder on linux
 export PATH="/usr/local/sbin:$PATH" # Homebrew's "sbin" on mac?
+export PATH="$PATH:/usr/sbin" # non-essential system binaries
 export PATH="$HOME/bin:$PATH" # my user-local bin folder
 
 #####
