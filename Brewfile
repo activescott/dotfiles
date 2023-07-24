@@ -49,7 +49,7 @@ brew "mas"
 # Run a Kubernetes cluster locally
 brew "minikube"
 # Platform built on V8 to build network applications
-brew "node"
+brew "node@18", link: true
 # Middleware that lets you use OnlyKey as a hardware SSH/GPG device
 brew "onlykey-agent"
 # Show ps output as a tree
