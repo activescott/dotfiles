@@ -10,9 +10,7 @@
 ##################################################
 tap "homebrew/aliases"
 tap "homebrew/bundle"
-tap "homebrew/cask"
 tap "homebrew/cask-versions"
-tap "homebrew/core"
 tap "nrlquaker/createzap"
 # Static checker for GitHub Actions workflow files
 brew "actionlint"
@@ -22,14 +20,16 @@ brew "python@3.11"
 brew "awscli"
 # Anti-virus software
 brew "clamav"
-# Secure runtime for JavaScript and TypeScript
-brew "deno"
+# Make creating custom firmwares for ESP32/ESP8266 super easy
+brew "esphome"
 # GitHub command-line tool
 brew "gh"
+# Distributed revision control system
+brew "git"
+# Git extension for versioning large files
+brew "git-lfs"
 # GNU Pretty Good Privacy (PGP) package
 brew "gnupg"
-# Open-source video transcoder available for Linux, Mac, and Windows
-brew "handbrake"
 # Kubernetes package manager
 brew "helm"
 # Lightweight and flexible command-line JSON processor
@@ -38,8 +38,6 @@ brew "jq"
 brew "k9s"
 # Kubernetes command-line interface
 brew "kubernetes-cli"
-# Template-free customization of Kubernetes YAML manifests
-brew "kustomize"
 # Access DVDs as block devices without the decryption
 brew "libdvdcss"
 # Read the content info of a DVD
@@ -49,11 +47,9 @@ brew "mas"
 # Run a Kubernetes cluster locally
 brew "minikube"
 # Platform built on V8 to build network applications
-brew "node@18", link: true
+brew "node"
 # Middleware that lets you use OnlyKey as a hardware SSH/GPG device
 brew "onlykey-agent"
-# Show ps output as a tree
-brew "pstree"
 # Utility that provides fast incremental file transfer
 brew "rsync"
 # Add a public key to a remote machine's authorized_keys file
@@ -66,6 +62,10 @@ brew "tree"
 brew "wakeonlan"
 # Executes a program periodically, showing output fullscreen
 brew "watch"
+# Watch files and take action when they change
+brew "watchman"
+# Internet file retriever
+brew "wget"
 # JavaScript package manager
 brew "yarn"
 # Process YAML, JSON, XML, CSV and properties documents from the CLI
@@ -78,6 +78,12 @@ cask "balenaetcher"
 cask "balsamiq-wireframes"
 # API documentation browser and code snippet manager
 cask "dash5"
+# Voice and text chat software
+cask "discord"
+# App to build and share containerized applications and microservices
+cask "docker"
+# Client for the Dropbox cloud storage service
+cask "dropbox"
 # Matrix collaboration client
 cask "element"
 # Web browser
@@ -90,6 +96,8 @@ cask "fresh"
 cask "handbrake"
 # Vector graphics editor
 cask "inkscape"
+# Open-source screen recorder built with web technology
+cask "kap"
 # End-to-end encryption software
 cask "keybase"
 # Audio tagger focusing on efficiency
@@ -108,6 +116,8 @@ cask "makemkv"
 cask "notunes"
 # Home media player
 cask "plex"
+# Music player focusing on visuals
+cask "plexamp"
 # QuickLook plug-in that renders source code with syntax highlighting
 cask "qlcolorcode"
 # Display image info and preview unsupported formats in QuickLook
@@ -135,6 +145,7 @@ cask "visual-studio-code"
 # Multimedia player
 cask "vlc"
 mas "1Password for Safari", id: 1569813296
+mas "Guidance", id: 412759995
 mas "iMovie", id: 408981434
 mas "Keynote", id: 409183694
 mas "Magnet", id: 441258766
@@ -143,3 +154,4 @@ mas "Numbers", id: 409203825
 mas "Pages", id: 409201541
 mas "Pixelmator", id: 407963104
 mas "Slack", id: 803453959
+mas "Xcode", id: 497799835
