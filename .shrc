@@ -35,9 +35,6 @@ export PATH="/usr/local/sbin:$PATH" # Homebrew's "sbin" on mac?
 export PATH="$PATH:/Users/scott/Library/Python/3.11/bin" # python 3.11 pip3 install --user directory on mac
 export PATH="$PATH:/usr/sbin" # non-essential system binaries
 export PATH="$HOME/bin:$PATH" # my user-local bin folder
-# for windows development with .NET SDK see https://dotnet.microsoft.com/en-us/download/dotnet/sdk-for-vs-code
-export DOTNET_ROOT=$HOME/dotnet
-export PATH=$PATH:$HOME/dotnet
 
 # https://developer.1password.com/docs/ssh/get-started/#step-4-configure-your-ssh-or-git-client
 export SSH_AUTH_SOCK=~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
