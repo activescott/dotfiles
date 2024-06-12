@@ -8,7 +8,12 @@
 	# > public key when ssh-agent is used. Alternatively it can contain a public key prefixed with 
 	# > key:: directly (e.g.: "key::ssh-rsa XXXXXX identifier"). The private key needs to be 
 	# > available via ssh-agent.
-	signingkey = key::ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIA8UwWAoWmmbgMeFbG531vlUHZju5cjw6B7oqS3Ni2V7 <ssh://git@github.com|ed25519>
+	
+	# OnlyKey:
+	#signingkey = key::ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIA8UwWAoWmmbgMeFbG531vlUHZju5cjw6B7oqS3Ni2V7 <ssh://git@github.com|ed25519>
+
+	# 1p:
+	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAXMo4T9BKVrQVZX3oeGxTbF2ItHc+4G6V87gyXFA5gw
 	
 [push]
 	default = simple
@@ -55,7 +60,14 @@
 	gpgsign = true
 
 [gpg "ssh"]
+	allowedSignersFile = /Users/scott/.gitconfig.gpg.ssh.allowedSignersFile
+	
 	# git docs say that ~/ should work here but it doesn't :/ https://git-scm.com/docs/git-config#Documentation/git-config.txt-pathname
 	# TODO: so need to either submit a patch to git or generate this file in the ~/scripts/setup
-	program = /Users/scott/bin/onlykey-git-sign-commit
-	allowedSignersFile = /Users/scott/.gitconfig.gpg.ssh.allowedSignersFile
+	
+	# OnlyKey:
+	#program = /Users/scott/bin/onlykey-git-sign-commit	
+	# 1p:
+	program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
+
+	
