@@ -57,6 +57,7 @@ echo "\n##########" ; echo "Copying misc files..."
 cpsafe "$DOTFILESDIR/.gitconfig" ~/.gitconfig
 cpsafe "$DOTFILESDIR/.gitconfig.gpg.ssh.allowedSignersFile" ~/.gitconfig.gpg.ssh.allowedSignersFile
 cpsafe "$DOTFILESDIR/.bash_secrets" ~/.bash_secrets
+cpsafe "$DOTFILESDIR/.ssh/config" ~/.ssh.config
 
 # source common .<shell>rc stuff for bash and zsh:
 cpsafe "$DOTFILESDIR/.shrc" ~/.shrc
