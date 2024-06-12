@@ -10,7 +10,6 @@
 ##################################################
 tap "homebrew/aliases"
 tap "homebrew/bundle"
-tap "homebrew/cask-versions"
 tap "nrlquaker/createzap"
 # Static checker for GitHub Actions workflow files
 brew "actionlint"
@@ -77,10 +76,10 @@ cask "balenaetcher"
 # UI wireframing tool
 cask "balsamiq-wireframes"
 # API documentation browser and code snippet manager
-cask "dash5"
+cask "dash"
 # Voice and text chat software
 cask "discord"
-# App to build and share containerized applications and microservices
+# App to build and share containerised applications and microservices
 cask "docker"
 # Client for the Dropbox cloud storage service
 cask "dropbox"
@@ -98,8 +97,6 @@ cask "handbrake"
 cask "inkscape"
 # Open-source screen recorder built with web technology
 cask "kap"
-# End-to-end encryption software
-cask "keybase"
 # Audio tagger focusing on efficiency
 cask "kid3"
 # Interface for reading and syncing eBooks
@@ -118,17 +115,17 @@ cask "notunes"
 cask "plex"
 # Music player focusing on visuals
 cask "plexamp"
-# QuickLook plug-in that renders source code with syntax highlighting
+# Quick Look plug-in that renders source code with syntax highlighting
 cask "qlcolorcode"
 # Display image info and preview unsupported formats in QuickLook
 cask "qlimagesize"
-# QuickLook generator for Markdown files
+# Quick Look generator for Markdown files
 cask "qlmarkdown"
-# QuickLook plugin for plaintext files without an extension
+# Quick Look plugin for plaintext files without an extension
 cask "qlstephen"
 # Thumbnails, static previews, cover art and metadata for video files
 cask "qlvideo"
-# QuickLook plugin for JSON files
+# Quick Look plugin for JSON files
 cask "quicklook-json"
 # Instant messaging application focusing on security
 cask "signal"
@@ -138,8 +135,6 @@ cask "telegram"
 cask "transmission"
 # Text expander
 cask "typeit4me"
-# Virtualizer for x86 hardware
-cask "virtualbox"
 # Open-source code editor
 cask "visual-studio-code"
 # Multimedia player
