@@ -19,7 +19,7 @@ cpsafe() {
 DOTFILESDIR=$(dirname $THISDIR)
 
 # ~/bin
-echo "\n##########" ; echo "Copying $DOTFILESDIR/bin files..."
+echo "\n########## Copying $DOTFILESDIR/bin files... ##########"
 [ -d "$HOME/bin" ] || mkdir -p "$HOME/bin"
 for filepath in $DOTFILESDIR/bin/*; do
     filename=`basename $filepath`
@@ -28,7 +28,7 @@ for filepath in $DOTFILESDIR/bin/*; do
 done 
 
 # ~/lib
-echo "\n##########" ; echo "Copying $DOTFILESDIR/lib files..."
+echo "\n########## Copying $DOTFILESDIR/lib files... ##########"
 [ -d "$HOME/lib" ] || mkdir -p "$HOME/lib"
 for filepath in $DOTFILESDIR/lib/*; do
     filename=`basename $filepath`
@@ -37,7 +37,7 @@ for filepath in $DOTFILESDIR/lib/*; do
 done
 
 # Midnight Commander:
-echo "\n##########" ; echo "Copying Midnight Commander files..."
+echo "\n########## Copying Midnight Commander files... ##########"
 [ -d "$DOTFILESDIR/.config/mc" ] || mkdir -p "$DOTFILESDIR/.config/mc"
 [ -d "$DOTFILESDIR/.local/share/mc" ] || mkdir -p "$DOTFILESDIR/.local/share/mc"
 
@@ -53,11 +53,8 @@ for filepath in $DOTFILESDIR/.local/share/mc/*; do
 done 
 
 # misc apps, etc.
-echo "\n##########" ; echo "Copying misc files..."
-cpsafe "$DOTFILESDIR/.gitconfig" ~/.gitconfig
-cpsafe "$DOTFILESDIR/.gitconfig.gpg.ssh.allowedSignersFile" ~/.gitconfig.gpg.ssh.allowedSignersFile
+echo "\n########## Copying misc files... ##########"
 cpsafe "$DOTFILESDIR/.bash_secrets" ~/.bash_secrets
-cpsafe "$DOTFILESDIR/.ssh/config" ~/.ssh.config
 
 # source common .<shell>rc stuff for bash and zsh:
 cpsafe "$DOTFILESDIR/.shrc" ~/.shrc
@@ -70,3 +67,11 @@ cpsafe "$DOTFILESDIR/.bash_profile" ~/.bash_profile
 cpsafe "$DOTFILESDIR/.zshrc" ~/.zshrc
 cpsafe "$DOTFILESDIR/.zprofile" ~/.zprofile
 
+
+echo "\n########## Copying SSH & git config files... ##########"
+[ -d "~/.ssh/config" ] || mkdir -p "~/.ssh/config"
+cpsafe "$DOTFILESDIR/.ssh/config" ~/.ssh/config
+
+echo "\n########## Copying git config files... ##########"
+cpsafe "$DOTFILESDIR/.gitconfig" ~/.gitconfig
+cpsafe "$DOTFILESDIR/.gitconfig.gpg.ssh.allowedSignersFile" ~/.gitconfig.gpg.ssh.allowedSignersFile
