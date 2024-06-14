@@ -61,6 +61,7 @@ alias okgit="onlykey-agent git@github.com -- git"
 alias okssh="onlykey-agent --connect"
 
 # code is a function to support passing the arguments; also use CODE_PATH to set EDITOR (which git uses for merge comments)
+# For it to work, you have to run the "Shell Command: Install 'code' command in PATH" command from the command palette in VS Code. See https://code.visualstudio.com/docs/setup/mac#_launching-from-the-command-line
 if [ $IS_LINUX ]
 then
 	# via deb/apt-get goes here

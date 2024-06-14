@@ -39,6 +39,8 @@ brew "k9s"
 brew "kubernetes-cli"
 # Access DVDs as block devices without the decryption
 brew "libdvdcss"
+# Access large language models from the command-line
+brew "llm"
 # Read the content info of a DVD
 brew "lsdvd"
 # Mac App Store command-line interface
@@ -139,6 +141,8 @@ cask "typeit4me"
 cask "visual-studio-code"
 # Multimedia player
 cask "vlc"
+# Video communication and virtual meeting platform
+cask "zoom"
 mas "1Password for Safari", id: 1569813296
 mas "Guidance", id: 412759995
 mas "iMovie", id: 408981434
