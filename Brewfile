@@ -141,6 +141,8 @@ cask "typeit4me"
 cask "visual-studio-code"
 # Multimedia player
 cask "vlc"
+# Create, manage, and run virtual machines
+cask "vmware-fusion"
 # Video communication and virtual meeting platform
 cask "zoom"
 mas "1Password for Safari", id: 1569813296
