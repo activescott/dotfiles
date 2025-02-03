@@ -11,14 +11,23 @@
 tap "homebrew/aliases"
 tap "homebrew/bundle"
 tap "nrlquaker/createzap"
+tap "paulbailey/dvdid"
 # Static checker for GitHub Actions workflow files
 brew "actionlint"
+# Tool for generating GNU Standards-compliant Makefiles
+brew "automake"
+# Cryptographic recipes and primitives for Python
+brew "cryptography"
 # Interpreted, interactive, object-oriented programming language
-brew "python@3.11"
+brew "python@3.12"
 # Official Amazon AWS command-line interface
 brew "awscli"
+# Malware identification and classification tool
+brew "yara"
 # Anti-virus software
 brew "clamav"
+# Easily download, build, install, upgrade, and uninstall Python packages
+brew "python-setuptools"
 # Make creating custom firmwares for ESP32/ESP8266 super easy
 brew "esphome"
 # GitHub command-line tool
@@ -27,10 +36,10 @@ brew "gh"
 brew "git"
 # Git extension for versioning large files
 brew "git-lfs"
-# GNU Pretty Good Privacy (PGP) package
-brew "gnupg"
 # Kubernetes package manager
 brew "helm"
+# Improved top (interactive process viewer)
+brew "htop"
 # Lightweight and flexible command-line JSON processor
 brew "jq"
 # Kubernetes CLI To Manage Your Clusters In Style!
@@ -48,9 +57,17 @@ brew "mas"
 # Run a Kubernetes cluster locally
 brew "minikube"
 # Platform built on V8 to build network applications
-brew "node"
-# Middleware that lets you use OnlyKey as a hardware SSH/GPG device
-brew "onlykey-agent"
+brew "node@20"
+# Open-source automated testing/benchmarking software
+brew "phoronix-test-suite"
+# Object-relational database system
+brew "postgresql@14"
+# Object-relational database system
+brew "postgresql@16"
+# Interpreted, interactive, object-oriented programming language
+brew "python@3.10"
+# Interpreted, interactive, object-oriented programming language
+brew "python@3.11"
 # Utility that provides fast incremental file transfer
 brew "rsync"
 # Add a public key to a remote machine's authorized_keys file
@@ -59,24 +76,24 @@ brew "ssh-copy-id"
 brew "tmux"
 # Display directories as trees (with optional color/HTML output)
 brew "tree"
-# Sends magic packets to wake up network-devices
-brew "wakeonlan"
 # Executes a program periodically, showing output fullscreen
 brew "watch"
-# Watch files and take action when they change
-brew "watchman"
 # Internet file retriever
 brew "wget"
-# JavaScript package manager
-brew "yarn"
 # Process YAML, JSON, XML, CSV and properties documents from the CLI
 brew "yq"
 # Password manager that keeps all passwords secure behind one password
 cask "1password"
+# Chromium based browser
+cask "arc"
 # Tool to flash OS images to SD cards & USB drives
 cask "balenaetcher"
 # UI wireframing tool
 cask "balsamiq-wireframes"
+# Free and open-source web browser
+cask "chromium"
+# Screen capturing tool
+cask "cleanshot"
 # API documentation browser and code snippet manager
 cask "dash"
 # Voice and text chat software
@@ -85,14 +102,16 @@ cask "discord"
 cask "docker"
 # Client for the Dropbox cloud storage service
 cask "dropbox"
-# Matrix collaboration client
-cask "element"
 # Web browser
 cask "firefox"
 # IR USB receiver configurator
 cask "flirc"
 # Keep your recently modified files at hand and up-to-date
 cask "fresh"
+# Set of tools to manage resources and applications hosted on Google Cloud
+cask "google-cloud-sdk"
+# Virtual globe
+cask "google-earth-pro"
 # Open-source video transcoder
 cask "handbrake"
 # Vector graphics editor
@@ -107,6 +126,8 @@ cask "kindle"
 cask "knockknock"
 # Wallet desktop application to maintain multiple cryptocurrencies
 cask "ledger-live"
+# Screen and video recording software
+cask "loom"
 # Open-source firewall to block unknown outgoing connections
 cask "lulu"
 # Video format converter (transcoder)
@@ -117,20 +138,20 @@ cask "notunes"
 cask "plex"
 # Music player focusing on visuals
 cask "plexamp"
-# Quick Look plug-in that renders source code with syntax highlighting
-cask "qlcolorcode"
+# Collaboration platform for API development
+cask "postman"
 # Display image info and preview unsupported formats in QuickLook
 cask "qlimagesize"
 # Quick Look generator for Markdown files
 cask "qlmarkdown"
-# Quick Look plugin for plaintext files without an extension
-cask "qlstephen"
 # Thumbnails, static previews, cover art and metadata for video files
 cask "qlvideo"
 # Quick Look plugin for JSON files
 cask "quicklook-json"
 # Instant messaging application focusing on security
 cask "signal"
+# Mesh VPN based on WireGuard
+cask "tailscale"
 # Messaging app with a focus on speed and security
 cask "telegram"
 # Open-source BitTorrent client
@@ -147,12 +168,14 @@ cask "vmware-fusion"
 cask "zoom"
 mas "1Password for Safari", id: 1569813296
 mas "Guidance", id: 412759995
+mas "Hidden Bar", id: 1452453066
 mas "iMovie", id: 408981434
 mas "Keynote", id: 409183694
 mas "Magnet", id: 441258766
 mas "NotePlan", id: 1505432629
 mas "Numbers", id: 409203825
 mas "Pages", id: 409201541
-mas "Pixelmator", id: 407963104
 mas "Slack", id: 803453959
+mas "WhatsApp", id: 310633997
+mas "WireGuard", id: 1451685025
 mas "Xcode", id: 497799835
