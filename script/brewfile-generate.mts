@@ -34,21 +34,37 @@ for (let i = 0; i < brewfileLines.length; i++) {
   if (line.startsWith("#")) {
     continue
   }
-  const [type, rawName] = line.split(" ")
+  // note there might be three parts with lines like any of the following:
+  // cask "zoom"
+  // mas "1Password for Safari", id: 1569813296
+  // brew "node@20", link: true
+  // brew "node"
+
+  const parsed = line.match(/^(\S+) "(.*)"/)
+
+  if (!parsed) {
+    throw new Error("Failed to parse line: " + line)
+  }
+  const [_all, type, rawName] = parsed
+
   if (type !== "brew") {
     continue
   }
   // remove surrounding quotes on the name:
-  const unquoted = rawName.replace(/^"(.*)"$/, "$1")
+  const name = rawName.replace(/^"(.*)"$/, "$1")
   // remove @ site in the middle for the version:
-  const name = unquoted.split("@")[0]
+  const [unversionedName] = name.split("@")
 
-  if (manuallyInstalledSet.has(name)) {
+  // handle @<version> for things like node@20
+  if (
+    manuallyInstalledSet.has(unversionedName) ||
+    manuallyInstalledSet.has(name)
+  ) {
     continue
   }
 
   console.log(
-    `Excluding ${name} from Brewfile as it's not manually installed...`
+    `Excluding ${unversionedName} from Brewfile as it's not manually installed...`
   )
   // remove it the comment line before the formula and the formula itself:
   brewfileLines.splice(i - 1, 2)

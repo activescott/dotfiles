@@ -46,6 +46,8 @@ brew "llm"
 brew "lsdvd"
 # Mac App Store command-line interface
 brew "mas"
+# Platform built on V8 to build network applications
+brew "node@20", link: true
 # OpenBSD freely-licensed SSH connectivity tools
 brew "openssh"
 # Open-source automated testing/benchmarking software
@@ -167,6 +169,5 @@ mas "Numbers", id: 409203825
 mas "Pages", id: 409201541
 mas "Pixelmator", id: 407963104
 mas "Slack", id: 803453959
-mas "WhatsApp", id: 310633997
 mas "WireGuard", id: 1451685025
 mas "Xcode", id: 497799835
