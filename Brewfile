@@ -3,31 +3,25 @@
 # script/brewfile-install.sh (i.e. brew bundle install)
 # 
 # regen with:
-# script/brewfile-generate.sh (i.e. brew bundle dump...)
+# script/brewfile-generate.mts (i.e. brew bundle dump and some filtering...)
 #
 # cleanup homebrew-installed shite with:
 # script/brewfile-cleanup-apps.sh (i.e. brew bundle --cleanup)
 ##################################################
 tap "homebrew/aliases"
 tap "homebrew/bundle"
+tap "homebrew/cask"
+tap "homebrew/cask-versions"
 tap "nrlquaker/createzap"
 tap "paulbailey/dvdid"
 # Static checker for GitHub Actions workflow files
 brew "actionlint"
 # Tool for generating GNU Standards-compliant Makefiles
 brew "automake"
-# Cryptographic recipes and primitives for Python
-brew "cryptography"
-# Interpreted, interactive, object-oriented programming language
-brew "python@3.12"
 # Official Amazon AWS command-line interface
 brew "awscli"
-# Malware identification and classification tool
-brew "yara"
 # Anti-virus software
 brew "clamav"
-# Easily download, build, install, upgrade, and uninstall Python packages
-brew "python-setuptools"
 # Make creating custom firmwares for ESP32/ESP8266 super easy
 brew "esphome"
 # GitHub command-line tool
@@ -46,28 +40,16 @@ brew "jq"
 brew "k9s"
 # Kubernetes command-line interface
 brew "kubernetes-cli"
-# Access DVDs as block devices without the decryption
-brew "libdvdcss"
 # Access large language models from the command-line
 brew "llm"
 # Read the content info of a DVD
 brew "lsdvd"
 # Mac App Store command-line interface
 brew "mas"
-# Run a Kubernetes cluster locally
-brew "minikube"
-# Platform built on V8 to build network applications
-brew "node@20"
+# OpenBSD freely-licensed SSH connectivity tools
+brew "openssh"
 # Open-source automated testing/benchmarking software
 brew "phoronix-test-suite"
-# Object-relational database system
-brew "postgresql@14"
-# Object-relational database system
-brew "postgresql@16"
-# Interpreted, interactive, object-oriented programming language
-brew "python@3.10"
-# Interpreted, interactive, object-oriented programming language
-brew "python@3.11"
 # Utility that provides fast incremental file transfer
 brew "rsync"
 # Add a public key to a remote machine's authorized_keys file
@@ -90,12 +72,16 @@ cask "arc"
 cask "balenaetcher"
 # UI wireframing tool
 cask "balsamiq-wireframes"
+# Screen recording software
+cask "cap"
 # Free and open-source web browser
 cask "chromium"
 # Screen capturing tool
 cask "cleanshot"
 # API documentation browser and code snippet manager
 cask "dash"
+# API documentation browser and code snippet manager
+cask "dash5"
 # Voice and text chat software
 cask "discord"
 # App to build and share containerised applications and microservices
@@ -120,8 +106,6 @@ cask "inkscape"
 cask "kap"
 # Audio tagger focusing on efficiency
 cask "kid3"
-# Interface for reading and syncing eBooks
-cask "kindle"
 # Tool to show what is persistently installed on the computer
 cask "knockknock"
 # Wallet desktop application to maintain multiple cryptocurrencies
@@ -140,16 +124,22 @@ cask "plex"
 cask "plexamp"
 # Collaboration platform for API development
 cask "postman"
+# Quick Look plug-in that renders source code with syntax highlighting
+cask "qlcolorcode"
 # Display image info and preview unsupported formats in QuickLook
 cask "qlimagesize"
 # Quick Look generator for Markdown files
 cask "qlmarkdown"
+# Quick Look plugin for plaintext files without an extension
+cask "qlstephen"
 # Thumbnails, static previews, cover art and metadata for video files
 cask "qlvideo"
 # Quick Look plugin for JSON files
 cask "quicklook-json"
 # Instant messaging application focusing on security
 cask "signal"
+# Team communication and collaboration software
+cask "slack"
 # Mesh VPN based on WireGuard
 cask "tailscale"
 # Messaging app with a focus on speed and security
@@ -175,6 +165,7 @@ mas "Magnet", id: 441258766
 mas "NotePlan", id: 1505432629
 mas "Numbers", id: 409203825
 mas "Pages", id: 409201541
+mas "Pixelmator", id: 407963104
 mas "Slack", id: 803453959
 mas "WhatsApp", id: 310633997
 mas "WireGuard", id: 1451685025
