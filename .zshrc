@@ -36,3 +36,13 @@ fi
 precmd () { __git_ps1 "%F{magenta}%n@%m%f" ": %~$ " " (%s)" }
 
 ##########
+
+# flux completion (assumes flux cli is installed via brew)
+
+which -s flux
+if [ $? -eq 0 ]; then
+  source <(flux completion zsh)
+  echo "flux completions installed"
+else
+  echo "flux not install, skipping flux completions"
+fi
