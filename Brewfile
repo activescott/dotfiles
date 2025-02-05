@@ -8,6 +8,7 @@
 # cleanup homebrew-installed shite with:
 # script/brewfile-cleanup-apps.sh (i.e. brew bundle --cleanup)
 ##################################################
+tap "fluxcd/tap"
 tap "homebrew/aliases"
 tap "homebrew/bundle"
 tap "homebrew/cask"
@@ -16,6 +17,8 @@ tap "nrlquaker/createzap"
 tap "paulbailey/dvdid"
 # Static checker for GitHub Actions workflow files
 brew "actionlint"
+# Simple, modern, secure file encryption
+brew "age"
 # Tool for generating GNU Standards-compliant Makefiles
 brew "automake"
 # Official Amazon AWS command-line interface
@@ -54,6 +57,8 @@ brew "openssh"
 brew "phoronix-test-suite"
 # Utility that provides fast incremental file transfer
 brew "rsync"
+# Editor of encrypted files
+brew "sops"
 # Add a public key to a remote machine's authorized_keys file
 brew "ssh-copy-id"
 # Terminal multiplexer
@@ -66,6 +71,8 @@ brew "watch"
 brew "wget"
 # Process YAML, JSON, XML, CSV and properties documents from the CLI
 brew "yq"
+# Flux CLI
+brew "fluxcd/tap/flux"
 # Password manager that keeps all passwords secure behind one password
 cask "1password"
 # Chromium based browser
