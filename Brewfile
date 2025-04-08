@@ -25,6 +25,10 @@ brew "automake"
 brew "awscli"
 # Anti-virus software
 brew "clamav"
+# Statistics utility to count lines of code
+brew "cloc"
+# GNU File, Shell, and Text utilities
+brew "coreutils"
 # Make creating custom firmwares for ESP32/ESP8266 super easy
 brew "esphome"
 # GitHub command-line tool
@@ -50,7 +54,9 @@ brew "lsdvd"
 # Mac App Store command-line interface
 brew "mas"
 # Platform built on V8 to build network applications
-brew "node@20", link: true
+brew "node@20"
+# Manage multiple Node.js versions
+brew "nvm"
 # OpenBSD freely-licensed SSH connectivity tools
 brew "openssh"
 # Open-source automated testing/benchmarking software
@@ -65,6 +71,8 @@ brew "ssh-copy-id"
 brew "tmux"
 # Display directories as trees (with optional color/HTML output)
 brew "tree"
+# Command-line interface for Vercel
+brew "vercel-cli"
 # Executes a program periodically, showing output fullscreen
 brew "watch"
 # Internet file retriever
@@ -85,8 +93,12 @@ cask "balsamiq-wireframes"
 cask "cap"
 # Free and open-source web browser
 cask "chromium"
+# Anthropic's official Claude AI desktop app
+cask "claude"
 # Screen capturing tool
 cask "cleanshot"
+# Write, edit, and chat about your code with AI
+cask "cursor"
 # API documentation browser and code snippet manager
 cask "dash"
 # API documentation browser and code snippet manager
@@ -135,6 +147,8 @@ cask "plex"
 cask "plexamp"
 # Collaboration platform for API development
 cask "postman"
+# Desktop agent for Postman on the Web
+cask "postman-agent"
 # Quick Look plug-in that renders source code with syntax highlighting
 cask "qlcolorcode"
 # Display image info and preview unsupported formats in QuickLook
@@ -151,6 +165,8 @@ cask "quicklook-json"
 cask "signal"
 # Team communication and collaboration software
 cask "slack"
+# Dictation tool including LLM reformatting
+cask "superwhisper"
 # Mesh VPN based on WireGuard
 cask "tailscale"
 # Messaging app with a focus on speed and security
@@ -159,12 +175,16 @@ cask "telegram"
 cask "transmission"
 # Text expander
 cask "typeit4me"
+# Development environment
+cask "vagrant"
 # Open-source code editor
 cask "visual-studio-code"
 # Multimedia player
 cask "vlc"
 # Create, manage, and run virtual machines
 cask "vmware-fusion"
+# Agentic IDE powered by AI Flow paradigm
+cask "windsurf"
 # Video communication and virtual meeting platform
 cask "zoom"
 mas "1Password for Safari", id: 1569813296
