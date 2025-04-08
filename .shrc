@@ -40,9 +40,11 @@ export PATH="$HOME/bin:$PATH" # my user-local bin folder
 export PATH="$PATH:$HOME/.local/bin" # for airbyte-ci: https://github.com/airbytehq/airbyte/blob/master/airbyte-ci/connectors/pipelines/README.md
 export PATH="$PATH:/Users/scott/.codeium/windsurf/bin"
 
+# nvm config per https://github.com/Homebrew/homebrew-core/blob/HEAD/Formula/n/nvm.rb#L34
+brew_prefix=$(brew --prefix)
 export NVM_DIR="$HOME/.nvm"
-[ -s "/usr/local/opt/nvm/nvm.sh" ] && \. "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
-[ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/usr/local/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+[ -s "$brew_prefix/opt/nvm/nvm.sh" ] && \. "$brew_prefix/opt/nvm/nvm.sh"  # This loads nvm
+[ -s "$brew_prefix/opt/nvm/etc/bash_completion.d/nvm" ] && \. "$brew_prefix/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 
 # https://developer.1password.com/docs/ssh/get-started/#step-4-configure-your-ssh-or-git-client
 export SSH_AUTH_SOCK=~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
