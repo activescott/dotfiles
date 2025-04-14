@@ -11,8 +11,6 @@
 tap "fluxcd/tap"
 tap "homebrew/aliases"
 tap "homebrew/bundle"
-tap "homebrew/cask"
-tap "homebrew/cask-versions"
 tap "nrlquaker/createzap"
 tap "paulbailey/dvdid"
 # Static checker for GitHub Actions workflow files
@@ -45,14 +43,14 @@ brew "htop"
 brew "jq"
 # Kubernetes CLI To Manage Your Clusters In Style!
 brew "k9s"
-# Kubernetes command-line interface
-brew "kubernetes-cli"
 # Access large language models from the command-line
 brew "llm"
 # Read the content info of a DVD
 brew "lsdvd"
 # Mac App Store command-line interface
 brew "mas"
+# Run a Kubernetes cluster locally
+brew "minikube"
 # Platform built on V8 to build network applications
 brew "node@20"
 # Manage multiple Node.js versions
@@ -61,6 +59,12 @@ brew "nvm"
 brew "openssh"
 # Open-source automated testing/benchmarking software
 brew "phoronix-test-suite"
+# Easily download, build, install, upgrade, and uninstall Python packages
+brew "python-setuptools"
+# Interpreted, interactive, object-oriented programming language
+brew "python@3.10"
+# Interpreted, interactive, object-oriented programming language
+brew "python@3.11"
 # Utility that provides fast incremental file transfer
 brew "rsync"
 # Editor of encrypted files
@@ -73,6 +77,8 @@ brew "tmux"
 brew "tree"
 # Command-line interface for Vercel
 brew "vercel-cli"
+# Sends magic packets to wake up network-devices
+brew "wakeonlan"
 # Executes a program periodically, showing output fullscreen
 brew "watch"
 # Internet file retriever
@@ -101,8 +107,6 @@ cask "cleanshot"
 cask "cursor"
 # API documentation browser and code snippet manager
 cask "dash"
-# API documentation browser and code snippet manager
-cask "dash5"
 # Voice and text chat software
 cask "discord"
 # App to build and share containerised applications and microservices
@@ -117,10 +121,6 @@ cask "firefox"
 cask "flirc"
 # Keep your recently modified files at hand and up-to-date
 cask "fresh"
-# Set of tools to manage resources and applications hosted on Google Cloud
-cask "google-cloud-sdk"
-# Virtual globe
-cask "google-earth-pro"
 # Open-source video transcoder
 cask "handbrake"
 # Vector graphics editor
@@ -141,6 +141,8 @@ cask "lulu"
 cask "makemkv"
 # Simple application that will prevent iTunes or Apple Music from launching
 cask "notunes"
+# Client program for the OpenVPN Access Server
+cask "openvpn-connect"
 # Home media player
 cask "plex"
 # Music player focusing on visuals
@@ -149,14 +151,8 @@ cask "plexamp"
 cask "postman"
 # Desktop agent for Postman on the Web
 cask "postman-agent"
-# Quick Look plug-in that renders source code with syntax highlighting
-cask "qlcolorcode"
-# Display image info and preview unsupported formats in QuickLook
-cask "qlimagesize"
 # Quick Look generator for Markdown files
 cask "qlmarkdown"
-# Quick Look plugin for plaintext files without an extension
-cask "qlstephen"
 # Thumbnails, static previews, cover art and metadata for video files
 cask "qlvideo"
 # Quick Look plugin for JSON files
@@ -181,8 +177,6 @@ cask "vagrant"
 cask "visual-studio-code"
 # Multimedia player
 cask "vlc"
-# Create, manage, and run virtual machines
-cask "vmware-fusion"
 # Agentic IDE powered by AI Flow paradigm
 cask "windsurf"
 # Video communication and virtual meeting platform
@@ -196,8 +190,8 @@ mas "Magnet", id: 441258766
 mas "NotePlan", id: 1505432629
 mas "Numbers", id: 409203825
 mas "Pages", id: 409201541
-mas "Pixelmator", id: 407963104
 mas "Slack", id: 803453959
 mas "Tailscale", id: 1475387142
+mas "WhatsApp", id: 310633997
 mas "WireGuard", id: 1451685025
 mas "Xcode", id: 497799835
