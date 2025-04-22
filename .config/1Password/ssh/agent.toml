@@ -1,0 +1,11 @@
+# https://developer.1password.com/docs/ssh/agent/config
+
+# Control the order keys are used by the agent here
+
+[[ssh-keys]]
+item = "SSH Key OP2024A"
+vault = "Personal"
+
+[[ssh-keys]]
+item = "RSA SSH Key created for RapidSOS"
+vault = "Personal"

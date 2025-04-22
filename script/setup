@@ -72,6 +72,9 @@ echo "\n########## Copying SSH & git config files... ##########"
 [ -d "~/.ssh/config" ] || mkdir -p "~/.ssh/config"
 cpsafe "$DOTFILESDIR/.ssh/config" ~/.ssh/config
 
+cpsafe "$DOTFILESDIR/.config/1Password/ssh/agent.toml" ~/.config/1Password/ssh/agent.toml
+
+
 echo "\n########## Copying git config files... ##########"
 cpsafe "$DOTFILESDIR/.gitconfig" ~/.gitconfig
 cpsafe "$DOTFILESDIR/.gitconfig.gpg.ssh.allowedSignersFile" ~/.gitconfig.gpg.ssh.allowedSignersFile
