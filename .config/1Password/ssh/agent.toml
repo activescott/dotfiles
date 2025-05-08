@@ -7,5 +7,5 @@ item = "SSH Key OP2024A"
 vault = "Personal"
 
 [[ssh-keys]]
-item = "RSA SSH Key created for RapidSOS"
+item = "RapidSOS RSA SSH Key"
 vault = "Personal"
