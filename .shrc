@@ -26,6 +26,15 @@ fi
 echo "current shell is $SHELL"
 
 #####
+# Import any secrets
+#####
+if [ -f ~/.secrets ]
+then
+	echo "Importing secrets from ~/.secrets"
+	source ~/.secrets
+fi
+
+#####
 # PATH variable
 #####
 # NOTE: About paths: http://serverfault.com/a/146142/28798 (i.e. drop files /etc/paths.d $PATH only works in terminal )
@@ -39,12 +48,6 @@ export PATH="$PATH:/usr/sbin" # non-essential system binaries
 export PATH="$HOME/bin:$PATH" # my user-local bin folder
 export PATH="$PATH:$HOME/.local/bin" # for airbyte-ci: https://github.com/airbytehq/airbyte/blob/master/airbyte-ci/connectors/pipelines/README.md
 export PATH="$PATH:/Users/scott/.codeium/windsurf/bin"
-
-# nvm config per https://github.com/Homebrew/homebrew-core/blob/HEAD/Formula/n/nvm.rb#L34
-brew_prefix=$(brew --prefix)
-export NVM_DIR="$HOME/.nvm"
-[ -s "$brew_prefix/opt/nvm/nvm.sh" ] && \. "$brew_prefix/opt/nvm/nvm.sh"  # This loads nvm
-[ -s "$brew_prefix/opt/nvm/etc/bash_completion.d/nvm" ] && \. "$brew_prefix/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 
 # https://developer.1password.com/docs/ssh/get-started/#step-4-configure-your-ssh-or-git-client
 export SSH_AUTH_SOCK=~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
@@ -128,3 +131,24 @@ function ghdev() {
 	# will list issues in the current repo with preview and selecting one will create and checkout a branch named after the issue, it also links the branch to the PR so github can automate ticket status.
   GH_FORCE_TTY=100% gh issue list | fzf --ansi --preview 'GH_FORCE_TTY=100% gh issue view {1}' --preview-window down --header-lines 3 | awk '{print $1}' | sed 's/^#//g' | xargs gh issue develop -c
 }
+
+
+# nvm config per https://github.com/Homebrew/homebrew-core/blob/HEAD/Formula/n/nvm.rb#L34
+which brew
+if [ $? -eq 0 ]; then
+	brew_prefix=$(brew --prefix)
+	export NVM_DIR="$HOME/.nvm"
+	[ -s "$brew_prefix/opt/nvm/nvm.sh" ] && \. "$brew_prefix/opt/nvm/nvm.sh"  # This loads nvm
+	[ -s "$brew_prefix/opt/nvm/etc/bash_completion.d/nvm" ] && \. "$brew_prefix/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+else
+	echo "Brew not installed, skipping nvm configuation"
+fi
+
+# flux completion (assumes flux cli is installed via brew)
+which flux
+if [ $? -eq 0 ]; then
+  source <(flux completion zsh)
+  echo "flux completions installed"
+else
+  echo "flux not installed, skipping flux completions"
+fi
