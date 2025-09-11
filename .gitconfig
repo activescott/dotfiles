@@ -25,7 +25,7 @@
 	outgoing = log @{upstream}.. #https://stackoverflow.com/a/6389348/51061
 	st = status
 	logg = log --pretty=oneline --abbrev-commit --graph --decorate --all
-	logs = log --oneline --decorate --color --all --pretty=format:\"%C(yellow)%h%C(reset)%C(auto)%d%C(reset) %C(green)%ad%C(reset) %C(blue)%an%C(reset) %s\" --date=short
+	logs = log --oneline --decorate --color --all --pretty=format:\"%C(yellow)%h%C(reset)%C(auto)%d%C(reset) %C(green)%ad%C(reset) %C(blue)%an%C(reset) %s\" --date=format:'%Y-%m-%d %H:%M'
 	logv = log --pretty=oneline --abbrev-commit --graph --decorate --all --show-signature
 	who = shortlog -s
 	serve = !git daemon --reuseaddr --verbose --base-path=. --export-all ./.git # https://git.wiki.kernel.org/index.php/Aliases#Serve_re
