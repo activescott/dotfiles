@@ -1,0 +1,18 @@
+[commit]
+	gpgsign = true
+
+[gpg]
+	format = ssh
+
+[gpg "ssh"]
+  allowedSignersFile = .gitconfig.gpg.ssh.allowedSignersFile
+
+	# OnlyKey:
+	#   NOTE: git docs say that ~/ should work here but it doesn't :/ https://git-scm.com/docs/git-config#Documentation/git-config.txt-pathname
+	program = /Users/scott/bin/onlykey-git-sign-commit	
+
+[user]
+	# OnlyKey:
+	#   Generate user.signingkey like this (for onlykey): 
+	#    git config --global user.signingkey "key::$(onlykey-agent git@github.com)"
+	signingkey = key::ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIA8UwWAoWmmbgMeFbG531vlUHZju5cjw6B7oqS3Ni2V7 <ssh://git@github.com|ed25519>

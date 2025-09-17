@@ -1,0 +1,14 @@
+[commit]
+	gpgsign = true
+
+[gpg]
+	format = ssh
+
+[gpg "ssh"]
+  allowedSignersFile = .gitconfig.gpg.ssh.allowedSignersFile
+
+	# local ssh key: No need to set program!
+
+[user]
+	# local key:
+	signingkey = /home/vagrant/.ssh/id_rsa.pub

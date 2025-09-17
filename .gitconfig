@@ -1,19 +1,6 @@
 [user]
 	email = scott@willeke.com
 	name = Scott Willeke
-	# Generate user.signingkey like this (for onlykey): 
-	#  git config --global user.signingkey "key::$(onlykey-agent git@github.com)"
-	# NOTE: 
-	# > If gpg.format is set to ssh this can contain the path to either your private ssh key or the 
-	# > public key when ssh-agent is used. Alternatively it can contain a public key prefixed with 
-	# > key:: directly (e.g.: "key::ssh-rsa XXXXXX identifier"). The private key needs to be 
-	# > available via ssh-agent.
-	
-	# OnlyKey:
-	#signingkey = key::ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIA8UwWAoWmmbgMeFbG531vlUHZju5cjw6B7oqS3Ni2V7 <ssh://git@github.com|ed25519>
-
-	# 1p:
-	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAXMo4T9BKVrQVZX3oeGxTbF2ItHc+4G6V87gyXFA5gw
 	
 [push]
 	default = simple
@@ -48,27 +35,18 @@
 	smudge = git-lfs smudge -- %f
 	required = true
 	process = git-lfs filter-process
+
 [merge "npm-merge-driver"]
 	name = automatically merge npm lockfiles
 	driver = npx npm-merge-driver merge %A %O %B %P
+
 [init]
 	defaultBranch = main
+
 [pull]
 	ff = only
-[commit]
-	gpgsign = false
 
-[gpg "ssh"]
-	allowedSignersFile = /Users/scott/.gitconfig.gpg.ssh.allowedSignersFile
-	
-	# git docs say that ~/ should work here but it doesn't :/ https://git-scm.com/docs/git-config#Documentation/git-config.txt-pathname
-	# TODO: so need to either submit a patch to git or generate this file in the ~/scripts/setup
-	
-	# OnlyKey:
-	#program = /Users/scott/bin/onlykey-git-sign-commit	
-	# 1p:
-	program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
-
-	
-[gpg]
-	format = ssh
+[include]
+	#path = .gitconfig.commit-signing-onlykey.include
+	#path = .gitconfig.commit-signing-1p.include
+	path = .gitconfig.commit-signing-local.include
