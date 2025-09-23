@@ -5,10 +5,10 @@
 	format = ssh
 
 [gpg "ssh"]
-  allowedSignersFile = .gitconfig.gpg.ssh.allowedSignersFile
+  allowedSignersFile = ~/.ssh/authorized_keys
 
 	# local ssh key: No need to set program!
 
 [user]
 	# local key:
-	signingkey = /home/vagrant/.ssh/id_rsa.pub
+	signingkey = ~/.ssh/id_rsa.pub

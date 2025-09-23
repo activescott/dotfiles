@@ -77,7 +77,7 @@ cpsafe "$DOTFILESDIR/.config/1Password/ssh/agent.toml" ~/.config/1Password/ssh/a
 
 echo "\n########## Copying git config files... ##########"
 cpsafe "$DOTFILESDIR/.gitconfig" ~/.gitconfig
-cpsafe "$DOTFILESDIR/.gitconfig.gpg.ssh.allowedSignersFile" ~/.gitconfig.gpg.ssh.allowedSignersFile
+cpsafe "$DOTFILESDIR/.ssh/authorized_keys" ~/.ssh/authorized_keys
 cpsafe "$DOTFILESDIR/.gitconfig.commit-signing-1p.include" ~/.gitconfig.commit-signing-1p.include
 cpsafe "$DOTFILESDIR/.gitconfig.commit-signing-local.include" ~/.gitconfig.commit-signing-local.include
 cpsafe "$DOTFILESDIR/.gitconfig.commit-signing-onlykey.include" ~/.gitconfig.commit-signing-onlykey.include

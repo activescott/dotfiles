@@ -23,7 +23,7 @@ git config --global gpg.format ssh
 git config --global user.signingkey "key::$(onlykey-agent git@github.com)"
 git config --global commit.gpgsign true
 git config --global gpg.ssh.program ~/bin/onlykey-git-sign-commit
-git config --global gpg.ssh.allowedSignersFile ~/.gitconfig.gpg.ssh.allowedSignersFile
+git config --global gpg.ssh.allowedSignersFile ~/.ssh/authorized_keys
 ```
 
 The full commandn to sign commits is like this:

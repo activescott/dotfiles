@@ -5,7 +5,7 @@
 	format = ssh
 
 [gpg "ssh"]
-  allowedSignersFile = .gitconfig.gpg.ssh.allowedSignersFile
+  allowedSignersFile = ~/.ssh/authorized_keys
 
 	# 1p:
 	program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
