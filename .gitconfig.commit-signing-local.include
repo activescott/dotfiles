@@ -5,7 +5,7 @@
 	format = ssh
 
 [gpg "ssh"]
-  allowedSignersFile = ~/.ssh/authorized_keys
+	allowedSignersFile = ~/.ssh/allowed_signers
 
 	# local ssh key: No need to set program!
 

@@ -5,7 +5,7 @@
 	format = ssh
 
 [gpg "ssh"]
-  allowedSignersFile = ~/.ssh/authorized_keys
+  allowedSignersFile = ~/.ssh/allowed_signers
 
 	# OnlyKey:
 	#   NOTE: git docs say that ~/ should work here but it doesn't :/ https://git-scm.com/docs/git-config#Documentation/git-config.txt-pathname
