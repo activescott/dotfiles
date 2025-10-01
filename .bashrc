@@ -78,7 +78,9 @@ if [ -f ~/lib/git-prompt.sh ]; then
   #GIT_PS1_SHOWUPSTREAM="auto"
   #GIT_PS1_HIDE_IF_PWD_IGNORED=true
   GIT_PS1_SHOWCOLORHINTS=true
-  . ~/lib/git-prompt.sh
+  source ~/lib/git-prompt.sh
+else
+  echo "git-prompt not found, skipping loading git-prompt..."
 fi
 
 P_GIT_BRANCH=`__git_ps1 "${RED}(%s)${COL_RESET}"`

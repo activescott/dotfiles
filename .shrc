@@ -152,3 +152,10 @@ if [ $? -eq 0 ]; then
 else
   echo "flux not installed, skipping flux completions"
 fi
+
+if [ -f ~/lib/git-completion.bash ]; then
+  echo "loading git-completion"
+  source ~/lib/git-completion.bash
+else
+  echo "git-completion not found, skipping loading git-completion."
+fi
