@@ -29,6 +29,8 @@ brew "cloc"
 brew "coreutils"
 # Make creating custom firmwares for ESP32/ESP8266 super easy
 brew "esphome"
+# Play, record, convert, and stream audio and video
+brew "ffmpeg"
 # GitHub command-line tool
 brew "gh"
 # Distributed revision control system
@@ -39,10 +41,14 @@ brew "git-lfs"
 brew "helm"
 # Improved top (interactive process viewer)
 brew "htop"
+# Toolkit for embedding hypervisor capabilities in your application
+brew "hyperkit"
 # Lightweight and flexible command-line JSON processor
 brew "jq"
 # Kubernetes CLI To Manage Your Clusters In Style!
 brew "k9s"
+# Command-line interface to LiveKit
+brew "livekit-cli"
 # Access large language models from the command-line
 brew "llm"
 # Read the content info of a DVD
@@ -59,6 +65,10 @@ brew "nvm"
 brew "openssh"
 # Open-source automated testing/benchmarking software
 brew "phoronix-test-suite"
+# Fast, disk space efficient package manager
+brew "pnpm"
+# Static type checker for Python
+brew "pyright"
 # Easily download, build, install, upgrade, and uninstall Python packages
 brew "python-setuptools"
 # Interpreted, interactive, object-oriented programming language
@@ -67,14 +77,20 @@ brew "python@3.10"
 brew "python@3.11"
 # Utility that provides fast incremental file transfer
 brew "rsync"
+# Easy and Repeatable Kubernetes Development
+brew "skaffold"
 # Editor of encrypted files
 brew "sops"
 # Add a public key to a remote machine's authorized_keys file
 brew "ssh-copy-id"
+# Tool to build, change, and version infrastructure
+brew "terraform"
 # Terminal multiplexer
 brew "tmux"
 # Display directories as trees (with optional color/HTML output)
 brew "tree"
+# Extremely fast Python package installer and resolver, written in Rust
+brew "uv"
 # Command-line interface for Vercel
 brew "vercel-cli"
 # Sends magic packets to wake up network-devices
@@ -91,6 +107,8 @@ brew "fluxcd/tap/flux"
 cask "1password"
 # Chromium based browser
 cask "arc"
+# Multi-track audio editor and recorder
+cask "audacity"
 # Tool to flash OS images to SD cards & USB drives
 cask "balenaetcher"
 # UI wireframing tool
@@ -101,6 +119,8 @@ cask "cap"
 cask "chromium"
 # Anthropic's official Claude AI desktop app
 cask "claude"
+# Terminal-based AI coding assistant
+cask "claude-code"
 # Screen capturing tool
 cask "cleanshot"
 # Write, edit, and chat about your code with AI
@@ -110,7 +130,7 @@ cask "dash"
 # Voice and text chat software
 cask "discord"
 # App to build and share containerised applications and microservices
-cask "docker"
+cask "docker-desktop"
 # Client for the Dropbox cloud storage service
 cask "dropbox"
 # Web browser focusing on privacy
@@ -122,7 +142,7 @@ cask "flirc"
 # Keep your recently modified files at hand and up-to-date
 cask "fresh"
 # Open-source video transcoder
-cask "handbrake"
+cask "handbrake-app"
 # Vector graphics editor
 cask "inkscape"
 # Open-source screen recorder built with web technology
@@ -164,11 +184,13 @@ cask "slack"
 # Dictation tool including LLM reformatting
 cask "superwhisper"
 # Mesh VPN based on WireGuard
-cask "tailscale"
+cask "tailscale-app"
 # Messaging app with a focus on speed and security
 cask "telegram"
 # Open-source BitTorrent client
 cask "transmission"
+# Companion app for the Trezor hardware wallet
+cask "trezor-suite"
 # Text expander
 cask "typeit4me"
 # Development environment
@@ -190,8 +212,8 @@ mas "Magnet", id: 441258766
 mas "NotePlan", id: 1505432629
 mas "Numbers", id: 409203825
 mas "Pages", id: 409201541
+mas "Pixelmator", id: 407963104
 mas "Slack", id: 803453959
 mas "Tailscale", id: 1475387142
 mas "WhatsApp", id: 310633997
-mas "WireGuard", id: 1451685025
 mas "Xcode", id: 497799835
