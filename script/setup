@@ -16,6 +16,18 @@ cpsafe() {
  fi
 }
 
+cpsafe_dir() {
+ SRCDIR=$1
+ DSTDIR=$2
+ 
+[ -d "$DSTDIR" ] || mkdir -p "$DSTDIR"
+for filepath in $SRCDIR/*; do
+    filename=`basename $filepath`
+    cpsafe "$filepath" "$DSTDIR/$filename"
+done
+ 
+}
+
 DOTFILESDIR=$(dirname $THISDIR)
 
 # ~/bin
@@ -38,19 +50,10 @@ done
 
 # Midnight Commander:
 echo "\n########## Copying Midnight Commander files... ##########"
-[ -d "$DOTFILESDIR/.config/mc" ] || mkdir -p "$DOTFILESDIR/.config/mc"
-[ -d "$DOTFILESDIR/.local/share/mc" ] || mkdir -p "$DOTFILESDIR/.local/share/mc"
+cpsafe_dir "$DOTFILESDIR/.config/mc" ~/.config/mc
 
-for filepath in $DOTFILESDIR/.config/mc/*; do
-    filename=`basename $filepath`
-    # echo "hi $filepath -> $filename"
-    cpsafe "$filepath" ~/.config/mc/$filename
-done 
-for filepath in $DOTFILESDIR/.local/share/mc/*; do
-    filename=`basename $filepath`
-    # echo "hi $filepath -> $filename"
-    cpsafe "$filepath" ~/.local/share/mc/$filename
-done 
+echo "\n########## Copying 1Password config files... ##########"
+cpsafe_dir "$DOTFILESDIR/.config/1Password/ssh" ~/.config/1Password/ssh
 
 # misc apps, etc.
 echo "\n########## Copying misc files... ##########"
