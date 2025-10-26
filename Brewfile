@@ -9,8 +9,6 @@
 # script/brewfile-cleanup-apps.sh (i.e. brew bundle --cleanup)
 ##################################################
 tap "fluxcd/tap"
-tap "homebrew/aliases"
-tap "homebrew/bundle"
 tap "nrlquaker/createzap"
 tap "paulbailey/dvdid"
 # Static checker for GitHub Actions workflow files
@@ -41,8 +39,6 @@ brew "git-lfs"
 brew "helm"
 # Improved top (interactive process viewer)
 brew "htop"
-# Toolkit for embedding hypervisor capabilities in your application
-brew "hyperkit"
 # Lightweight and flexible command-line JSON processor
 brew "jq"
 # Kubernetes CLI To Manage Your Clusters In Style!
@@ -113,8 +109,6 @@ cask "audacity"
 cask "balenaetcher"
 # UI wireframing tool
 cask "balsamiq-wireframes"
-# Screen recording software
-cask "cap"
 # Free and open-source web browser
 cask "chromium"
 # Anthropic's official Claude AI desktop app
@@ -123,8 +117,6 @@ cask "claude"
 cask "claude-code"
 # Screen capturing tool
 cask "cleanshot"
-# Write, edit, and chat about your code with AI
-cask "cursor"
 # API documentation browser and code snippet manager
 cask "dash"
 # Voice and text chat software
