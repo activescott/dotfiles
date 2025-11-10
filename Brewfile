@@ -43,6 +43,8 @@ brew "htop"
 brew "jq"
 # Kubernetes CLI To Manage Your Clusters In Style!
 brew "k9s"
+# Tool that can switch between kubectl contexts easily and create aliases
+brew "kubectx"
 # Command-line interface to LiveKit
 brew "livekit-cli"
 # Access large language models from the command-line
@@ -53,7 +55,7 @@ brew "lsdvd"
 brew "mas"
 # Run a Kubernetes cluster locally
 brew "minikube"
-# Platform built on V8 to build network applications
+# Open-source, cross-platform JavaScript runtime environment
 brew "node@20"
 # Manage multiple Node.js versions
 brew "nvm"
@@ -95,6 +97,8 @@ brew "wakeonlan"
 brew "watch"
 # Internet file retriever
 brew "wget"
+# JavaScript package manager
+brew "yarn"
 # Process YAML, JSON, XML, CSV and properties documents from the CLI
 brew "yq"
 # Flux CLI
@@ -137,14 +141,12 @@ cask "fresh"
 cask "handbrake-app"
 # Vector graphics editor
 cask "inkscape"
-# Open-source screen recorder built with web technology
-cask "kap"
 # Audio tagger focusing on efficiency
 cask "kid3"
 # Tool to show what is persistently installed on the computer
 cask "knockknock"
 # Wallet desktop application to maintain multiple cryptocurrencies
-cask "ledger-live"
+cask "ledger-wallet"
 # Screen and video recording software
 cask "loom"
 # Open-source firewall to block unknown outgoing connections
@@ -204,7 +206,6 @@ mas "Magnet", id: 441258766
 mas "NotePlan", id: 1505432629
 mas "Numbers", id: 409203825
 mas "Pages", id: 409201541
-mas "Pixelmator", id: 407963104
 mas "Slack", id: 803453959
 mas "Tailscale", id: 1475387142
 mas "WhatsApp", id: 310633997
