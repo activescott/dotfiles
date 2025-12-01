@@ -193,8 +193,6 @@ cask "vagrant"
 cask "visual-studio-code"
 # Multimedia player
 cask "vlc"
-# Agentic IDE powered by AI Flow paradigm
-cask "windsurf"
 # Video communication and virtual meeting platform
 cask "zoom"
 mas "1Password for Safari", id: 1569813296
