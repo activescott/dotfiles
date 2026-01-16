@@ -50,7 +50,10 @@ export PATH="$PATH:$HOME/.local/bin" # for airbyte-ci: https://github.com/airbyt
 export PATH="$PATH:/Users/scott/.codeium/windsurf/bin"
 
 # https://developer.1password.com/docs/ssh/get-started/#step-4-configure-your-ssh-or-git-client
-export SSH_AUTH_SOCK=~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
+# Only set this on macOS, not on Linux where we use forwarded agents
+if [[ "$(uname -s)" == "Darwin" ]]; then
+    export SSH_AUTH_SOCK=~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
+fi
 
 #####
 # aliases
