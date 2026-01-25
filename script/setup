@@ -55,6 +55,10 @@ cpsafe_dir "$DOTFILESDIR/.config/mc" ~/.config/mc
 echo "\n########## Copying 1Password config files... ##########"
 cpsafe_dir "$DOTFILESDIR/.config/1Password/ssh" ~/.config/1Password/ssh
 
+echo "\n########## Copying k9s config files... ##########"
+# k9s uses ~/Library/Application Support/k9s/ on macOS (not ~/.config/k9s/)
+cpsafe_dir "$DOTFILESDIR/.config/k9s" "$HOME/Library/Application Support/k9s"
+
 # misc apps, etc.
 echo "\n########## Copying misc files... ##########"
 cpsafe "$DOTFILESDIR/.bash_secrets" ~/.bash_secrets
