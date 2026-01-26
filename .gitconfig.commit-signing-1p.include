@@ -7,9 +7,11 @@
 [gpg "ssh"]
   allowedSignersFile = ~/.ssh/allowed_signers
 
-	# 1p:
-	program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
+	# Uses op-ssh-sign-wrapper to auto-detect local macOS (1Password) vs remote/SSH
+	# (ssh-keygen via forwarded SSH agent). Remote signing relies on SSH agent forwarding
+	# configured in .ssh/config (see IdentityAgent / 1Password SSH agent settings there).
+	# To override, set this to a specific binary path (e.g. /usr/bin/ssh-keygen).
+	program = op-ssh-sign-wrapper
 
 [user]
-  # 1p:
   signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAXMo4T9BKVrQVZX3oeGxTbF2ItHc+4G6V87gyXFA5gw

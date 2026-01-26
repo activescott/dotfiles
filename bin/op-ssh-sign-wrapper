@@ -1,0 +1,10 @@
+#!/bin/sh
+# Auto-detect: use 1Password locally on macOS, fall back to ssh-keygen on remote/Linux.
+# On remote machines, ssh-keygen signs via the forwarded SSH agent (see .ssh/config
+# for IdentityAgent / ForwardAgent settings that enable 1Password agent forwarding).
+# To manually override, set gpg.ssh.program directly in your .gitconfig to a specific binary.
+if [ -z "$SSH_CONNECTION" ] && [ -x "/Applications/1Password.app/Contents/MacOS/op-ssh-sign" ]; then
+    exec /Applications/1Password.app/Contents/MacOS/op-ssh-sign "$@"
+else
+    exec ssh-keygen "$@"
+fi

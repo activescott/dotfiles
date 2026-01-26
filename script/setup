@@ -87,6 +87,5 @@ cpsafe "$DOTFILESDIR/.gitconfig" ~/.gitconfig
 cpsafe "$DOTFILESDIR/.ssh/authorized_keys" ~/.ssh/authorized_keys # for general ssh authorized access
 cpsafe "$DOTFILESDIR/.ssh/allowed_signers" ~/.ssh/allowed_signers # for git's SSH commit verification
 cpsafe "$DOTFILESDIR/.gitconfig.commit-signing-1p.include" ~/.gitconfig.commit-signing-1p.include
-cpsafe "$DOTFILESDIR/.gitconfig.commit-signing-1p-remote.include" ~/.gitconfig.commit-signing-1p-remote.include
 cpsafe "$DOTFILESDIR/.gitconfig.commit-signing-local.include" ~/.gitconfig.commit-signing-local.include
 cpsafe "$DOTFILESDIR/.gitconfig.commit-signing-onlykey.include" ~/.gitconfig.commit-signing-onlykey.include

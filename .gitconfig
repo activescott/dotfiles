@@ -48,7 +48,6 @@
 
 [include]
   path = .gitconfig.commit-signing-1p.include
-	# path = .gitconfig.commit-signing-1p-remote.include
 	# path = .gitconfig.commit-signing-local.include
 	# path = .gitconfig.commit-signing-onlykey.include
 	# path = .gitconfig.commit-signing-local.include
