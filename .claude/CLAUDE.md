@@ -1,0 +1,4 @@
+- Never skip signing of commits. If necessary wait on the user to authorize signing as needed
+- use lowercase variable names in bash when creating new variables
+- Always save approved plans to `docs/<feature-name>-plan.md` for future reference - whether created in plan mode, provided as input, or carried over from a previous session.
+- After finishing implementation of a plan, save a summary of what was done to `docs/<feature-name>-summary.md` alongside the plan file.

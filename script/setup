@@ -89,3 +89,7 @@ cpsafe "$DOTFILESDIR/.ssh/allowed_signers" ~/.ssh/allowed_signers # for git's SS
 cpsafe "$DOTFILESDIR/.gitconfig.commit-signing-1p.include" ~/.gitconfig.commit-signing-1p.include
 cpsafe "$DOTFILESDIR/.gitconfig.commit-signing-local.include" ~/.gitconfig.commit-signing-local.include
 cpsafe "$DOTFILESDIR/.gitconfig.commit-signing-onlykey.include" ~/.gitconfig.commit-signing-onlykey.include
+
+echo "\n########## Copying Claude config files... ##########"
+[ -d "$HOME/.claude" ] || mkdir -p "$HOME/.claude"
+cpsafe "$DOTFILESDIR/.claude/CLAUDE.md" ~/.claude/CLAUDE.md
