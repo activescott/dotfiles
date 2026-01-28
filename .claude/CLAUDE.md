@@ -1,4 +1,5 @@
 - Never skip signing of commits. If necessary wait on the user to authorize signing as needed
 - use lowercase variable names in bash when creating new variables
-- Always save approved plans to `docs/<feature-name>-plan.md` for future reference - whether created in plan mode, provided as input, or carried over from a previous session.
-- After finishing implementation of a plan, save a summary of what was done to `docs/<feature-name>-summary.md` alongside the plan file.
+- Prefer jq and yq over python or scripts for parsing JSON/YAML on the command line
+- **BEFORE calling ExitPlanMode**, save the plan to `specs/<feature-name>/plan.md`. Context is lost after exiting plan mode, so the plan must be written to disk while still in plan mode. This applies whether the plan was created in plan mode, provided as input, or carried over from a previous session.
+- After finishing implementation of a plan, save a summary of what was done to `specs/<feature-name>/summary.md` alongside the plan file.
