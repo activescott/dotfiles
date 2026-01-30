@@ -1,5 +1,8 @@
 - Never skip signing of commits. If necessary wait on the user to authorize signing as needed
+- When staging files for git, add specific files by name instead of using `git add -A` or `git add .`
 - use lowercase variable names in bash when creating new variables
 - Prefer jq and yq over python or scripts for parsing JSON/YAML on the command line
-- **BEFORE calling ExitPlanMode**, save the plan to `specs/<feature-name>/plan.md`. Context is lost after exiting plan mode, so the plan must be written to disk while still in plan mode. This applies whether the plan was created in plan mode, provided as input, or carried over from a previous session.
+- Never run `minikube update-context` or other commands that change the global kubectl context. Use `kubectl --context minikube` to target minikube without modifying the global context.
+- **BEFORE calling ExitPlanMode**, save the plan to `specs/<feature-name>/plan.md`. Context is lost after exiting plan mode, so the plan must be written to disk while still in plan mode.
+- **When starting implementation of a plan** (e.g. the user pastes a plan into a fresh session after clearing context), save the plan to `specs/<feature-name>/plan.md` as the FIRST step before making any code changes. This is critical because the plan may only exist in the user's prompt and will be lost if not persisted.
 - After finishing implementation of a plan, save a summary of what was done to `specs/<feature-name>/summary.md` alongside the plan file.
