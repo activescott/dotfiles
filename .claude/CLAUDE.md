@@ -6,3 +6,4 @@
 - **BEFORE calling ExitPlanMode**, save the plan to `specs/<feature-name>/plan.md`. Context is lost after exiting plan mode, so the plan must be written to disk while still in plan mode.
 - **When starting implementation of a plan** (e.g. the user pastes a plan into a fresh session after clearing context), save the plan to `specs/<feature-name>/plan.md` as the FIRST step before making any code changes. This is critical because the plan may only exist in the user's prompt and will be lost if not persisted.
 - After finishing implementation of a plan, save a summary of what was done to `specs/<feature-name>/summary.md` alongside the plan file.
+- Avoid `<Box>` and similar React "CSS utility components" that merely turn props into CSS. Prefer plain `<div>` with inline styles or CSS classes. Exception: themed colors that require styled-components access.
