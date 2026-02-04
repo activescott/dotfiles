@@ -1,0 +1,23 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(sleep $((RANDOM % 10 + 1)))",
+      "Bash(sleep $((RANDOM % 3 + 1)))",
+      "Bash(sleep $\\(\\(RANDOM % 10 + 1\\)\\))"
+    ]
+  },
+  "alwaysThinkingEnabled": true,
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/confirm-before-run.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
