@@ -96,3 +96,6 @@ cpsafe "$DOTFILESDIR/.claude/CLAUDE.md" ~/.claude/CLAUDE.md
 cpsafe "$DOTFILESDIR/.claude/settings.json" ~/.claude/settings.json
 [ -d "$HOME/.claude/hooks" ] || mkdir -p "$HOME/.claude/hooks"
 cpsafe "$DOTFILESDIR/.claude/hooks/confirm-before-run.sh" ~/.claude/hooks/confirm-before-run.sh
+
+echo "\n########## Copying misc config files... ##########"
+[ -f "$DOTFILESDIR/.shrc-rsos" ] && cpsafe "$DOTFILESDIR/.shrc-rsos" ~/.shrc-rsos
