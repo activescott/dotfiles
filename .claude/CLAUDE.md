@@ -10,3 +10,4 @@
 - Only use React `useMemo`/`useCallback` when appropriate: expensive computations (sorting/mapping unbounded lists, complex transforms), referential stability needed for dependency arrays or props passed to memoized children. Do NOT wrap trivial derivations (property access, `.find()`, `.slice()`, simple conditionals) or passthrough functions.
 - Do not create barrel/index files (`index.ts`) in JS/TS just to re-export from a single module. Co-locate the export in the source file instead. Only create barrel files when aggregating exports from 3+ modules in a directory.
 - Avoid dedicated section-heading comments like `// Types`, `// Hook`, `// Helper Functions`, etc. Code structure should be self-evident from the declarations themselves.
+- In TypeScript/JavaScript, use named function declarations (not arrow functions) for all module-level exports: React components, hooks, and utility functions. Use `function Foo()` not `const Foo = () =>`.
