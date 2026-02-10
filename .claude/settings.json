@@ -6,7 +6,6 @@
       "Bash(sleep $\\(\\(RANDOM % 10 + 1\\)\\))"
     ]
   },
-  "alwaysThinkingEnabled": true,
   "hooks": {
     "PreToolUse": [
       {
@@ -19,5 +18,6 @@
         ]
       }
     ]
-  }
+  },
+  "alwaysThinkingEnabled": true
 }
