@@ -10,6 +10,7 @@ patterns=(
   "git push|||git push requires explicit user confirmation"
   "--no-gpg-sign|||commits must be signed; --no-gpg-sign requires explicit user confirmation"
   "git commit|||git commit requires explicit user confirmation"
+  "kubectl --context nas|||kubectl commands against the nas cluster require explicit user confirmation"
 )
 
 # ── hook logic (no changes needed below) ────────────────────────
