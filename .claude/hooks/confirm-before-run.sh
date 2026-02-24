@@ -13,8 +13,28 @@ patterns=(
   "kubectl --context nas|||kubectl commands against the nas cluster require explicit user confirmation"
 )
 
+# ── commands that are auto-approved ───────────────────────────
+# Each entry is matched as an exact command string.
+auto_approve=(
+  'sleep $((RANDOM % 10 + 1))'
+  'sleep $((RANDOM % 3 + 1))'
+)
+
 # ── hook logic (no changes needed below) ────────────────────────
 command=$(jq -r '.tool_input.command' < /dev/stdin)
+
+for allowed in "${auto_approve[@]}"; do
+  if [[ "$command" == "$allowed" ]]; then
+    jq -n '{
+      "hookSpecificOutput": {
+        "hookEventName": "PreToolUse",
+        "permissionDecision": "allow",
+        "permissionDecisionReason": "auto-approved by hook"
+      }
+    }'
+    exit 0
+  fi
+done
 
 for entry in "${patterns[@]}"; do
   pattern="${entry%%|||*}"

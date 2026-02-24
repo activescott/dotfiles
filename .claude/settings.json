@@ -1,9 +1,7 @@
 {
   "permissions": {
     "allow": [
-      "Bash(sleep $((RANDOM % 10 + 1)))",
-      "Bash(sleep $((RANDOM % 3 + 1)))",
-      "Bash(sleep $\\(\\(RANDOM % 10 + 1\\)\\))"
+      "Bash(sleep *)"
     ]
   },
   "hooks": {
