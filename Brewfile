@@ -8,6 +8,8 @@
 # cleanup homebrew-installed shite with:
 # script/brewfile-cleanup-apps.sh (i.e. brew bundle --cleanup)
 ##################################################
+tap "ampcode/tap"
+tap "argoproj/tap"
 tap "fluxcd/tap"
 tap "nrlquaker/createzap"
 tap "paulbailey/dvdid"
@@ -27,8 +29,10 @@ brew "cloc"
 brew "coreutils"
 # Make creating custom firmwares for ESP32/ESP8266 super easy
 brew "esphome"
-# Play, record, convert, and stream audio and video
+# Play, record, convert, and stream select audio and video codecs
 brew "ffmpeg"
+# Interact with Google Gemini AI models from the command-line
+brew "gemini-cli"
 # GitHub command-line tool
 brew "gh"
 # Distributed revision control system
@@ -53,6 +57,8 @@ brew "llm"
 brew "lsdvd"
 # Mac App Store command-line interface
 brew "mas"
+# MCP server for Grafana
+brew "mcp-grafana"
 # Run a Kubernetes cluster locally
 brew "minikube"
 # Open-source, cross-platform JavaScript runtime environment
@@ -63,8 +69,12 @@ brew "nvm"
 brew "openssh"
 # Open-source automated testing/benchmarking software
 brew "phoronix-test-suite"
+# Execute binaries from Python packages in isolated environments
+brew "pipx"
 # Fast, disk space efficient package manager
 brew "pnpm"
+# Framework for managing multi-language pre-commit hooks
+brew "pre-commit"
 # Static type checker for Python
 brew "pyright"
 # Easily download, build, install, upgrade, and uninstall Python packages
@@ -79,12 +89,18 @@ brew "rsync"
 brew "skaffold"
 # Editor of encrypted files
 brew "sops"
+# Toolkit to help you get started with Spec-Driven Development
+brew "specify"
 # Add a public key to a remote machine's authorized_keys file
 brew "ssh-copy-id"
 # Tool to build, change, and version infrastructure
 brew "terraform"
+# Linter for Terraform files
+brew "tflint"
 # Terminal multiplexer
 brew "tmux"
+# Lightweight BitTorrent client
+brew "transmission-cli"
 # Display directories as trees (with optional color/HTML output)
 brew "tree"
 # Extremely fast Python package installer and resolver, written in Rust
@@ -101,12 +117,14 @@ brew "wget"
 brew "yarn"
 # Process YAML, JSON, XML, CSV and properties documents from the CLI
 brew "yq"
+# CLI for Amp, the frontier coding agent
+brew "ampcode/tap/ampcode"
+# Kubectl Argo Rollouts Plugin.
+brew "argoproj/tap/kubectl-argo-rollouts"
 # Flux CLI
 brew "fluxcd/tap/flux"
 # Password manager that keeps all passwords secure behind one password
 cask "1password"
-# Chromium based browser
-cask "arc"
 # Multi-track audio editor and recorder
 cask "audacity"
 # Tool to flash OS images to SD cards & USB drives
@@ -129,14 +147,14 @@ cask "discord"
 cask "docker-desktop"
 # Client for the Dropbox cloud storage service
 cask "dropbox"
-# Web browser focusing on privacy
-cask "duckduckgo"
 # Web browser
 cask "firefox"
 # IR USB receiver configurator
 cask "flirc"
 # Keep your recently modified files at hand and up-to-date
 cask "fresh"
+# Set of tools to manage resources and applications hosted on Google Cloud
+cask "gcloud-cli"
 # Open-source video transcoder
 cask "handbrake-app"
 # Vector graphics editor
