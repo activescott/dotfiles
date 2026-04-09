@@ -1,0 +1,3 @@
+# readline config for bash
+# Meta+Backspace (Option+Backspace on macOS) deletes previous word
+"\e\C-?": backward-kill-word

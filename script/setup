@@ -69,6 +69,7 @@ cpsafe "$DOTFILESDIR/.shrc" ~/.shrc
 # bash:
 cpsafe "$DOTFILESDIR/.bashrc" ~/.bashrc
 cpsafe "$DOTFILESDIR/.bash_profile" ~/.bash_profile
+cpsafe "$DOTFILESDIR/.inputrc" ~/.inputrc
 
 # zsh: https://linuxhint.com/configure-setup-zshrc-zsh/
 cpsafe "$DOTFILESDIR/.zshrc" ~/.zshrc
@@ -107,3 +108,13 @@ done
 
 echo "\n########## Copying misc config files... ##########"
 [ -f "$DOTFILESDIR/.shrc-rsos" ] && cpsafe "$DOTFILESDIR/.shrc-rsos" ~/.shrc-rsos
+
+# macOS Terminal.app: enable "Use Option as Meta key" so Option+Backspace sends
+# the escape sequence that .zshrc and .inputrc bind to backward-kill-word.
+# Without this, Option+Backspace types a special character instead of deleting a word.
+if [ "$(uname)" = "Darwin" ]; then
+  current_profile=$(defaults read com.apple.Terminal "Default Window Settings" 2>/dev/null || echo "Basic")
+  /usr/libexec/PlistBuddy -c "Set 'Window Settings:${current_profile}:useOptionAsMetaKey' true" ~/Library/Preferences/com.apple.Terminal.plist 2>/dev/null \
+    && echo "Enabled 'Use Option as Meta key' for Terminal profile: ${current_profile}" \
+    || echo "Note: Manually enable 'Use Option as Meta key' in Terminal > Preferences > Profiles > Keyboard"
+fi

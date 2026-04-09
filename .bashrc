@@ -83,13 +83,18 @@ else
   echo "git-prompt not found, skipping loading git-prompt..."
 fi
 
+# Git completion (bash-only; zsh uses built-in _git via compinit)
+if [ -f ~/lib/git-completion.bash ]; then
+  source ~/lib/git-completion.bash
+fi
+
 P_GIT_BRANCH=`__git_ps1 "${RED}(%s)${COL_RESET}"`
 
 P_USER='\u'
 P_HOST='\h'
 P_PATH='\w'
 
-PROMPT_COMMAND='__git_ps1 "${MAGENTA}\u@\h${COL_RESET}" ": \w$ " " (%s)"'
+PROMPT_COMMAND='__git_ps1 "\[${MAGENTA}\]\u@\h\[${COL_RESET}\]" ": \w$ " " (%s)"'
 
 ##################################################
 # /PROMPT

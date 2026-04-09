@@ -14,6 +14,9 @@ autoload -Uz compinit
 compinit
 _comp_options+=(globdots)
 
+# Option+Backspace deletes previous word (macOS Terminal with "Use Option as Meta key")
+bindkey '^[^?' backward-kill-word
+
 # rbenv:
 which -s rbenv && eval "$(rbenv init - zsh)"
 
