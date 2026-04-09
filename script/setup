@@ -96,6 +96,14 @@ cpsafe "$DOTFILESDIR/.claude/CLAUDE.md" ~/.claude/CLAUDE.md
 cpsafe "$DOTFILESDIR/.claude/settings.json" ~/.claude/settings.json
 [ -d "$HOME/.claude/hooks" ] || mkdir -p "$HOME/.claude/hooks"
 cpsafe "$DOTFILESDIR/.claude/hooks/confirm-before-run.sh" ~/.claude/hooks/confirm-before-run.sh
+[ -d "$HOME/.claude/skills" ] || mkdir -p "$HOME/.claude/skills"
+for skill_dir in "$DOTFILESDIR/.claude/skills"/*/; do
+  skill_name=$(basename "$skill_dir")
+  dst="$HOME/.claude/skills/$skill_name"
+  [ -L "$dst" ] && echo "removing link $dst" && rm "$dst"
+  [ -d "$dst" ] && mv -v "$dst" "$dst.old-$DATE"
+  ln -vs "$skill_dir" "$dst"
+done
 
 echo "\n########## Copying misc config files... ##########"
 [ -f "$DOTFILESDIR/.shrc-rsos" ] && cpsafe "$DOTFILESDIR/.shrc-rsos" ~/.shrc-rsos
