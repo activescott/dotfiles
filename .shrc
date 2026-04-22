@@ -45,7 +45,7 @@ fi
 # PATH variable
 #####
 # NOTE: About paths: http://serverfault.com/a/146142/28798 (i.e. drop files /etc/paths.d $PATH only works in terminal )
-[ $IS_LINUX ] && export PATH="/home/linuxbrew/.linuxbrew/bin:$PATH" # homebrew bin folder on linux
+[ $IS_LINUX ] && export PATH="$PATH:/home/linuxbrew/.linuxbrew/bin" # homebrew bin folder on linux (appended so system python/ansible aren't shadowed)
 [ $IS_MAC ] && export PATH="/opt/homebrew/bin:$PATH" # homebrew on Apple Silicon: https://docs.brew.sh/Installation
 
 
