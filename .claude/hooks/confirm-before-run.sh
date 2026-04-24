@@ -11,6 +11,11 @@ patterns=(
   "--no-gpg-sign|||commits must be signed; --no-gpg-sign requires explicit user confirmation"
   "git commit|||git commit requires explicit user confirmation"
   "kubectl --context nas|||kubectl commands against the nas cluster require explicit user confirmation"
+  "gh pr merge|||merges a PR and may delete the source branch; not reversible without force-push"
+  "gh pr create|||creates a visible PR on GitHub that collaborators will be notified about"
+  "gh api|||can make arbitrary POST/PATCH/DELETE requests to the GitHub API"
+  "gh release create|||publishes a release that may trigger deployment pipelines and notify watchers"
+  "gh release delete|||permanently deletes a release and its associated assets"
 )
 
 # ── commands that are auto-approved ───────────────────────────
