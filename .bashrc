@@ -94,7 +94,9 @@ P_USER='\u'
 P_HOST='\h'
 P_PATH='\w'
 
-PROMPT_COMMAND='__git_ps1 "\[${MAGENTA}\]\u@\h\[${COL_RESET}\]" ": \w$ " " (%s)"'
+# Reset kitty keyboard protocol (CSI u mode) before each prompt in case a
+# program like Claude Code exited without cleaning up. No-op in normal mode.
+PROMPT_COMMAND='printf "\e[<u" 2>/dev/null; __git_ps1 "\[${MAGENTA}\]\u@\h\[${COL_RESET}\]" ": \w$ " " (%s)"'
 
 ##################################################
 # /PROMPT

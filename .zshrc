@@ -36,6 +36,11 @@ if [ -f ~/lib/git-prompt.sh ]; then
   . ~/lib/git-prompt.sh
 fi
 
-precmd () { __git_ps1 "%F{magenta}%n@%m%f" ": %~$ " " (%s)" }
+precmd () {
+  # Reset kitty keyboard protocol (CSI u mode) if a program like Claude Code
+  # exited without cleaning up. No-op when already in normal mode.
+  printf '\e[<u' 2>/dev/null
+  __git_ps1 "%F{magenta}%n@%m%f" ": %~$ " " (%s)"
+}
 
 ##########
