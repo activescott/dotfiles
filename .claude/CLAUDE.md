@@ -18,3 +18,4 @@
 - **After a compaction event**, if actively working on implementing a plan, re-read the plan file from `specs/<feature-name>/plan.md` to restore context.
 - NEVER include in commit messages or PR descriptions: the phrase "Claude Code", any mention of being an AI, Co-Authored-By lines, or any other AI attribution.
 - This dotfiles repo's `.claude/` directory is symlinked to `~/.claude/`. Shared skills go in `.claude/skills/<name>/SKILL.md`, shared commands in `.claude/commands/<name>.md`, and shared agents in `.claude/agents/<name>.md` — all will be available globally across projects.
+- When creating a new repo-level agent instructions file, prefer `AGENTS.md` over `CLAUDE.md`. If a `CLAUDE.md` is also wanted, make it a thin `@AGENTS.md` reference. **However**, when working in an existing repo that already uses `CLAUDE.md` (or any other convention), follow that repo's existing convention rather than introducing `AGENTS.md`.
