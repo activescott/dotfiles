@@ -170,3 +170,10 @@ else
   echo "flux not installed, skipping flux completions"
 fi
 
+# huggingface cache dir. See
+# https://huggingface.co/docs/huggingface_hub/guides/manage-cache
+#   and https://huggingface.co/docs/datasets/cache
+if [ $IS_MAC ]
+then
+	export HF_HOME=/Volumes/stack/.cache/huggingface/hub
+fi
