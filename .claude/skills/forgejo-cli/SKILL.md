@@ -40,8 +40,8 @@ The commands below are ordered by how often the corresponding `gh` command shows
 | View a PR                 | `gh pr view <id>`                    | `fj pr view <id>` (defaults to body)                                       |
 | List recent CI runs       | `gh run list`                        | `fj actions tasks`                                                         |
 | View a CI run             | `gh run view <id>`                   | (no CLI; `fj pr status <id>` for the PR's checks, else open in browser)    |
-| PR check status           | `gh pr checks <id>`                  | `fj pr status <id>`                                                        |
-| Wait for checks           | `gh run watch <id>`                  | `fj pr status <id> --wait`                                                 |
+| PR check status           | `gh pr checks <id>`                  | `fj pr status <id>` (parser-buggy when no checks — see Gotchas)            |
+| Wait for checks           | `gh run watch <id>`                  | `fj pr status <id> --wait` (same caveat)                                   |
 | List/search PRs           | `gh pr list`                         | `fj pr search [query] [-s open\|closed\|all]`                              |
 | Merge a PR                | `gh pr merge <id>`                   | `fj pr merge <id> [-M squash\|merge\|rebase] [-d]`                         |
 | View PR diff              | `gh pr diff <id>`                    | `fj pr view <id> diff` (add `-p` for patch)                                |
@@ -73,10 +73,18 @@ The commands below are ordered by how often the corresponding `gh` command shows
 
 ## Flags worth remembering
 
-- `-R, --remote <name>` — pick which **local git remote** to operate on (default: origin). Use this in repos with multiple remotes.
-- `-r, --repo <owner/name>` — operate on a repo you're not currently in.
-- `-H, --host <host>` — target a non-Codeberg Forgejo instance (top-level flag, before the subcommand).
+Flag **position** is fiddly in `fj` — most flags only work in one specific spot, and clap's error message ("unexpected argument") doesn't hint at the right one. Match the slot exactly:
+
+- `-R, --remote <name>` — pick which **local git remote** to operate on (default: origin). Lives on the **subcommand group** (e.g. `fj pr -R upstream view 2 body`), NOT on `fj` itself and NOT on the action subcommand. Use in repos with multiple remotes — typically `origin` (your fork) vs. `upstream` (the project).
+- `-r, --repo <owner/name>` — operate on a repo by name without needing a local remote. Lives on the **action subcommand**, and only some actions accept it (e.g. `fj pr search -r owner/repo`, `fj issue search -r owner/repo`). For actions that don't, use `-R <remote>` against a configured local remote instead.
+- `-H, --host <host>` — target a non-Codeberg Forgejo instance. **Top-level** on `fj`, before the subcommand: `fj -H code.example.com pr view 5`.
 - `--style minimal` — plain output for piping. `fj` already detects non-TTY but this forces it.
+
+## Known gotchas
+
+- **`fj pr search <query>` searches title/body, not the branch name.** Searching for a branch like `fix/foo` returns 0 results even when a PR for that branch exists. To find a PR by branch, list all open PRs (`fj pr search -s open`) and eyeball it, or just open the branch in the web UI.
+- **`fj pr search` is scoped to one repo at a time.** With both `origin` (your fork) and `upstream` (the project), the default search hits `origin` and shows nothing. Pass `-R upstream` (group-level) or `-r owner/repo` (action-level) to target the project.
+- **`fj pr status <id>` can panic with `unknown variant \`\``** when the PR has no CI runs or an empty status string (`Error: the response from forgejo was not properly structured ... unknown variant \`\`, expected one of \`pending\`, \`success\`, \`error\`, \`failure\`, \`warning\``). Workaround: use `fj pr view <id>` for state, and `fj pr browse <id>` for checks in the web UI.
 
 ## Common workflows
 
@@ -113,4 +121,4 @@ fj actions tasks -p 2
 
 ## When to pick which CLI
 
-A repo can have remotes pointing to **both** GitHub and a Forgejo host (e.g. a mirror). Always check `git remote get-url <remote>` for the specific remote you intend to act against, and pass `-R <remote>` to `fj` (or `--repo` to `gh`) so the action lands on the right host.
+A repo can have remotes pointing to **both** GitHub and a Forgejo host (e.g. a mirror), or have separate `origin` (your fork) and `upstream` (the project) remotes on the same Forgejo host. Always check `git remote get-url <remote>` for the specific remote you intend to act against, and pass `-R <remote>` between the subcommand group and the action (e.g. `fj pr -R upstream view 2`) so it lands on the right repo.
