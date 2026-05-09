@@ -30,6 +30,8 @@ It symlinks (not copies, despite the name) sources from this repo into `~/`:
 
 Re-running `setup` is safe: existing symlinks are replaced, real files are backed up with a timestamp.
 
+**Never** run one-off `ln`, `mkdir`, `cp`, or `mv` commands that touch `$HOME` directly — including `~/.claude/`, `~/bin/`, `~/lib/`, etc. Always add the source under this repo, update `script/setup` if the new path isn't covered by an existing loop, then run `script/setup`. This keeps `$HOME` reproducible from the repo and avoids hand-placed files that drift out of sync.
+
 ## Conventions
 
 - Shell scripts use POSIX `sh` where possible; lowercase variable names for new vars.
