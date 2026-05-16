@@ -17,6 +17,7 @@ Personal dotfiles for zsh/bash on macOS and Linux.
   - `agents/<name>.md` — global subagents
 - `script/setup` — installer (see below)
 - Top-level dotfiles: `.bashrc`, `.bash_profile`, `.zshrc`, `.zprofile`, `.shrc`, `.inputrc`, `.gitconfig` + signing includes, `.bash_secrets`
+- This dotfiles repo's `.claude/` directory is symlinked to `~/.claude/`. Shared skills go in `.claude/skills/<name>/SKILL.md`, shared commands in `.claude/commands/<name>.md`, and shared agents in `.claude/agents/<name>.md` — all will be available globally across projects.
 
 ## How `script/setup` installs
 
