@@ -94,6 +94,7 @@ alias okssh="onlykey-agent --connect"
 
 # code is a function to support passing the arguments; also use CODE_PATH to set EDITOR (which git uses for merge comments)
 # For it to work, you have to run the "Shell Command: Install 'code' command in PATH" command from the command palette in VS Code. See https://code.visualstudio.com/docs/setup/mac#_launching-from-the-command-line
+# Falls back to nano (or vi/vim) if code is not available
 if [ $IS_LINUX ]
 then
 	# via deb/apt-get goes here
@@ -105,8 +106,22 @@ else
 	CODE_PATH="/c/Program Files/Microsoft VS Code/bin/code"
 fi
 
+# Check if code command exists, otherwise fall back to default editor
+if ! command -v code >/dev/null 2>&1 && [ ! -x "$CODE_PATH" ]; then
+	# code not found, use fallback
+	if command -v nano >/dev/null 2>&1; then
+		FALLBACK_EDITOR=nano
+	elif command -v vim >/dev/null 2>&1; then
+		FALLBACK_EDITOR=vim
+	else
+		FALLBACK_EDITOR=vi
+	fi
+fi
+
 function code() {
-	if [ $IS_LINUX ]
+	if [ -n "$FALLBACK_EDITOR" ]; then
+		$FALLBACK_EDITOR "$@"
+	elif [ $IS_LINUX ]
 	then
 		$CODE_PATH --disable-gpu $@ ;
 	elif [ $IS_MAC ]
@@ -117,7 +132,9 @@ function code() {
 	fi
 }
 
-if [ $IS_LINUX ]
+if [ -n "$FALLBACK_EDITOR" ]; then
+	export EDITOR="$FALLBACK_EDITOR"
+elif [ $IS_LINUX ]
 then
 	export EDITOR='$CODE_PATH --disable-gpu -w $@ ;'
 elif [ $IS_MAC ]

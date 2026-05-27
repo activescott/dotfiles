@@ -19,13 +19,14 @@
 
 [core]
 	autocrlf = input
-	editor = code --wait
+	# editor setting omitted - git uses $EDITOR environment variable by default (set in .shrc)
 
 [diff]
 	tool = default-difftool
 
 [difftool "default-difftool"]
-	cmd = code --disable-gpu --wait --diff $LOCAL $REMOTE
+	# Uses code with diff flags if available, otherwise falls back to $EDITOR
+	cmd = sh -c 'if command -v code >/dev/null 2>&1; then code --disable-gpu --wait --diff "$LOCAL" "$REMOTE"; else "${EDITOR:-nano}" "$LOCAL"; fi'
 
 [hub]
 	protocol = https
