@@ -192,5 +192,5 @@ fi
 #   and https://huggingface.co/docs/datasets/cache
 if [ $IS_MAC ]
 then
-	export HF_HOME=/Volumes/stack/.cache/huggingface/hub
+	export HF_HOME=/Volumes/stack/.cache/huggingface
 fi
