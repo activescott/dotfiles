@@ -106,8 +106,14 @@ else
 	CODE_PATH="/c/Program Files/Microsoft VS Code/bin/code"
 fi
 
-# Check if code command exists, otherwise fall back to default editor
-if ! command -v code >/dev/null 2>&1 && [ ! -x "$CODE_PATH" ]; then
+# Check if code command exists, otherwise fall back to default editor.
+# Prefer `code` on PATH (e.g. injected by the VS Code integrated terminal)
+# and only use $CODE_PATH when it isn't, so CODE_CMD is the real binary.
+if command -v code >/dev/null 2>&1; then
+	CODE_CMD=code
+elif [ -x "$CODE_PATH" ]; then
+	CODE_CMD="$CODE_PATH"
+else
 	# code not found, use fallback
 	if command -v nano >/dev/null 2>&1; then
 		FALLBACK_EDITOR=nano
@@ -123,25 +129,21 @@ function code() {
 		$FALLBACK_EDITOR "$@"
 	elif [ $IS_LINUX ]
 	then
-		$CODE_PATH --disable-gpu $@ ;
-	elif [ $IS_MAC ]
-	then
-		$CODE_PATH $@ ;
+		"$CODE_CMD" --disable-gpu "$@"
 	else
-		"$CODE_PATH" $@ ;
+		"$CODE_CMD" "$@"
 	fi
 }
 
+# EDITOR must be a command git can prepend to a filename: no $CODE_PATH
+# (unexported, empty in git's subshell), no $@, and no trailing ';'.
 if [ -n "$FALLBACK_EDITOR" ]; then
 	export EDITOR="$FALLBACK_EDITOR"
 elif [ $IS_LINUX ]
 then
-	export EDITOR='$CODE_PATH --disable-gpu -w $@ ;'
-elif [ $IS_MAC ]
-then
-	export EDITOR='$CODE_PATH -w $@ ;'
+	export EDITOR="$CODE_CMD --disable-gpu -w"
 else
-	export EDITOR='$CODE_PATH -w $@ ;'
+	export EDITOR="$CODE_CMD -w"
 fi
 
 if [ $IS_MAC ]
