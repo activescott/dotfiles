@@ -71,6 +71,9 @@ cpsafe "$DOTFILESDIR/.bashrc" ~/.bashrc
 cpsafe "$DOTFILESDIR/.bash_profile" ~/.bash_profile
 cpsafe "$DOTFILESDIR/.inputrc" ~/.inputrc
 
+# tmux:
+cpsafe "$DOTFILESDIR/.tmux.conf" ~/.tmux.conf
+
 # zsh: https://linuxhint.com/configure-setup-zshrc-zsh/
 cpsafe "$DOTFILESDIR/.zshrc" ~/.zshrc
 cpsafe "$DOTFILESDIR/.zprofile" ~/.zprofile
