@@ -17,6 +17,8 @@ tap "paulbailey/dvdid"
 brew "actionlint"
 # Simple, modern, secure file encryption
 brew "age"
+# GitOps Continuous Delivery for Kubernetes
+brew "argocd"
 # Tool for generating GNU Standards-compliant Makefiles
 brew "automake"
 # Official Amazon AWS command-line interface
@@ -29,28 +31,30 @@ brew "cloc"
 brew "coreutils"
 # Make creating custom firmwares for ESP32/ESP8266 super easy
 brew "esphome"
+# Simple, fast and user-friendly alternative to find
+brew "fd"
 # Play, record, convert, and stream select audio and video codecs
 brew "ffmpeg"
-# Interact with Google Gemini AI models from the command-line
-brew "gemini-cli"
+# CLI tool for interacting with Forgejo
+brew "forgejo-cli"
 # GitHub command-line tool
 brew "gh"
 # Distributed revision control system
 brew "git"
-# Git extension for versioning large files
-brew "git-lfs"
 # Kubernetes package manager
 brew "helm"
+# Client library for huggingface.co hub
+brew "hf"
 # Improved top (interactive process viewer)
 brew "htop"
 # Lightweight and flexible command-line JSON processor
 brew "jq"
 # Kubernetes CLI To Manage Your Clusters In Style!
 brew "k9s"
+# Run local Kubernetes cluster in Docker
+brew "kind"
 # Tool that can switch between kubectl contexts easily and create aliases
 brew "kubectx"
-# Command-line interface to LiveKit
-brew "livekit-cli"
 # Access large language models from the command-line
 brew "llm"
 # Read the content info of a DVD
@@ -89,12 +93,8 @@ brew "rsync"
 brew "skaffold"
 # Editor of encrypted files
 brew "sops"
-# Toolkit to help you get started with Spec-Driven Development
-brew "specify"
 # Add a public key to a remote machine's authorized_keys file
 brew "ssh-copy-id"
-# Tool to build, change, and version infrastructure
-brew "terraform"
 # Linter for Terraform files
 brew "tflint"
 # Terminal multiplexer
@@ -105,8 +105,6 @@ brew "transmission-cli"
 brew "tree"
 # Extremely fast Python package installer and resolver, written in Rust
 brew "uv"
-# Command-line interface for Vercel
-brew "vercel-cli"
 # Sends magic packets to wake up network-devices
 brew "wakeonlan"
 # Executes a program periodically, showing output fullscreen
@@ -117,12 +115,6 @@ brew "wget"
 brew "yarn"
 # Process YAML, JSON, XML, CSV and properties documents from the CLI
 brew "yq"
-# CLI for Amp, the frontier coding agent
-brew "ampcode/tap/ampcode"
-# Kubectl Argo Rollouts Plugin.
-brew "argoproj/tap/kubectl-argo-rollouts"
-# Flux CLI
-brew "fluxcd/tap/flux"
 # Password manager that keeps all passwords secure behind one password
 cask "1password"
 # Multi-track audio editor and recorder
@@ -155,6 +147,10 @@ cask "flirc"
 cask "fresh"
 # Set of tools to manage resources and applications hosted on Google Cloud
 cask "gcloud-cli"
+# Terminal emulator that uses platform-native UI and GPU acceleration
+cask "ghostty"
+# Free and open-source image editor
+cask "gimp"
 # Open-source video transcoder
 cask "handbrake-app"
 # Vector graphics editor
@@ -165,6 +161,8 @@ cask "kid3"
 cask "knockknock"
 # Wallet desktop application to maintain multiple cryptocurrencies
 cask "ledger-wallet"
+# Menu bar app for running local LLMs
+cask "llamabarn"
 # Screen and video recording software
 cask "loom"
 # Open-source firewall to block unknown outgoing connections
@@ -185,18 +183,16 @@ cask "postman"
 cask "postman-agent"
 # Quick Look generator for Markdown files
 cask "qlmarkdown"
-# Thumbnails, static previews, cover art and metadata for video files
-cask "qlvideo"
 # Quick Look plugin for JSON files
 cask "quicklook-json"
+# Thumbnails, static previews, cover art and metadata for video files
+cask "quicklook-video"
 # Instant messaging application focusing on security
 cask "signal"
 # Team communication and collaboration software
 cask "slack"
 # Dictation tool including LLM reformatting
 cask "superwhisper"
-# Mesh VPN based on WireGuard
-cask "tailscale-app"
 # Messaging app with a focus on speed and security
 cask "telegram"
 # Open-source BitTorrent client
