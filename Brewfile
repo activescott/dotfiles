@@ -8,11 +8,8 @@
 # cleanup homebrew-installed shite with:
 # script/brewfile-cleanup-apps.sh (i.e. brew bundle --cleanup)
 ##################################################
-tap "ampcode/tap"
 tap "argoproj/tap"
 tap "fluxcd/tap"
-tap "nrlquaker/createzap"
-tap "paulbailey/dvdid"
 # Static checker for GitHub Actions workflow files
 brew "actionlint"
 # Simple, modern, secure file encryption
@@ -113,6 +110,10 @@ brew "wget"
 brew "yarn"
 # Process YAML, JSON, XML, CSV and properties documents from the CLI
 brew "yq"
+# Kubectl Argo Rollouts Plugin.
+brew "argoproj/tap/kubectl-argo-rollouts", trusted: true
+# Flux CLI
+brew "fluxcd/tap/flux", trusted: true
 # Password manager that keeps all passwords secure behind one password
 cask "1password"
 # Multi-track audio editor and recorder
@@ -121,8 +122,6 @@ cask "audacity"
 cask "balenaetcher"
 # UI wireframing tool
 cask "balsamiq-wireframes"
-# Free and open-source web browser
-cask "chromium"
 # Anthropic's official Claude AI desktop app
 cask "claude"
 # Terminal-based AI coding assistant
@@ -165,8 +164,6 @@ cask "llamabarn"
 cask "loom"
 # Open-source firewall to block unknown outgoing connections
 cask "lulu"
-# Video format converter (transcoder)
-cask "makemkv"
 # Simple application that will prevent iTunes or Apple Music from launching
 cask "notunes"
 # Client program for the OpenVPN Access Server
@@ -181,8 +178,6 @@ cask "postman"
 cask "postman-agent"
 # Quick Look generator for Markdown files
 cask "qlmarkdown"
-# Quick Look plugin for JSON files
-cask "quicklook-json"
 # Thumbnails, static previews, cover art and metadata for video files
 cask "quicklook-video"
 # Instant messaging application focusing on security
@@ -199,6 +194,8 @@ cask "transmission"
 cask "trezor-suite"
 # Text expander
 cask "typeit4me"
+# Google Chromium, sans integration with Google
+cask "ungoogled-chromium"
 # Development environment
 cask "vagrant"
 # Open-source code editor
