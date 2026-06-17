@@ -95,8 +95,6 @@ brew "skaffold"
 brew "sops"
 # Add a public key to a remote machine's authorized_keys file
 brew "ssh-copy-id"
-# Linter for Terraform files
-brew "tflint"
 # Terminal multiplexer
 brew "tmux"
 # Lightweight BitTorrent client
