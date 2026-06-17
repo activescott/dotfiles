@@ -49,7 +49,8 @@ fi
 [ $IS_MAC ] && export PATH="/opt/homebrew/bin:$PATH" # homebrew on Apple Silicon: https://docs.brew.sh/Installation
 
 
-export PATH="/usr/local/sbin:$PATH" # Homebrew's "sbin" on mac?
+[ $IS_MAC ] && export PATH="/opt/homebrew/sbin:$PATH" # Homebrew's "sbin" on Apple Silicon
+[ $IS_LINUX ] && export PATH="$PATH:/home/linuxbrew/.linuxbrew/sbin" # Homebrew's "sbin" on Linux
 export PATH="$PATH:/Users/scott/Library/Python/3.11/bin" # python 3.11 pip3 install --user directory on mac
 export PATH="$PATH:/usr/sbin" # non-essential system binaries
 export PATH="$HOME/bin:$PATH" # my user-local bin folder
