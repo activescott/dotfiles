@@ -92,59 +92,45 @@ alias okgit="onlykey-agent git@github.com -- git"
 # onlykey-agent connect via ssh. Use like `okssh scott@bitbox.activescott.com`
 alias okssh="onlykey-agent --connect"
 
-# code is a function to support passing the arguments; also use CODE_PATH to set EDITOR (which git uses for merge comments)
-# For it to work, you have to run the "Shell Command: Install 'code' command in PATH" command from the command palette in VS Code. See https://code.visualstudio.com/docs/setup/mac#_launching-from-the-command-line
-# Falls back to nano (or vi/vim) if code is not available
-if [ $IS_LINUX ]
-then
-	# via deb/apt-get goes here
-	CODE_PATH=/usr/bin/code
-elif [ $IS_MAC ]
-then
-	CODE_PATH=/usr/local/bin/code
-else
-	CODE_PATH="/c/Program Files/Microsoft VS Code/bin/code"
+# VS Code launcher + EDITOR setup.
+# Uses an alias (not a function) so re-sourcing this file doesn't recurse:
+# `command -v code` would otherwise re-detect a previously-defined function
+# and the function would call itself instead of the real binary.
+# For `code` on PATH on mac, run "Shell Command: Install 'code' command in PATH"
+# from the VS Code command palette. See https://code.visualstudio.com/docs/setup/mac#_launching-from-the-command-line
+unalias code 2>/dev/null
+unset -f code 2>/dev/null
+
+CODE_BIN=$(command -v code 2>/dev/null)
+if [ -z "$CODE_BIN" ]; then
+	for candidate in /usr/local/bin/code /usr/bin/code "/c/Program Files/Microsoft VS Code/bin/code"; do
+		if [ -x "$candidate" ]; then
+			CODE_BIN="$candidate"
+			break
+		fi
+	done
 fi
 
-# Check if code command exists, otherwise fall back to default editor.
-# Prefer `code` on PATH (e.g. injected by the VS Code integrated terminal)
-# and only use $CODE_PATH when it isn't, so CODE_CMD is the real binary.
-if command -v code >/dev/null 2>&1; then
-	CODE_CMD=code
-elif [ -x "$CODE_PATH" ]; then
-	CODE_CMD="$CODE_PATH"
+# EDITOR must be a command git can prepend to a filename: absolute binary,
+# no $@, no trailing ';'.
+if [ -n "$CODE_BIN" ]; then
+	if [ $IS_LINUX ]; then
+		alias code="'$CODE_BIN' --disable-gpu"
+		export EDITOR="$CODE_BIN --disable-gpu -w"
+	else
+		alias code="'$CODE_BIN'"
+		export EDITOR="$CODE_BIN -w"
+	fi
 else
-	# code not found, use fallback
 	if command -v nano >/dev/null 2>&1; then
-		FALLBACK_EDITOR=nano
+		export EDITOR=nano
 	elif command -v vim >/dev/null 2>&1; then
-		FALLBACK_EDITOR=vim
+		export EDITOR=vim
 	else
-		FALLBACK_EDITOR=vi
+		export EDITOR=vi
 	fi
 fi
-
-function code() {
-	if [ -n "$FALLBACK_EDITOR" ]; then
-		$FALLBACK_EDITOR "$@"
-	elif [ $IS_LINUX ]
-	then
-		"$CODE_CMD" --disable-gpu "$@"
-	else
-		"$CODE_CMD" "$@"
-	fi
-}
-
-# EDITOR must be a command git can prepend to a filename: no $CODE_PATH
-# (unexported, empty in git's subshell), no $@, and no trailing ';'.
-if [ -n "$FALLBACK_EDITOR" ]; then
-	export EDITOR="$FALLBACK_EDITOR"
-elif [ $IS_LINUX ]
-then
-	export EDITOR="$CODE_CMD --disable-gpu -w"
-else
-	export EDITOR="$CODE_CMD -w"
-fi
+unset CODE_BIN candidate
 
 if [ $IS_MAC ]
 then
