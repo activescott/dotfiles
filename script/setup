@@ -112,6 +112,19 @@ done
 echo "\n########## Copying misc config files... ##########"
 [ -f "$DOTFILESDIR/.shrc-rsos" ] && cpsafe "$DOTFILESDIR/.shrc-rsos" ~/.shrc-rsos
 
+# Install xterm-ghostty terminfo for root so `sudo nano` etc. work under Ghostty.
+# Ghostty installs its terminfo to the user's ~/.terminfo, but root doesn't see it,
+# causing "'xterm-ghostty': unknown terminal type." Copy the user's entry into the
+# system terminfo db via tic. Skipped if user has no xterm-ghostty entry (not Ghostty).
+echo "\n########## Installing xterm-ghostty terminfo for root... ##########"
+if infocmp -x xterm-ghostty >/dev/null 2>&1; then
+  infocmp -x xterm-ghostty | sudo tic -x - \
+    && echo "installed xterm-ghostty terminfo for root" \
+    || echo "WARNING: failed to install xterm-ghostty terminfo for root"
+else
+  echo "user has no xterm-ghostty terminfo entry; skipping (not running Ghostty?)"
+fi
+
 # macOS Terminal.app: enable "Use Option as Meta key" so Option+Backspace sends
 # the escape sequence that .zshrc and .inputrc bind to backward-kill-word.
 # Without this, Option+Backspace types a special character instead of deleting a word.
