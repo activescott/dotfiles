@@ -60,7 +60,11 @@ export PATH="$PATH:/Users/scott/.codeium/windsurf/bin"
 # https://developer.1password.com/docs/ssh/get-started/#step-4-configure-your-ssh-or-git-client
 # Only set this on macOS, not on Linux where we use forwarded agents
 if [[ "$(uname -s)" == "Darwin" ]]; then
-    export SSH_AUTH_SOCK=~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
+
+    # only set if we're not already in a remote ssh session:
+    if [[ -z "$SSH_CLIENT" ]]; then
+        export SSH_AUTH_SOCK=~/Library/Group\ Containers/2BUA8C4S2C.com.1password/t/agent.sock
+    fi
 fi
 
 #####
