@@ -2,11 +2,12 @@
 
 - Never skip signing of commits. If necessary wait on the user to authorize signing as needed
 - When staging files for git, add specific files by name instead of using `git add -A` or `git add .`
-- use lowercase variable names in bash when creating new variables
+- As standard operating procedure, stage your proposed changes and wait for the user to review before committing. Exception: proceed without waiting when the user has told you to perform multiple commits or push multiple PRs.
+- Use lowercase variable names in bash when creating new variables
 - Prefer jq and yq over python or scripts for parsing JSON/YAML on the command line
-- Never run `minikube update-context` or other commands that change the global kubectl context. Use `kubectl --context minikube` to target minikube without modifying the global context.
-- Avoid `<Box>` and similar React "CSS utility components" that merely turn props into CSS. Prefer plain `<div>` with CSS classes (preferred) or inline styles (less favorable). Exception: Themed colors that require styled-components access.
-- Only use React `useMemo`/`useCallback` when appropriate: expensive computations (sorting/mapping unbounded lists, complex transforms), referential stability needed for dependency arrays or props passed to memoized children. Do NOT wrap trivial derivations (property access, `.find()`, `.slice()`, simple conditionals) or passthrough functions.
+- Never run `minikube update-context` or other commands that change the global kubectl context. For example, use `kubectl --context minikube` to target minikube without modifying the global context.
+- Avoid `<Box>` and similar React "CSS utility components" that merely turn props into CSS. Prefer plain `<div>` with CSS classes (preferred) or inline styles (less favorable).
+- Only use React `useMemo`/`useCallback` when appropriate: expensive computations (sorting/mapping unbounded lists, complex transforms), referential stability needed for dependency arrays or props passed to memoized children. Do NOT wrap trivial derivations (property access, `.find()`/`.slice()` on small arrays, simple conditionals) or passthrough functions.
 - Do not create barrel/index files (`index.ts`) in JS/TS just to re-export from a single module. Co-locate the export in the source file instead. Only create barrel files when aggregating exports from 3+ modules in a directory.
 - Avoid dedicated section-heading comments like `// Types`, `// Hook`, `// Helper Functions`, etc. Code structure should be self-evident from the declarations themselves.
 - In TypeScript/JavaScript, use named function declarations (not arrow functions) for all module-level exports: React components, hooks, and utility functions. Use `function Foo()` not `const Foo = () =>`.
