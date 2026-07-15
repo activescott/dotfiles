@@ -160,6 +160,14 @@ function ghdev() {
 }
 
 
+# TEMPORARY: Claude Code's self-updater overwrites its own binary in place on
+# every run, silently reverting version pins (e.g. `npm install -g
+# @anthropic-ai/claude-code@2.1.199`). This blocks that so a pinned version
+# stays pinned. Needed while working around a tmux+Ghostty rendering
+# regression in 2.1.200+ (see specs/claude-code-tmux-ghostty-corruption/).
+# Remove once upstream ships a fix and you've moved back to @latest.
+export DISABLE_AUTOUPDATER=1
+
 # nvm config per https://github.com/Homebrew/homebrew-core/blob/HEAD/Formula/n/nvm.rb#L34
 which brew
 if [ $? -eq 0 ]; then
