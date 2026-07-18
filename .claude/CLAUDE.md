@@ -17,6 +17,7 @@
 - Avoid the `as` keyword for type casting in TypeScript. Instead, use type guards, proper type narrowing, or refactor code so TypeScript can infer the correct types. The `as` keyword bypasses type checking and should only be used in rare circumstances where no type-safe alternative exists. **Never use `as unknown as <Type>`** — this double-cast is almost always a hack covering up a real type mismatch. Fix the underlying types instead: correct interface definitions, widen parameter types, add proper generics, or have classes implement shared interfaces.
 - NEVER include in commit messages or PR descriptions: the phrase "Claude Code", any mention of being an AI, Co-Authored-By lines, or any other AI attribution.
 - When creating a new repo-level agent instructions file, prefer `AGENTS.md` over `CLAUDE.md`. If a `CLAUDE.md` is also wanted, make it a thin `@AGENTS.md` reference. **However**, when working in an existing repo that already uses `CLAUDE.md` (or any other convention), follow that repo's existing convention rather than introducing `AGENTS.md`.
+- For web search and web fetch, prefer the tinkerbell MCP tools (`mcp__tinkerbell-prod__web_search`, `mcp__tinkerbell-prod__web_fetch`) over the built-in WebSearch/WebFetch tools when available.
 
 ## Specs and Summaries
 
