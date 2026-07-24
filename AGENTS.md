@@ -10,6 +10,7 @@ Personal dotfiles for zsh/bash on macOS and Linux.
 - `.ssh/` — `config`, `authorized_keys`, `allowed_signers`
 - `.claude/` — **special: this directory is symlinked to `~/.claude/` and acts as the user-scoped global Claude Code config.** Anything here applies globally across all projects.
   - `CLAUDE.md` — global instructions (the user-scoped CLAUDE.md)
+  - `rules/<name>.md` — long-form rules; CLAUDE.md holds a one-line index entry linking each file (`- [Title](rules/<name>.md) — hook`), the file holds the full rule with **Why** and **How to apply**
   - `settings.json` — global Claude Code settings
   - `hooks/` — global hooks
   - `skills/<name>/SKILL.md` — global skills
