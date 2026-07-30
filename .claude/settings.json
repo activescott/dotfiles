@@ -15,6 +15,7 @@
       "Bash(gh workflow list:*)"
     ]
   },
+  "model": "opus[1m]",
   "hooks": {
     "PreToolUse": [
       {
@@ -49,8 +50,14 @@
     }
   },
   "alwaysThinkingEnabled": true,
+  "statusLine": {
+    "type": "command",
+    "command": "bash ~/.claude/plugins/cache/caveman/caveman/*/src/hooks/caveman-statusline.sh"
+  },
+  "tui": "default",
   "skipDangerousModePermissionPrompt": true,
+  "skipWorkflowUsageWarning": true,
+  "inputNeededNotifEnabled": true,
   "agentPushNotifEnabled": true,
-  "skipAutoPermissionPrompt": true,
-  "tui": "default"
+  "skipAutoPermissionPrompt": true
 }
