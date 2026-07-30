@@ -5,6 +5,7 @@ Entries linking to a file under `rules/` have full detail there (**Why** and **H
 - Never skip signing of commits. If necessary wait on the user to authorize signing as needed
 - When staging files for git, add specific files by name instead of using `git add -A` or `git add .`
 - As standard operating procedure, stage your proposed changes and wait for the user to review before committing. Exception: proceed without waiting when the user has told you to perform multiple commits or push multiple PRs.
+- When updating a PR's branch with a target branch (e.g. `main`), merge — do not rebase + force-push. The merge commit preserves the before/after state, so a bad merge is diagnosable by diffing across it; rebasing rewrites history and destroys that evidence.
 - Use lowercase variable names in bash when creating new variables
 - Prefer jq and yq over python or scripts for parsing JSON/YAML on the command line
 - [Avoid complex inline scripts](rules/avoid-complex-inline-scripts.md) — use the Edit tool for few-line changes and jq/yq for JSON/YAML instead of heredoc scripts; if a script is genuinely the right tool, explain it first
