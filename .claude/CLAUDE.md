@@ -2,6 +2,7 @@
 
 Entries linking to a file under `rules/` have full detail there (**Why** and **How to apply**); read the linked file when the rule is in play.
 
+- Whenever available prefer using Tinkerbell MCP's "Web Search" and "Web Fetch" tools over the builtin tools.
 - Never skip signing of commits. If necessary wait on the user to authorize signing as needed
 - When staging files for git, add specific files by name instead of using `git add -A` or `git add .`
 - As standard operating procedure, stage your proposed changes and wait for the user to review before committing. Exception: proceed without waiting when the user has told you to perform multiple commits or push multiple PRs.
