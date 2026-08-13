@@ -1,6 +1,6 @@
 ---
 name: specs-and-summaries
-description: Save plans/specs/summaries under docs/specs/<ticket>-<name>/; save plan.md before ExitPlanMode; keep summary.md updated at milestones
+description: Save plans/specs/summaries under docs/specs/NNN-<name>/; save plan.md before ExitPlanMode; keep summary.md updated at milestones
 metadata:
   type: feedback
 ---
@@ -10,11 +10,18 @@ For ongoing work that produces a plan, spec, or post-implementation summary
 worth preserving), save the documents under:
 
 ```
-docs/specs/<ticket>-<short-descriptive-name>/
+docs/specs/NNN-<short-descriptive-name>/
   plan.md       # implementation plan, written before starting work
   spec.md       # design/specification details
   summary.md    # what was done, what was learned, where work left off
 ```
+
+Directory naming: always prefix with `NNN` — a zero-padded 3-digit sequence
+number (`001`, `002`, …), next number = highest existing + 1. It gives every
+spec dir a unique ID and keeps directory listings in chronological order
+(ticket IDs alone sort badly and not every task has one). If the work has a
+natural ticket, insert its ID after the sequence number:
+`docs/specs/NNN-<ticket-id>-<short-descriptive-name>/`.
 
 If the repository has a convention of using specs/ or doc/specs use that to follow the repo's conventions.
 Follow the repository's conventions on whether or not to commit these files. If existing files are there and committed, commit any new files you add or changes you make. If they are not committed in the current repo, do not commit them unless asked to by the user.
