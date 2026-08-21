@@ -15,7 +15,7 @@
       "Bash(gh workflow list:*)"
     ]
   },
-  "model": "sonnet",
+  "model": "haiku",
   "hooks": {
     "PreToolUse": [
       {
@@ -30,7 +30,6 @@
     ]
   },
   "enabledPlugins": {
-    "example-skills@anthropic-agent-skills": true,
     "pyright-lsp@claude-plugins-official": true,
     "caveman@caveman": true
   },
