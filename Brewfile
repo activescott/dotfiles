@@ -38,6 +38,8 @@ brew "forgejo-cli"
 brew "gh"
 # Distributed revision control system
 brew "git"
+# Open source programming language to build simple/reliable/efficient software
+brew "go"
 # Kubernetes package manager
 brew "helm"
 # Client library for huggingface.co hub
@@ -56,6 +58,8 @@ brew "kubectx"
 brew "llm"
 # Read the content info of a DVD
 brew "lsdvd"
+# Web and API based SMTP testing
+brew "mailpit"
 # Mac App Store command-line interface
 brew "mas"
 # MCP server for Grafana
@@ -74,8 +78,12 @@ brew "phoronix-test-suite"
 brew "pipx"
 # Fast, disk space efficient package manager
 brew "pnpm"
+# PDF rendering library (based on the xpdf-3.0 code base)
+brew "poppler"
 # Framework for managing multi-language pre-commit hooks
 brew "pre-commit"
+# Pluggable multi-language version manager
+brew "proto"
 # Static type checker for Python
 brew "pyright"
 # Easily download, build, install, upgrade, and uninstall Python packages
@@ -159,7 +167,7 @@ cask "knockknock"
 # Wallet desktop application to maintain multiple cryptocurrencies
 cask "ledger-wallet"
 # Menu bar app for running local LLMs
-cask "llamabarn"
+cask "llama-app"
 # Screen and video recording software
 cask "loom"
 # Open-source firewall to block unknown outgoing connections
@@ -180,6 +188,8 @@ cask "postman-agent"
 cask "qlmarkdown"
 # Thumbnails, static previews, cover art and metadata for video files
 cask "quicklook-video"
+# Imaging utility to install operating systems to a microSD card
+cask "raspberry-pi-imager"
 # Instant messaging application focusing on security
 cask "signal"
 # Team communication and collaboration software
@@ -213,7 +223,6 @@ mas "Magnet", id: 441258766
 mas "NotePlan", id: 1505432629
 mas "Numbers", id: 409203825
 mas "Pages", id: 409201541
-mas "Slack", id: 803453959
-mas "Tailscale", id: 1475387142
+mas "Pages", id: 361309726
 mas "WhatsApp", id: 310633997
 mas "Xcode", id: 497799835
