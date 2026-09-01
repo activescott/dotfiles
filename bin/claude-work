@@ -1,0 +1,36 @@
+#!/usr/bin/env sh
+# Launch Claude Code under the "work" profile so a client's Claude subscription
+# is billed instead of the personal one.
+#
+# CLAUDE_CONFIG_DIR redirects everything account-specific to that directory:
+#   <dir>/.claude.json      global state: OAuth account, MCP servers, project history
+#   <dir>/.credentials.json OAuth tokens (also mirrored to the macOS Keychain, where
+#                           the item is namespaced "Claude Code-credentials-<sha8>",
+#                           sha8 = first 8 hex of sha256(<dir>), so profiles do not
+#                           collide)
+#   <dir>/projects, history.jsonl, sessions, todos, shell-snapshots
+#
+# The shared, repo-managed parts (CLAUDE.md, settings.json, rules, hooks, skills)
+# are symlinked into ~/.claude-work by script/setup, so both profiles read the same
+# instructions and settings out of this repo.
+#
+# First run needs an OAuth login with the client's account; Claude Code prompts for
+# it automatically because ~/.claude-work has no credentials yet.
+#
+# Note: the Claude Code background daemon is disabled whenever CLAUDE_CONFIG_DIR is
+# set (it bails early on that env var), so `claude --bg` style background work is
+# unavailable in this profile.
+#
+# Reference: https://docs.runmaestro.ai/multi-claude — the approach came from there,
+# but its step of moving ~/.claude/.claude.json aside is obsolete: setting
+# CLAUDE_CONFIG_DIR before the first login is enough, no copying required.
+
+CLAUDE_CONFIG_DIR="$HOME/.claude-work"
+export CLAUDE_CONFIG_DIR
+
+if [ ! -d "$CLAUDE_CONFIG_DIR" ]; then
+  echo "$CLAUDE_CONFIG_DIR does not exist; run script/setup in the dotfiles repo first." >&2
+  exit 1
+fi
+
+exec claude "$@"

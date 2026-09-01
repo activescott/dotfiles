@@ -28,11 +28,42 @@ It symlinks (not copies, despite the name) sources from this repo into `~/`:
 - `cpsafe_dir SRCDIR DSTDIR` — `mkdir -p DSTDIR`, then `cpsafe` each file in `SRCDIR`.
 - For `.claude/skills/`, the script symlinks each **skill directory** (not individual files) into `~/.claude/skills/<name>`.
 - The `.claude/CLAUDE.md`, `.claude/settings.json`, and `.claude/hooks/confirm-before-run.sh` are individually symlinked, so editing them in this repo edits the live globals.
+- `setup_claude_dir <dir>` does all the Claude symlinking, and runs twice: for `~/.claude` (personal) and `~/.claude-work` (see below).
 - On macOS, sets Terminal.app's `useOptionAsMetaKey` so Option+Backspace works as backward-kill-word.
 
 Re-running `setup` is safe: existing symlinks are replaced, real files are backed up with a timestamp.
 
 **Never** run one-off `ln`, `mkdir`, `cp`, or `mv` commands that touch `$HOME` directly — including `~/.claude/`, `~/bin/`, `~/lib/`, etc. Always add the source under this repo, update `script/setup` if the new path isn't covered by an existing loop, then run `script/setup`. This keeps `$HOME` reproducible from the repo and avoids hand-placed files that drift out of sync.
+
+## Claude Code account profiles
+
+Two Claude Code accounts live side by side, selected by the `CLAUDE_CONFIG_DIR`
+environment variable:
+
+| Profile  | Config dir       | How to launch                        |
+| -------- | ---------------- | ------------------------------------ |
+| personal | `~/.claude`      | `claude` (default, env var unset)     |
+| work     | `~/.claude-work` | `claude-work` (from `bin/claude-work`) |
+
+`CLAUDE_CONFIG_DIR` is the only knob needed. Claude Code resolves its config dir
+as `process.env.CLAUDE_CONFIG_DIR ?? ~/.claude`, and derives from it:
+
+- the global state file — `<dir>/.config.json` if present, otherwise
+  `$CLAUDE_CONFIG_DIR/.claude.json` (falling back to `~/.claude.json` when the var
+  is unset). This is why `~/.claude.json` sits in `$HOME` today rather than inside
+  `~/.claude`.
+- `<dir>/.credentials.json`, plus a macOS Keychain item named
+  `Claude Code-credentials-<sha8>` where `sha8` is the first 8 hex characters of
+  `sha256(<dir>)`. Profiles therefore do not share Keychain credentials.
+- `<dir>/projects`, `history.jsonl`, `sessions`, `todos`, `shell-snapshots`.
+
+Older multi-account guides that copy `~/.claude` and move a `~/.claude/.claude.json`
+out of the way are obsolete — just create the directory and log in with the env var
+set, which `script/setup` plus `bin/claude-work` do. The setup is adapted from
+<https://docs.runmaestro.ai/multi-claude>.
+
+Caveat: the Claude Code background daemon is disabled whenever `CLAUDE_CONFIG_DIR`
+is set, so background jobs are unavailable in the work profile.
 
 ## Conventions
 
