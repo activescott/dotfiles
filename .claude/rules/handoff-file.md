@@ -7,13 +7,15 @@ flight without spelunking spec directories or git history.
 
 **How to apply:**
 
-- Scope: only spec-worthy work — tasks that get (or should get) a
+- Only spec-worthy work — tasks that get (or should get) a
   `docs/specs/<ticket>-<name>/` directory per [[specs-and-summaries]]. Do not
   add quick one-off fixes.
 - When you start work on such a task, add one line item under "In progress":
   `- <concise description> — [plan](NNN-name/plan.md)` (link to the task's
   plan.md or summary.md in its spec directory, markdown-style like the
-  CLAUDE.md rule links).
+  CLAUDE.md rule links). Include recurring checks that aren't active tasks but
+  need attention at session start (verifying deployed fixes, following up on PRs,
+  monitoring logs).
 - One line per item. Detail lives in the linked spec doc, never in handoff.md.
 - When a task completes with no further work remaining, remove its line. There
   is no "Completed" section — finished work is recorded in the spec dirs and
@@ -22,7 +24,7 @@ flight without spelunking spec directories or git history.
   future spec-worthy tasks), list it the same one-line-with-link way. If not
   known, omit the section.
 - If handoff.md doesn't exist, create it starting with this self-describing
-  header:
+  template in the repo's spec root (e.g. `docs/specs/handoff.md`). If it does exist, update it in place:
 
   ```markdown
   # Handoff — in-progress work index
@@ -35,7 +37,11 @@ flight without spelunking spec directories or git history.
 
   ## In progress
 
+  _no current in-progress work_ (add lines here as you start work, including recurring checks like verifying deployed fixes or following up on PRs)
+
   ## Next up
+
+  _no known upcoming work_ (add lines here if you have a backlog of spec-worthy tasks)
   ```
 
 - Whether to commit handoff.md follows the repo's existing practice for spec
