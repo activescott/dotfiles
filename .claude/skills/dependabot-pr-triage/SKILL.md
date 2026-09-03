@@ -55,9 +55,11 @@ Loop, per PR:
 1. Check `mergeStateStatus` / `mergeable` + CI checks.
 2. Conflicting → comment `@dependabot rebase`, wait.
 3. Clean + green → verify commit triggers right release (⚠️ above).
-4. Merge via Dependabot (below).
-5. Monitor merge commit on default branch (below) — confirm actually worked, not just merge succeeded.
-6. **Only then** next PR.
+4. Check for environment approval blocks (⚠️ above) — approve if needed.
+5. Merge via Dependabot (below).
+6. Monitor merge commit on default branch (below) — confirm actually worked, not just merge succeeded.
+7. **After merge:** Re-list all open PRs — workflow concurrency may have closed/cancelled others. Check remaining PRs for new approvals needed (earlier ones now eligible to run).
+8. **Only then** next PR.
 
 ```sh
 gh pr list --repo <owner>/<repo> --state open --author "app/dependabot" \
@@ -97,6 +99,82 @@ Comment one of these, no manual merge:
 - `@dependabot close` — abandon (won't reopen for that version)
 
 Dependabot handles wait-for-checks + retry — no manual polling.
+
+## ⚠️ Environment protection approvals can block e2e_tests (or equivalent)
+
+Some workflows define `environment:` steps that require explicit approval on Dependabot PRs. GitHub Actions stops those jobs in "WAITING" status (distinct from "PENDING" = queued to start). Manual approval required per PR.
+
+Detect waiting approval:
+
+```sh
+# Check e2e_tests (or whatever job uses the environment) status on PR
+gh pr view <pr> --repo <owner>/<repo> --json statusCheckRollup \
+  -q '.statusCheckRollup[] | select(.name == "<job-name>") | .status'
+# "WAITING" = blocked on approval, "PENDING" = queued to run, "IN_PROGRESS" = running
+```
+
+Extract run ID from job URL:
+
+```sh
+job_url=$(gh pr view <pr> --repo <owner>/<repo> --json statusCheckRollup \
+  -q '.statusCheckRollup[] | select(.name == "<job-name>") | .detailsUrl' | head -1)
+run_id=$(echo "$job_url" | sed 's|.*/runs/\([0-9]*\)/.*|\1|')
+```
+
+Check for pending deployment approvals (returns empty array if none):
+
+```sh
+gh api repos/<owner>/<repo>/actions/runs/$run_id/pending_deployments \
+  -q 'length'  # 0 = no approvals waiting, >0 = approval needed
+```
+
+Approve deployment:
+
+```sh
+gh api repos/<owner>/<repo>/actions/runs/$run_id/pending_deployments -X POST --input - <<'EOF'
+{
+  "environment_ids": [<env-id>],
+  "state": "approved",
+  "comment": "Approved for testing"
+}
+EOF
+```
+
+Find environment ID if unknown:
+
+```sh
+gh api repos/<owner>/<repo>/environments/<env-name> -q '.id'
+```
+
+**One PR at a time:** If workflow has `concurrency: group: <target-branch>`, only one job per branch can hold the approval slot. Approve one PR, it runs, only then next PR's approval appears.
+
+Polling pattern to catch approvals across all open PRs:
+
+```sh
+while true; do
+  gh pr list --repo <owner>/<repo> --state open --author "app/dependabot" \
+    --json number -q '.[].number' | while read pr; do
+    job_url=$(gh pr view $pr --repo <owner>/<repo> --json statusCheckRollup \
+      -q '.statusCheckRollup[] | select(.name == "<job-name>") | .detailsUrl' | head -1)
+    if [ -n "$job_url" ]; then
+      run_id=$(echo "$job_url" | sed 's|.*/runs/\([0-9]*\)/.*|\1|')
+      if gh api repos/<owner>/<repo>/actions/runs/$run_id/pending_deployments \
+        -X POST --input - <<INNER_EOF 2>/dev/null | grep -q '"id"'; then
+{
+  "environment_ids": [<env-id>],
+  "state": "approved",
+  "comment": "Approved for testing"
+}
+INNER_EOF
+        echo "Approved PR #$pr"
+      fi
+    fi
+  done
+  sleep 30
+done
+```
+
+For continuous monitoring while waiting: `gh pr checks <pr> --watch` refreshes every 10s and shows live status.
 
 ### Watch for these Dependabot responses
 
