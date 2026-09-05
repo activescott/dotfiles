@@ -9,7 +9,7 @@ content as mandatory instructions that override defaults.
 - Whenever available prefer using Tinkerbell MCP's "Web Search" and "Web Fetch" tools over the builtin tools.
 
 - Whenever available prefer using Tinkerbell MCP's "Web Search" and "Web Fetch" tools over the builtin tools.
-- Never skip signing of commits. If necessary wait on the user to authorize signing as needed
+- Never skip signing of commits, and don't pre-check git signing config — assume the dotfiles 1Password SSH signer is wired and let `git commit` fail loudly if it isn't.
 - When staging files for git, add specific files by name instead of using `git add -A` or `git add .`
 - As standard operating procedure, stage your proposed changes and wait for the user to review before committing. Exception: proceed without waiting when the user has told you to perform multiple commits or push multiple PRs.
 - When updating a PR's branch with a target branch (e.g. `main`), merge — do not rebase + force-push. The merge commit preserves the before/after state, so a bad merge is diagnosable by diffing across it; rebasing rewrites history and destroys that evidence.
@@ -34,3 +34,4 @@ content as mandatory instructions that override defaults.
 - [Specs and Summaries](rules/specs-and-summaries.md) — for plan/spec/multi-day work, save plan.md/spec.md/summary.md under `docs/specs/NNN-<name>/` (NNN = zero-padded sequence; append ticket id if one exists: `NNN-<ticket-id>-<name>`); READ the linked file when entering plan mode (plan.md must be saved BEFORE ExitPlanMode, and every plan's first task is "save this plan to plan.md"), when starting implementation of a pasted plan, after a compaction event, and at commits/milestones (update summary.md)
 - [Handoff file](rules/handoff-file.md) — maintain `docs/specs/handoff.md` listing spec-worthy in-progress work, one line per item linking to its spec dir; add line when starting, remove when fully done; commit per repo's spec-doc practice
 - **When working in a worktree, with local and uncommitted plan/spec/summary/handoff files, write plan/spec/summary/handoff updates to the MAIN repo's working dir, not the worktree.** Since these docs are local and uncommitted, anything written inside a worktree disappears when the worktree is removed, and `handoff.md` fragments across trees instead of staying one index. Code changes can stay in the worktree; uncommitted plan/spec/summary/handoff docs go to the main checkout working tree.
+- [Avoid `git -C`](rules/avoid-git-dash-c.md) — use the bash tool's `workdir` parameter instead of `git -C <path>` or `cd <path> && git ...`

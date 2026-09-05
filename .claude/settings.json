@@ -2,6 +2,13 @@
   "permissions": {
     "allow": [
       "Bash(sleep *)",
+      "Bash(git branch --show-current:*)",
+      "Bash(git checkout -b:*)",
+      "Bash(git status:*)",
+      "Bash(git add:*)",
+      "Bash(git diff:*)",
+      "Bash(grep:*)",
+      "Bash(tail:*)",
       "Bash(gh pr view:*)",
       "Bash(gh pr checks:*)",
       "Bash(gh pr list:*)",
