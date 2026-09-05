@@ -3,3 +3,8 @@ Brewfile.lock.json
 THISSCRIPT.debug.log
 onlykey-git-sign-commit.OKERR.debug.log
 onlykey-git-sign-commit.OKRESULT.debug.log
+
+# Bug guard: setup script used to mkdir -p "~/.ssh/config" with quotes, which
+# POSIX sh does NOT expand. When run from this repo it created a literal-path
+# directory at ./~/.ssh/config. Don't track those accidental artefacts.
+/~

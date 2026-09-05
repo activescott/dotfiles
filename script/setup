@@ -80,7 +80,7 @@ cpsafe "$DOTFILESDIR/.zprofile" ~/.zprofile
 
 
 echo "\n########## Copying SSH & git config files... ##########"
-[ -d "~/.ssh/config" ] || mkdir -p "~/.ssh/config"
+[ -d "$HOME/.ssh/config" ] || mkdir -p "$HOME/.ssh/config"
 cpsafe "$DOTFILESDIR/.ssh/config" ~/.ssh/config
 
 cpsafe "$DOTFILESDIR/.config/1Password/ssh/agent.toml" ~/.config/1Password/ssh/agent.toml
@@ -94,27 +94,52 @@ cpsafe "$DOTFILESDIR/.gitconfig.commit-signing-1p.include" ~/.gitconfig.commit-s
 cpsafe "$DOTFILESDIR/.gitconfig.commit-signing-local.include" ~/.gitconfig.commit-signing-local.include
 cpsafe "$DOTFILESDIR/.gitconfig.commit-signing-onlykey.include" ~/.gitconfig.commit-signing-onlykey.include
 
+# Symlinks the repo-managed parts of the cross-harness ~/.agents/ directory.
+# opencode and other agent-compatible tools auto-discover AGENTS.md, skills,
+# and rules here; Claude Code does NOT, so setup_claude_dir also creates
+# per-profile aliases under ~/.claude/.
+setup_agents_dir() {
+ agents_dir="$HOME/.agents"
+ # Whole-dir symlinks for skills and rules (canonical sources in the dotfiles
+ # repo). Per-skill/per-rule file aliasing is overkill since these are
+ # fully repo-managed and the dotfiles repo is the only legitimate writer.
+ for sub in skills rules; do
+   dst="$agents_dir/$sub"
+   [ -L "$dst" ] && echo "removing link $dst" && rm "$dst"
+   [ -d "$dst" ] && rm -rf "$dst"
+   ln -vs "$DOTFILESDIR/.agents/$sub" "$dst"
+ done
+ # AGENTS.md: single-file symlink.
+ cpsafe "$DOTFILESDIR/.agents/AGENTS.md" "$agents_dir/AGENTS.md"
+}
+
 # Symlinks the repo-managed parts of a Claude Code config directory. Called once
 # for the default ~/.claude and once per additional account profile. A profile is
 # selected at runtime with CLAUDE_CONFIG_DIR (see bin/claude-work); Claude Code
 # then keeps .claude.json, .credentials.json, projects/ and history in that
 # directory, so each profile authenticates to its own Claude subscription while
 # reading the same instructions, settings, rules and skills from this repo.
+#
+# Skills and rules live canonically under ~/.agents/ (set up by setup_agents_dir).
+# The whole ~/.claude/skills and ~/.claude/rules directories are symlinked to
+# their ~/.agents/ counterparts so each claude profile sees the canonical set —
+# Claude Code only looks at .claude/, not .agents/. AGENTS.md is aliased the
+# same way (single-file symlink).
 setup_claude_dir() {
  claude_dir=$1
  [ -d "$claude_dir" ] || mkdir -p "$claude_dir"
  cpsafe "$DOTFILESDIR/.claude/CLAUDE.md" "$claude_dir/CLAUDE.md"
+ cpsafe "$HOME/.agents/AGENTS.md" "$claude_dir/AGENTS.md"
  cpsafe "$DOTFILESDIR/.claude/settings.json" "$claude_dir/settings.json"
  [ -d "$claude_dir/hooks" ] || mkdir -p "$claude_dir/hooks"
  cpsafe "$DOTFILESDIR/.claude/hooks/confirm-before-run.sh" "$claude_dir/hooks/confirm-before-run.sh"
- cpsafe_dir "$DOTFILESDIR/.claude/rules" "$claude_dir/rules"
- [ -d "$claude_dir/skills" ] || mkdir -p "$claude_dir/skills"
- for skill_dir in "$DOTFILESDIR/.claude/skills"/*/; do
-   skill_name=$(basename "$skill_dir")
-   dst="$claude_dir/skills/$skill_name"
+ # Replace ~/.claude/skills and ~/.claude/rules with whole-dir symlinks to
+ # ~/.agents/skills and ~/.agents/rules (set up by setup_agents_dir).
+ for sub in skills rules; do
+   dst="$claude_dir/$sub"
    [ -L "$dst" ] && echo "removing link $dst" && rm "$dst"
-   [ -d "$dst" ] && mv -v "$dst" "$dst.old-$DATE"
-   ln -vs "$skill_dir" "$dst"
+   [ -d "$dst" ] && rm -rf "$dst"
+   ln -vs "$HOME/.agents/$sub" "$dst"
  done
  # Non-default profiles share the downloaded plugin cache with ~/.claude instead
  # of re-downloading it. Which plugins are enabled still comes from settings.json.
@@ -127,6 +152,9 @@ setup_claude_dir() {
  fi
 }
 
+echo "\n########## Copying ~/.agents/skills/... ##########"
+setup_agents_dir
+
 echo "\n########## Copying Claude config files... ##########"
 setup_claude_dir "$HOME/.claude"
 
@@ -137,6 +165,33 @@ setup_claude_dir "$HOME/.claude"
 # shuffle is obsolete; CLAUDE_CONFIG_DIR alone redirects state and credentials).
 echo "\n########## Setting up Claude 'work' profile in ~/.claude-work... ##########"
 setup_claude_dir "$HOME/.claude-work"
+
+# Symlinks the repo-managed parts of an opencode config directory. opencode reads
+# ~/.config/opencode/opencode.json(c) for global config, AGENTS.md for global rules,
+# and plugins/ for local TypeScript plugins. Skills are NOT symlinked here — opencode
+# auto-discovers ~/.agents/skills/* (set up by setup_agents_dir) as well as
+# ~/.claude/skills/* (Claude-compat fallback), and caveman is installed once per
+# machine via the skill installer.
+#
+# Source files live under .config/opencode/ (not .opencode/) so the dotfiles repo
+# itself isn't treated as an opencode project — opencode walks up from cwd looking
+# for .opencode/ and would otherwise load the plugin twice (once globally, once as
+# a project-level plugin).
+setup_opencode_dir() {
+ ocdir="$HOME/.config/opencode"
+ [ -d "$ocdir" ] || mkdir -p "$ocdir"
+ [ -d "$ocdir/plugins" ] || mkdir -p "$ocdir/plugins"
+ cpsafe "$DOTFILESDIR/.config/opencode/opencode.jsonc" "$ocdir/opencode.jsonc"
+ cpsafe "$DOTFILESDIR/.config/opencode/plugins/confirm-before-run.ts" "$ocdir/plugins/confirm-before-run.ts"
+ cpsafe "$DOTFILESDIR/.config/opencode/plugins/package.json" "$ocdir/plugins/package.json"
+ # Note: we don't symlink ~/.config/opencode/AGENTS.md. The opencode config's
+ # `instructions` array points directly at ~/.agents/AGENTS.md instead, so no
+ # per-opencode symlink is needed.
+ echo "Reminder (one-time):  npx skills add JuliusBrussee/caveman --skill '*' -a opencode --yes"
+ echo "Reminder: ensure 'mcp-grafana' is on PATH (brew/npm/manual) for the grafana MCP server."
+}
+echo "\n########## Setting up opencode config in ~/.config/opencode/... ##########"
+setup_opencode_dir
 
 echo "\n########## Copying misc config files... ##########"
 [ -f "$DOTFILESDIR/.shrc-rsos" ] && cpsafe "$DOTFILESDIR/.shrc-rsos" ~/.shrc-rsos

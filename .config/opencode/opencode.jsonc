@@ -1,0 +1,57 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  // User-level opencode config; mirrored from .claude/settings.json where applicable.
+  // Docs: https://opencode.ai/docs/config#global
+
+  "lsp": true,
+
+  "permission": {
+    "bash": {
+      // Catch-all: every bash command prompts. Specific allow rules below override.
+      // Ask-patterns (--no-gpg-sign, gh release create/delete, gh api mutators) are
+      // enforced by .opencode/plugins/confirm-before-run.ts so the plugin can attach
+      // a custom reason string per pattern.
+      "*": "ask",
+      // Mirrored from .claude/settings.json permissions.allow
+      "sleep *": "allow",
+      "gh pr view *": "allow",
+      "gh pr checks *": "allow",
+      "gh pr list *": "allow",
+      "gh pr diff *": "allow",
+      "gh run view *": "allow",
+      "gh run list *": "allow",
+      "gh run watch *": "allow",
+      "gh search code *": "allow",
+      "gh release list *": "allow",
+      "gh release view *": "allow",
+      "gh workflow list *": "allow"
+    }
+  },
+
+  // MCP servers. Sourced from ~/.claude.json mcpServers (user-scoped).
+  "mcp": {
+    "tinkerbell-prod": {
+      "type": "remote",
+      "url": "https://tinkerbellbot.com/mcp",
+      "oauth": {}
+    },
+    "grafana": {
+      "type": "local",
+      "command": ["mcp-grafana"],
+      "enabled": true,
+      "environment": {
+        "GRAFANA_URL": "https://grafana.activescott.com/"
+      }
+    }
+  },
+
+  // Global AGENTS.md is the canonical rules index. opencode's own
+  // ~/.config/opencode/AGENTS.md isn't used — we point at the cross-harness
+  // ~/.agents/AGENTS.md directly via instructions. Rules are NOT eagerly
+  // loaded; AGENTS.md contains a bullet index with one-line descriptions and
+  // markdown links to the full rule files, and instructs the agent to use
+  // the Read tool to load a full rule only when it's in play.
+  "instructions": [
+    "~/.agents/AGENTS.md"
+  ]
+}

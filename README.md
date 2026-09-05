@@ -36,8 +36,33 @@ The reason this works is that `onlykey-agent git@github.com --` sets `SSH_AUTH_S
 
 - https://www.git-scm.com/docs/git-config#Documentation/git-config.txt-gpgformat
 - https://www.git-scm.com/docs/git-config#Documentation/git-config.txt-usersigningKey
-- https://docs.github.com/en/authentication/managing-commit-signature-verification/telling-git-about-your-signing-key#telling-git-about-your-ssh-key
+- https://docs.github.com/en/authentication/managing-commit-signature-verification/telling-git-about-your-signing-key
 - https://developer.1password.com/docs/ssh/git-commit-signing/
+
+### opencode
+
+User-scoped opencode config lives in `~/.config/opencode/` and is symlinked
+from this repo's `.config/opencode/` directory by `script/setup`. It mirrors
+the claude-code config in `.claude/`: same rules (via `AGENTS.md`), same MCP
+servers (`tinkerbell-prod`, `grafana`), same TypeScript LSP, and a TypeScript
+plugin that ports `confirm-before-run.sh` to opencode's `tool.execute.before`
+hook. Skills are auto-discovered from `~/.claude/skills/`.
+
+The source files live under `.config/opencode/` (not `.opencode/`) so this
+repo isn't treated as an opencode project — opencode walks up from cwd
+looking for `.opencode/` and would otherwise double-load the plugin.
+
+#### One-time per machine
+
+```sh
+# Install caveman skill for opencode (token-saving prompt rules)
+npx skills add JuliusBrussee/caveman --skill '*' -a opencode --yes
+
+# Authenticate with Tinkerbell MCP
+opencode mcp auth tinkerbell-prod
+
+# Ensure mcp-grafana is on PATH (brew/npm/manual — your call)
+```
 
 ## Thanks
 
