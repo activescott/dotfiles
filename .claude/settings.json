@@ -31,7 +31,9 @@
       "Bash(git show:*)",
       "Bash(find *:*)",
       "Bash(ls *:*)",
-      "Bash(cat *:*)"
+      "Bash(cat *:*)",
+      "Bash(jq:*)",
+      "Bash(yq:*)"
     ]
   },
   "model": "opus[1m]",

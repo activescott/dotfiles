@@ -48,7 +48,11 @@
       "ls": "allow",
       "ls *": "allow",
       "cat": "allow",
-      "cat *": "allow"
+      "cat *": "allow",
+      "jq": "allow",
+      "jq *": "allow",
+      "yq": "allow",
+      "yq *": "allow"
     }
   },
 
