@@ -141,6 +141,13 @@ setup_claude_dir() {
    [ -d "$dst" ] && rm -rf "$dst"
    ln -vs "$HOME/.agents/$sub" "$dst"
  done
+ # Slash commands are a Claude Code feature with no opencode/agent-agnostic
+ # equivalent, so they stay under .claude/ rather than ~/.agents/. Whole-dir
+ # symlink for the same reason as skills and rules: repo-managed, single writer.
+ dst="$claude_dir/commands"
+ [ -L "$dst" ] && echo "removing link $dst" && rm "$dst"
+ [ -d "$dst" ] && rm -rf "$dst"
+ ln -vs "$DOTFILESDIR/.claude/commands" "$dst"
  # Non-default profiles share the downloaded plugin cache with ~/.claude instead
  # of re-downloading it. Which plugins are enabled still comes from settings.json.
  if [ "$claude_dir" != "$HOME/.claude" ]; then

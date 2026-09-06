@@ -27,7 +27,11 @@
       "Bash(gh search code:*)",
       "Bash(gh release list:*)",
       "Bash(gh release view:*)",
-      "Bash(gh workflow list:*)"
+      "Bash(gh workflow list:*)",
+      "Bash(git show:*)",
+      "Bash(find *:*)",
+      "Bash(ls *:*)",
+      "Bash(cat *:*)"
     ]
   },
   "model": "opus[1m]",

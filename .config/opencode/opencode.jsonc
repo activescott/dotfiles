@@ -41,7 +41,14 @@
       "gh search code *": "allow",
       "gh release list *": "allow",
       "gh release view *": "allow",
-      "gh workflow list *": "allow"
+      "gh workflow list *": "allow",
+      "git show": "allow",
+      "git show *": "allow",
+      "find *": "allow",
+      "ls": "allow",
+      "ls *": "allow",
+      "cat": "allow",
+      "cat *": "allow"
     }
   },
 
