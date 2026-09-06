@@ -191,6 +191,15 @@ setup_opencode_dir() {
  cpsafe "$DOTFILESDIR/.config/opencode/opencode.jsonc" "$ocdir/opencode.jsonc"
  cpsafe "$DOTFILESDIR/.config/opencode/plugins/confirm-before-run.ts" "$ocdir/plugins/confirm-before-run.ts"
  cpsafe "$DOTFILESDIR/.config/opencode/plugins/package.json" "$ocdir/plugins/package.json"
+ # Slash commands are an opencode/agent-tool-specific feature (mirrored under
+ # .claude/commands/ for Claude Code) — keep them under .config/opencode/commands
+ # rather than ~/.agents/ since opencode and Claude's command formats differ in
+ # frontmatter options. Whole-dir symlink for the same reason as skills/rules:
+ # repo-managed, single writer.
+ dst="$ocdir/commands"
+ [ -L "$dst" ] && echo "removing link $dst" && rm "$dst"
+ [ -d "$dst" ] && rm -rf "$dst"
+ ln -vs "$DOTFILESDIR/.config/opencode/commands" "$dst"
  # Note: we don't symlink ~/.config/opencode/AGENTS.md. The opencode config's
  # `instructions` array points directly at ~/.agents/AGENTS.md instead, so no
  # per-opencode symlink is needed.
