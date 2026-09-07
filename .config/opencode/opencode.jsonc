@@ -52,7 +52,25 @@
       "jq": "allow",
       "jq *": "allow",
       "yq": "allow",
-      "yq *": "allow"
+      "yq *": "allow",
+      "wc": "allow",
+      "wc *": "allow",
+      "git remote -v": "allow",
+      "git remote -v *": "allow",
+      "awk": "allow",
+      "awk *": "allow",
+      "head": "allow",
+      "head *": "allow",
+      "git ls-remote": "allow",
+      "git ls-remote *": "allow",
+      "git status": "allow",
+      "git rev-parse": "allow",
+      "git rev-parse *": "allow",
+      "git push --force-with-lease": "allow",
+      "git push --force-with-lease *": "allow",
+      "diff": "allow",
+      "diff *": "allow",
+      "git branch -a": "allow"
     }
   },
 

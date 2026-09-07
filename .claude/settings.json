@@ -33,7 +33,16 @@
       "Bash(ls *:*)",
       "Bash(cat *:*)",
       "Bash(jq:*)",
-      "Bash(yq:*)"
+      "Bash(yq:*)",
+      "Bash(wc:*)",
+      "Bash(git remote -v:*)",
+      "Bash(awk:*)",
+      "Bash(head:*)",
+      "Bash(git ls-remote:*)",
+      "Bash(git rev-parse:*)",
+      "Bash(git push --force-with-lease:*)",
+      "Bash(diff:*)",
+      "Bash(git branch -a)"
     ]
   },
   "model": "opus[1m]",
