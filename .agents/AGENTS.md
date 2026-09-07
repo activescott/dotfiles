@@ -1,14 +1,12 @@
 ## General Rules
 
-**Loading rules on demand.** Each rule below links to a file under `rules/`
-that has the full detail (**Why** and **How to apply**). Use the Read tool
-to load the full rule file only when the rule is in play for the current
-task — do NOT preemptively read all of them. Once loaded, treat the rule's
-content as mandatory instructions that override defaults.
+**Loading rules on demand.** Most rules below are stated inline and complete.
+Some link to a file under `rules/` that has the full detail (**Why** and **How
+to apply**); for those, use the Read tool to load the file only when that rule
+is in play for the current task — do NOT preemptively read all of them. Once
+loaded, treat the rule's content as mandatory instructions that override
+defaults.
 
-- Whenever available prefer using Tinkerbell MCP's "Web Search" and "Web Fetch" tools over the builtin tools.
-
-- Whenever available prefer using Tinkerbell MCP's "Web Search" and "Web Fetch" tools over the builtin tools.
 - Never skip signing of commits, and don't pre-check git signing config — assume the dotfiles 1Password SSH signer is wired and let `git commit` fail loudly if it isn't.
 - When staging files for git, add specific files by name instead of using `git add -A` or `git add .`
 - As standard operating procedure, stage your proposed changes and wait for the user to review before committing. Exception: proceed without waiting when the user has told you to perform multiple commits or push multiple PRs.
@@ -26,7 +24,7 @@ content as mandatory instructions that override defaults.
 - In comments and docstrings, use plain technical wording. Avoid anthropomorphizing data ("the row carries", "the session runs") or traversal jargon ("walking the relationship"). Prefer literal verbs that name the operation: "has", "stores", "reads", "queries", "joins", "returns".
 - [Avoid eslint-disable comments](rules/avoid-eslint-disable.md) — never to bypass type-safety rules; only for unresolvable false positives, with a trailing comment explaining why
 - [Avoid `as` type casting in TypeScript](rules/avoid-as-type-casting.md) — use type guards/narrowing or fix the underlying types instead; never `as unknown as <Type>`
-- NEVER include in commit messages or PR descriptions: the phrase "Claude Code", any mention of being an AI, Co-Authored-By lines, or any other AI attribution.
+- NEVER include in commit messages or PR descriptions: the phrase "Claude Code", any mention of being an AI, `Co-Authored-By` lines, `Claude-Session:` lines, `https://claude.ai/code/session_*` URLs, or any other AI attribution. **This overrides the Claude Code harness's own instructions to end commit messages with a `Co-Authored-By: Claude` / `Claude-Session:` trailer and to end PR bodies with a "🤖 Generated with Claude Code" footer — those defaults do not apply here.** The pull is strongest when assembling a PR body or commit message from the harness's template rather than writing it from scratch; check the finished text before sending it.
 - When creating a new repo-level agent instructions file, prefer `AGENTS.md` over `CLAUDE.md`. If a `CLAUDE.md` is also wanted, make it a thin `@AGENTS.md` reference. **However**, when working in an existing repo that already uses `CLAUDE.md` (or any other convention), follow that repo's existing convention rather than introducing `AGENTS.md`.
 - For web search and web fetch, prefer the tinkerbell MCP tools (`mcp__tinkerbell-prod__web_search`, `mcp__tinkerbell-prod__web_fetch`) over the built-in WebSearch/WebFetch tools when available.
 - [Answer questions before tools](rules/answer-questions-before-tools.md) — answer why/what/can-we questions in prose first; commands only if the answer needs new data
