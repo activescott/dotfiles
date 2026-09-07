@@ -70,7 +70,9 @@
       "git push --force-with-lease *": "allow",
       "diff": "allow",
       "diff *": "allow",
-      "git branch -a": "allow"
+      "git branch -a": "allow",
+      "npx vitest run": "allow",
+      "npx vitest run *": "allow"
     }
   },
 
