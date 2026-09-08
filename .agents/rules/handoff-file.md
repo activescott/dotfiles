@@ -17,9 +17,14 @@ flight without spelunking spec directories or git history.
   need attention at session start (verifying deployed fixes, following up on PRs,
   monitoring logs).
 - One line per item. Detail lives in the linked spec doc, never in handoff.md.
-- When a task completes with no further work remaining, remove its line. There
-  is no "Completed" section — finished work is recorded in the spec dirs and
-  git history.
+- handoff.md lists only unfinished work — never completed work. There is no
+  "Completed" section — finished work is recorded in the spec dirs and git
+  history.
+- When a task completes, write its final status, outcome, and any caveats to
+  the spec's summary.md, not to handoff.md. If no follow-ups remain, remove
+  its handoff line entirely. If follow-ups remain, record them in summary.md
+  and keep the handoff entry reworded to the remaining work (or move it to
+  "Next up").
 - Optional "Next up" section: if upcoming work is known (an ordered backlog of
   future spec-worthy tasks), list it the same one-line-with-link way. If not
   known, omit the section.
@@ -30,9 +35,12 @@ flight without spelunking spec directories or git history.
   # Handoff — in-progress work index
 
   Each line below is one unfinished task, linking to its detailed plan/summary
-  under this directory. When you start work, add a line; when work fully
-  completes, remove the line. Keep entries to one line — detail belongs in the
-  linked spec doc. An optional "Next up" section lists known upcoming work in
+  under this directory. Never list completed work here — there is no
+  "Completed" section. When you start work, add a line; when work completes,
+  write final status and caveats to the spec's summary.md and remove the line
+  (unless follow-ups remain, which stay recorded in summary.md with the
+  handoff entry reworded to the remaining work). Keep entries to one line —
+  detail belongs in the linked spec doc. An optional "Next up" section lists known upcoming work in
   order.
 
   ## In progress
