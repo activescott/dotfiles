@@ -47,7 +47,8 @@
       "Bash(readlink:*)",
       "Bash(sed:*)",
       "Bash(kubectl --context nas get:*)",
-      "Bash(kubectl --context nas describe:*)"
+      "Bash(kubectl --context nas describe:*)",
+      "Bash(kubectl --context kind-kind:*)"
     ],
     "deny": [
       "Bash(sed -i*:*)",

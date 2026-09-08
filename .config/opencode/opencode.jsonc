@@ -84,7 +84,9 @@
       "kubectl --context nas get": "allow",
       "kubectl --context nas get *": "allow",
       "kubectl --context nas describe": "allow",
-      "kubectl --context nas describe *": "allow"
+      "kubectl --context nas describe *": "allow",
+      "kubectl --context kind-kind": "allow",
+      "kubectl --context kind-kind *": "allow"
     }
   },
 
