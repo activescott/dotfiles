@@ -47,6 +47,16 @@ for allowed in "${auto_approve[@]}"; do
   fi
 done
 
+# ── read-only kubectl nas commands are pre-authorized ──────────────
+# get/describe are allowed in settings.json permissions.allow, so skip the
+# broad kubectl --context nas ask-pattern below for them. All other nas
+# verbs still require confirmation.
+for prefix in "kubectl --context nas get" "kubectl --context nas describe"; do
+  if [[ "$command" == *"$prefix"* ]]; then
+    exit 0
+  fi
+done
+
 for entry in "${patterns[@]}"; do
   pattern="${entry%%|||*}"
   reason="${entry##*|||}"

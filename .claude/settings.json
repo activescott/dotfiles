@@ -45,7 +45,9 @@
       "Bash(git branch -a)",
       "Bash(npx vitest run:*)",
       "Bash(readlink:*)",
-      "Bash(sed:*)"
+      "Bash(sed:*)",
+      "Bash(kubectl --context nas get:*)",
+      "Bash(kubectl --context nas describe:*)"
     ],
     "deny": [
       "Bash(sed -i*:*)",

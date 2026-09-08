@@ -80,7 +80,11 @@
       "sed -i*": "deny",
       "sed -i* *": "deny",
       "sed --in-place*": "deny",
-      "sed --in-place* *": "deny"
+      "sed --in-place* *": "deny",
+      "kubectl --context nas get": "allow",
+      "kubectl --context nas get *": "allow",
+      "kubectl --context nas describe": "allow",
+      "kubectl --context nas describe *": "allow"
     }
   },
 
