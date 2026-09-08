@@ -13,7 +13,7 @@ defaults.
 - As standard operating procedure, stage your proposed changes and wait for the user to review before committing. Exception: proceed without waiting when the user has told you to perform multiple commits or push multiple PRs.
 - When updating a PR's branch with a target branch (e.g. `main`), merge — do not rebase + force-push. The merge commit preserves the before/after state, so a bad merge is diagnosable by diffing across it; rebasing rewrites history and destroys that evidence.
 - Use lowercase variable names in bash when creating new variables
-- Prefer jq and yq over python or scripts for parsing JSON/YAML on the command line
+- [Use jq/yq for JSON/YAML](rules/use-jq-yq-for-json-yaml.md) — always use `jq` for JSON and `yq` for YAML when reading or analyzing; never `python3 -c`, python heredocs, `node -e`, or similar
 - [Avoid complex inline scripts](rules/avoid-complex-inline-scripts.md) — use the Edit tool for few-line changes and jq/yq for JSON/YAML instead of heredoc scripts; if a script is genuinely the right tool, explain it first
 - Never run `minikube update-context` or other commands that change the global kubectl context. For example, use `kubectl --context minikube` to target minikube without modifying the global context.
 - Avoid `<Box>` and similar React "CSS utility components" that merely turn props into CSS. Prefer plain `<div>` with CSS classes (preferred) or inline styles (less favorable).
