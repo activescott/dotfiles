@@ -7,6 +7,7 @@ is in play for the current task — do NOT preemptively read all of them. Once
 loaded, treat the rule's content as mandatory instructions that override
 defaults.
 
+- [Avoid reading secrets](rules/avoid-reading-secrets.md) — never Read secrets into context (no `.env`/key values, no decrypt-to-plaintext to "verify"); use metadata/key-names only
 - Never skip signing of commits, and don't pre-check git signing config — assume the dotfiles 1Password SSH signer is wired and let `git commit` fail loudly if it isn't.
 - When staging files for git, add specific files by name instead of using `git add -A` or `git add .`
 - As standard operating procedure, stage your proposed changes and wait for the user to review before committing. Exception: proceed without waiting when the user has told you to perform multiple commits or push multiple PRs.
