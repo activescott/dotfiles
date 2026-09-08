@@ -1,8 +1,8 @@
 ---
-description: Generate the weekly work update for RapidSOS invoice notes from GitHub, Jira, and Slack
+description: Generate the weekly work update for client invoice notes from GitHub, Jira, and Slack
 ---
 
-Generate my weekly work update for the Invoice notes of my client work (RapidSOS),
+Generate my weekly work update for the Invoice notes of my client work,
 covering last Monday through Friday. State the exact date window at the top before
 anything else; ask only if genuinely ambiguous — if today is Sat/Sun, default to the
 workweek that just ended.
@@ -45,7 +45,7 @@ or an explicit range) instead of defaulting to the most recent workweek: $ARGUME
    numbers, root causes, and what-triggered-this details live in descriptions, not summaries —
    a run that only reads summaries will produce a vague update.
 
-3. Slack — my posts in #discuss-frontend-engineering (`C08N5MB4TEU`) for the window: weekly
+3. Slack — my posts in #discuss-frontend-engineering and #team-soup for the window: weekly
    Production Error Triage reports, incident/live-debugging threads, proposals, team decisions
    I made or announced. Context only — do NOT count Slack posts as an output metric.
 

@@ -100,10 +100,11 @@ cpsafe "$DOTFILESDIR/.gitconfig.commit-signing-onlykey.include" ~/.gitconfig.com
 # per-profile aliases under ~/.claude/.
 setup_agents_dir() {
  agents_dir="$HOME/.agents"
- # Whole-dir symlinks for skills and rules (canonical sources in the dotfiles
- # repo). Per-skill/per-rule file aliasing is overkill since these are
+ [ -d "$agents_dir" ] || mkdir -p "$agents_dir"
+ # Whole-dir symlinks for skills, rules, and commands (canonical sources in the
+ # dotfiles repo). Per-item file aliasing is overkill since these are
  # fully repo-managed and the dotfiles repo is the only legitimate writer.
- for sub in skills rules; do
+ for sub in skills rules commands; do
    dst="$agents_dir/$sub"
    [ -L "$dst" ] && echo "removing link $dst" && rm "$dst"
    [ -d "$dst" ] && rm -rf "$dst"
@@ -133,21 +134,16 @@ setup_claude_dir() {
  cpsafe "$DOTFILESDIR/.claude/settings.json" "$claude_dir/settings.json"
  [ -d "$claude_dir/hooks" ] || mkdir -p "$claude_dir/hooks"
  cpsafe "$DOTFILESDIR/.claude/hooks/confirm-before-run.sh" "$claude_dir/hooks/confirm-before-run.sh"
- # Replace ~/.claude/skills and ~/.claude/rules with whole-dir symlinks to
- # ~/.agents/skills and ~/.agents/rules (set up by setup_agents_dir).
- for sub in skills rules; do
+ # Replace ~/.claude/skills, ~/.claude/rules, and ~/.claude/commands with
+ # whole-dir symlinks to their ~/.agents/ counterparts (set up by
+ # setup_agents_dir). Claude Code only looks at .claude/, not .agents/, so each
+ # profile gets the shared set via symlink.
+ for sub in skills rules commands; do
    dst="$claude_dir/$sub"
    [ -L "$dst" ] && echo "removing link $dst" && rm "$dst"
    [ -d "$dst" ] && rm -rf "$dst"
    ln -vs "$HOME/.agents/$sub" "$dst"
  done
- # Slash commands are a Claude Code feature with no opencode/agent-agnostic
- # equivalent, so they stay under .claude/ rather than ~/.agents/. Whole-dir
- # symlink for the same reason as skills and rules: repo-managed, single writer.
- dst="$claude_dir/commands"
- [ -L "$dst" ] && echo "removing link $dst" && rm "$dst"
- [ -d "$dst" ] && rm -rf "$dst"
- ln -vs "$DOTFILESDIR/.claude/commands" "$dst"
  # Non-default profiles share the downloaded plugin cache with ~/.claude instead
  # of re-downloading it. Which plugins are enabled still comes from settings.json.
  if [ "$claude_dir" != "$HOME/.claude" ]; then
@@ -191,15 +187,13 @@ setup_opencode_dir() {
  cpsafe "$DOTFILESDIR/.config/opencode/opencode.jsonc" "$ocdir/opencode.jsonc"
  cpsafe "$DOTFILESDIR/.config/opencode/plugins/confirm-before-run.ts" "$ocdir/plugins/confirm-before-run.ts"
  cpsafe "$DOTFILESDIR/.config/opencode/plugins/package.json" "$ocdir/plugins/package.json"
- # Slash commands are an opencode/agent-tool-specific feature (mirrored under
- # .claude/commands/ for Claude Code) — keep them under .config/opencode/commands
- # rather than ~/.agents/ since opencode and Claude's command formats differ in
- # frontmatter options. Whole-dir symlink for the same reason as skills/rules:
- # repo-managed, single writer.
+ # Slash commands: opencode and Claude share the canonical source under
+ # ~/.agents/commands/ (set up by setup_agents_dir). opencode only looks at
+ # ~/.config/opencode/commands/, so symlink to the shared source.
  dst="$ocdir/commands"
  [ -L "$dst" ] && echo "removing link $dst" && rm "$dst"
  [ -d "$dst" ] && rm -rf "$dst"
- ln -vs "$DOTFILESDIR/.config/opencode/commands" "$dst"
+ ln -vs "$HOME/.agents/commands" "$dst"
  # Note: we don't symlink ~/.config/opencode/AGENTS.md. The opencode config's
  # `instructions` array points directly at ~/.agents/AGENTS.md instead, so no
  # per-opencode symlink is needed.

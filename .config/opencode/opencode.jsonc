@@ -72,7 +72,15 @@
       "diff *": "allow",
       "git branch -a": "allow",
       "npx vitest run": "allow",
-      "npx vitest run *": "allow"
+      "npx vitest run *": "allow",
+      "readlink": "allow",
+      "readlink *": "allow",
+      "sed": "allow",
+      "sed *": "allow",
+      "sed -i*": "deny",
+      "sed -i* *": "deny",
+      "sed --in-place*": "deny",
+      "sed --in-place* *": "deny"
     }
   },
 

@@ -44,6 +44,39 @@ Claude Code's `:*)` suffix matches both no-args and with-args forms, so a single
 
 opencode needs two entries: the bare pattern for no-args, and `<pattern> *` (with a leading space, then wildcard) for with-args. The trailing space avoids accidental prefix matches (e.g. a `sleep` rule must not also allow `sleeping`). The existing config follows this for `sleep`, `gh pr checks`, etc.; some `git` rules use the looser `<pattern>*` form, but prefer the narrower two-rule form for new entries.
 
+**Specificity**: opencode resolves bash permission rules by most-specific-match-wins, with last-defined breaking ties (per the [opencode docs](https://opencode.ai/docs/config#permissions)). A more specific rule always overrides a broader one regardless of order in the map — e.g. `"find *": "allow"` plus `"find * -exec *": "ask"` lets plain `find` through but prompts for `find * -exec *`. For ties (two equally specific rules), the later one wins. To layer an override, just add the narrower rule; position only matters when specificities are equal.
+
+### Blocking unsafe variants
+
+When a pattern is unsafe because one variant is destructive (e.g. `sed -i` rewrites files in place), allow the safe forms and deny the unsafe ones — both tools support layered allow + deny rules.
+
+**Claude** — add a `permissions.deny` array alongside `allow` (create it if absent):
+
+```
+"deny": [
+  "Bash(<tool> -<unsafe-flag>*:*)",
+  "Bash(<tool> --<unsafe-long-flag>*:*)"
+]
+```
+
+Deny rules short-circuit the check before `allow` is consulted. Use middle `*` as a glob wildcard — `Bash(sed -i*:*)` matches `sed -i`, `sed -i.bak`, `sed -iXXX`.
+
+**opencode** — append deny entries to `permission.bash` AFTER the allow entries for the same tool (last matching rule wins, so the later deny overrides the earlier allow). Add both the bare and ` *` forms, mirroring the allow convention — the bare form covers the flag with no further args:
+
+```
+"<tool> -<unsafe-flag>*": "deny",
+"<tool> -<unsafe-flag>* *": "deny",
+"<tool> --<unsafe-long-flag>*": "deny",
+"<tool> --<unsafe-long-flag>* *": "deny"
+```
+
+**Example (sed)** — allow read-only transforms, block in-place edits:
+
+| File                                  | Allow             | Deny                                                              |
+| ------------------------------------- | ----------------- | ----------------------------------------------------------------- |
+| `~/.claude/settings.json`             | `"Bash(sed:*)"`   | `"Bash(sed -i*:*)"`, `"Bash(sed --in-place*:*)"`                  |
+| `~/.config/opencode/opencode.jsonc`   | `"sed"` + `"sed *"` | `"sed -i*"`, `"sed -i* *"`, `"sed --in-place*"`, `"sed --in-place* *"` (placed after the allow entries) |
+
 If a rule for the pattern already exists in either file (search for `Bash(<pattern>:` in Claude, and `<pattern>` as a JSON key in opencode), tell me and stop — don't duplicate.
 
 ## Steps

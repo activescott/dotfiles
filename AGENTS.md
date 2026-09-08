@@ -10,15 +10,15 @@ Personal dotfiles for zsh/bash on macOS and Linux.
 - `.ssh/` — `config`, `authorized_keys`, `allowed_signers`
 - `.claude/` — **special: this directory is symlinked to `~/.claude/` and acts as the user-scoped global Claude Code config.** Anything here applies globally across all projects.
   - `CLAUDE.md` — global instructions (the user-scoped CLAUDE.md)
-  - `rules/<name>.md` — long-form rules; CLAUDE.md holds a one-line index entry linking each file (`- [Title](rules/<name>.md) — hook`), the file holds the full rule with **Why** and **How to apply**
   - `settings.json` — global Claude Code settings
   - `hooks/` — global hooks
-  - `skills/<name>/SKILL.md` — global skills
-  - `commands/<name>.md` — global slash commands
-  - `agents/<name>.md` — global subagents
+- `.agents/` — shared cross-harness source for items both Claude and opencode use. `script/setup` symlinks each tool's own discovery path to the matching subdir here, so the canonical source lives in one place.
+  - `skills/<name>/SKILL.md` — global skills (shared by Claude and opencode)
+  - `rules/<name>.md` — long-form rules (shared by Claude and opencode); the rules index lives in `AGENTS.md`
+  - `commands/<name>.md` — global slash commands (shared by Claude and opencode)
 - `script/setup` — installer (see below)
 - Top-level dotfiles: `.bashrc`, `.bash_profile`, `.zshrc`, `.zprofile`, `.shrc`, `.inputrc`, `.gitconfig` + signing includes, `.bash_secrets`
-- This dotfiles repo's `.claude/` directory is symlinked to `~/.claude/`. Shared skills go in `.claude/skills/<name>/SKILL.md`, shared commands in `.claude/commands/<name>.md`, and shared agents in `.claude/agents/<name>.md` — all will be available globally across projects.
+- This dotfiles repo's `.claude/` directory is symlinked to `~/.claude/`. The `.claude/skills/`, `.claude/rules/`, and `.claude/commands/` paths inside it are symlinks to their `.agents/` counterparts so Claude Code sees the shared set.
 
 ## How `script/setup` installs
 
@@ -26,7 +26,7 @@ It symlinks (not copies, despite the name) sources from this repo into `~/`:
 
 - `cpsafe SRC DST` — if `DST` is an existing symlink, removes it; if a real file, renames to `DST.old-<timestamp>`; then `ln -s SRC DST`.
 - `cpsafe_dir SRCDIR DSTDIR` — `mkdir -p DSTDIR`, then `cpsafe` each file in `SRCDIR`.
-- For `.claude/skills/`, the script symlinks each **skill directory** (not individual files) into `~/.claude/skills/<name>`.
+- `setup_agents_dir` symlinks whole dirs (`skills`, `rules`, `commands`) from the repo into `~/.agents/`; `setup_claude_dir` symlinks `~/.claude/skills|rules|commands` to their `~/.agents/` counterparts.
 - The `.claude/CLAUDE.md`, `.claude/settings.json`, and `.claude/hooks/confirm-before-run.sh` are individually symlinked, so editing them in this repo edits the live globals.
 - `setup_claude_dir <dir>` does all the Claude symlinking, and runs twice: for `~/.claude` (personal) and `~/.claude-work` (see below).
 - On macOS, sets Terminal.app's `useOptionAsMetaKey` so Option+Backspace works as backward-kill-word.
