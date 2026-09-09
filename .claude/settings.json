@@ -48,7 +48,8 @@
       "Bash(sed:*)",
       "Bash(kubectl --context nas get:*)",
       "Bash(kubectl --context nas describe:*)",
-      "Bash(kubectl --context kind-kind:*)"
+      "Bash(kubectl --context kind-kind:*)",
+      "Bash(npx prettier:*)"
     ],
     "deny": [
       "Bash(sed -i*:*)",
@@ -72,7 +73,6 @@
   "enabledPlugins": {
     "pyright-lsp@claude-plugins-official": true,
     "caveman@caveman": true,
-    "cloudflare@cloudflare": true,
     "typescript-lsp@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
@@ -87,12 +87,6 @@
       "source": {
         "source": "github",
         "repo": "JuliusBrussee/caveman"
-      }
-    },
-    "cloudflare": {
-      "source": {
-        "source": "github",
-        "repo": "cloudflare/skills"
       }
     }
   },

@@ -86,7 +86,9 @@
       "kubectl --context nas describe": "allow",
       "kubectl --context nas describe *": "allow",
       "kubectl --context kind-kind": "allow",
-      "kubectl --context kind-kind *": "allow"
+      "kubectl --context kind-kind *": "allow",
+      "npx prettier": "allow",
+      "npx prettier *": "allow"
     }
   },
 
