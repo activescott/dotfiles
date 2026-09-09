@@ -49,7 +49,10 @@
       "Bash(kubectl --context nas get:*)",
       "Bash(kubectl --context nas describe:*)",
       "Bash(kubectl --context kind-kind:*)",
-      "Bash(npx prettier:*)"
+      "Bash(npx prettier:*)",
+      "Bash(gh issue view:*)",
+      "Bash(gh search issues:*)",
+      "Bash(gh repo view:*)"
     ],
     "deny": [
       "Bash(sed -i*:*)",

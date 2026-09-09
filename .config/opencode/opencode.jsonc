@@ -88,7 +88,13 @@
       "kubectl --context kind-kind": "allow",
       "kubectl --context kind-kind *": "allow",
       "npx prettier": "allow",
-      "npx prettier *": "allow"
+      "npx prettier *": "allow",
+      "gh issue view": "allow",
+      "gh issue view *": "allow",
+      "gh search issues": "allow",
+      "gh search issues *": "allow",
+      "gh repo view": "allow",
+      "gh repo view *": "allow"
     }
   },
 
