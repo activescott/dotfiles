@@ -12,32 +12,33 @@ or an explicit range) instead of defaulting to the most recent workweek: $ARGUME
 
 ## Gather
 
-1. GitHub — RapidSOS/milky-way, PRs I authored:
+1. GitHub — PRs I authored across the **whole RapidSOS org**, not one repo
+   (`--owner`, not `--repo`; I work in many repos there):
 
    ```bash
-   gh search prs --author=activescott --repo RapidSOS/milky-way --updated=">=<mon>" \
-     --limit 60 --json number,title,state,isDraft,url,createdAt,updatedAt,closedAt --sort updated
+   gh search prs --author=activescott --owner=RapidSOS --updated=">=<mon>" \
+     --limit 100 --json repository,number,title,state,isDraft,url,createdAt,updatedAt,closedAt --sort updated
    ```
 
-   Then per PR:
+   Then per PR, using the `repository` from that result — do not assume one repo:
 
    ```bash
-   gh pr view <n> --repo RapidSOS/milky-way \
+   gh pr view <n> --repo RapidSOS/<repo> \
      --json number,state,additions,deletions,changedFiles,commits
    ```
 
    Also count PRs I reviewed for others:
 
    ```bash
-   gh search prs --reviewed-by=activescott --repo RapidSOS/milky-way --updated=">=<mon>"
+   gh search prs --reviewed-by=activescott --owner=RapidSOS --updated=">=<mon>"
    ```
 
    Exclude from all counts any PR merged before the window that merely got touched inside it.
 
-2. Jira — SOUP project. Note JQL precedence: parenthesize the OR.
+2. Jira — my tickets. Note JQL precedence: parenthesize the OR.
 
    ```
-   project = SOUP AND (assignee = currentUser() OR reporter = currentUser())
+   (assignee = currentUser() OR reporter = currentUser())
      AND updated >= "<mon>" AND updated < "<sat>" ORDER BY updated DESC
    ```
 
@@ -45,7 +46,7 @@ or an explicit range) instead of defaulting to the most recent workweek: $ARGUME
    numbers, root causes, and what-triggered-this details live in descriptions, not summaries —
    a run that only reads summaries will produce a vague update.
 
-3. Slack — my posts in #discuss-frontend-engineering and #team-soup for the window: weekly
+3. Slack — my posts across any channel for the window: weekly
    Production Error Triage reports, incident/live-debugging threads, proposals, team decisions
    I made or announced. Context only — do NOT count Slack posts as an output metric.
 
@@ -78,8 +79,8 @@ Count canceled/superseded tickets separately from delivered — never fold them 
 Derive "active weekdays" from PR and Jira activity dates, not local git log (which only sees
 the checked-out branch).
 
-Never include an hours estimate or anything that reads as one. The proxy metrics work because
-they are countable facts; a number implying hours is one I would have to defend.
+Never include an hours estimate or anything that reads as one. The metrics above work because
+they are countable facts; an implied hours number is not.
 
 Flag any judgment call that materially changed the counts (exclusions, how something was
 categorized) in a line or two after the update.
