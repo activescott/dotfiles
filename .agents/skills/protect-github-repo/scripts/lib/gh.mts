@@ -29,6 +29,9 @@ export function ghApiJson<T>(args: string[]): T {
  */
 export function ghApiJsonOrNull<T>(args: string[]): T | null {
   const result = spawnSync("gh", ["api", ...args], { encoding: "utf8" })
+  if (result.error) {
+    throw new Error(`failed to launch gh: ${result.error.message}`)
+  }
   if (result.status === 0) {
     return JSON.parse(result.stdout)
   }
@@ -46,5 +49,8 @@ export function ghApiJsonOrNull<T>(args: string[]): T | null {
 
 export function ghApiRaw(args: string[]): { status: number; stdout: string; stderr: string } {
   const result = spawnSync("gh", ["api", ...args], { encoding: "utf8" })
+  if (result.error) {
+    throw new Error(`failed to launch gh: ${result.error.message}`)
+  }
   return { status: result.status ?? -1, stdout: result.stdout, stderr: result.stderr }
 }

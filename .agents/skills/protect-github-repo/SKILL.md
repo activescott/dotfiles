@@ -17,6 +17,12 @@ The actual GitHub writes are done by a deterministic script
 the `gh` CLI for every API call, so it inherits whatever account is currently `gh auth`'d — it
 never touches a token directly.
 
+## Prerequisites
+
+Run `npm install` once in `scripts/` before first use — it installs the `prompts` runtime
+dependency (interactive fallback for `apply`; see [Run the script](#run-the-script)). Needs
+Node ≥22.6 for `--experimental-strip-types` (see [Gotchas](#gotchas)).
+
 ## ⚠️ Confirm the target before running anything
 
 This skill changes who can write to a repository. Do not infer the target from the current
@@ -118,10 +124,14 @@ node --experimental-strip-types protect-repo.mts apply <owner>/<repo> [--status-
 - When a mechanism already matches canonical, or doesn't exist yet, `apply` never prompts for
   it — there's nothing to decide. Only a mismatch triggers the overwrite decision.
 - Before any overwrite, the script writes the current ruleset JSON / CODEOWNERS content to
-  `./.protect-github-repo-backups/<owner>-<repo>/<timestamp>/` (relative to wherever you ran it
-  from) and prints the path. Tell the user where the backup landed.
+  `scripts/.protect-github-repo-backups/<owner>-<repo>/<timestamp>/` (anchored to the script's
+  own directory, not wherever you ran it from) and prints the path. Tell the user where the
+  backup landed.
 - `--bypass-user` overrides the default `activescott` owner login.
-- First run needs `npm install` once in `scripts/` (installs the `prompts` runtime dependency).
+- **No rollback across the two writes.** `apply` updates the ruleset and CODEOWNERS as two
+  separate steps. If the first succeeds and the second fails (e.g. a transient `gh api` error),
+  the repo is left with one updated and one not — re-run `apply` to finish the other; the backup
+  from the completed step is already on disk if you need to compare or revert it.
 
 Re-run `inspect --json` afterward and confirm the report now shows `coreMatchesCanonical: true`
 and `codeowners.matchesCanonical: true` (plus the status checks the user chose), and report that

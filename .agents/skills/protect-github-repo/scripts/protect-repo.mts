@@ -132,8 +132,15 @@ function resolveUserId(login: string): number {
 }
 
 function findBranchRulesets(owner: string, repo: string): Array<Record<string, unknown>> {
-  const summaries = ghApiJson<RulesetSummary[]>([`repos/${owner}/${repo}/rulesets`])
-  return summaries
+  // --paginate follows every page; --slurp wraps the pages into an outer array (one sub-array
+  // per page) rather than a flat list, hence the .flat().
+  const pages = ghApiJson<RulesetSummary[][]>([
+    `repos/${owner}/${repo}/rulesets`,
+    "--paginate",
+    "--slurp",
+  ])
+  return pages
+    .flat()
     .filter((summary) => summary.target === "branch")
     .map((summary) => ghApiJson<Record<string, unknown>>([`repos/${owner}/${repo}/rulesets/${summary.id}`]))
 }
@@ -332,18 +339,18 @@ async function resolveRequiredStatusCheckContexts(
   )
 }
 
-/** Decides whether to overwrite an existing mechanism: the matching flag, its opposite skip flag, or a prompt. */
+/**
+ * Decides whether to overwrite an existing, differing mechanism: the matching --overwrite-*
+ * flag, or a prompt. Callers only reach this after their own --skip-* guard has already let the
+ * mechanism through, so there's no separate skip check to make here.
+ */
 async function resolveOverwriteDecision(
   flags: Flags,
   overwriteFlag: string,
-  skipFlag: string,
   confirmMessage: string,
 ): Promise<boolean> {
   if (flagBoolean(flags, overwriteFlag)) {
     return true
-  }
-  if (flagBoolean(flags, skipFlag)) {
-    return false
   }
   return confirmPrompt(confirmMessage)
 }
@@ -395,7 +402,6 @@ async function apply(owner: string, repo: string, flags: Flags): Promise<void> {
         const overwrite = await resolveOverwriteDecision(
           flags,
           "overwrite-ruleset",
-          "skip-ruleset",
           `Overwrite the existing "${RULESET_NAME}" ruleset on ${owner}/${repo}?`,
         )
         if (overwrite) {
@@ -433,7 +439,6 @@ async function apply(owner: string, repo: string, flags: Flags): Promise<void> {
         const overwrite = await resolveOverwriteDecision(
           flags,
           "overwrite-codeowners",
-          "skip-codeowners",
           `Overwrite CODEOWNERS at ${existing.path} on ${owner}/${repo}?`,
         )
         if (overwrite) {
