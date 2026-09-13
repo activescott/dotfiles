@@ -1,0 +1,13 @@
+{
+  "name": "protect-github-repo-script",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "prompts": "^2.4.2"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/prompts": "^2.4.9",
+    "typescript": "^5.7.2"
+  }
+}
