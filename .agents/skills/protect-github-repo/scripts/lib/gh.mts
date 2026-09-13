@@ -46,11 +46,3 @@ export function ghApiJsonOrNull<T>(args: string[]): T | null {
     `gh api ${args.join(" ")} failed (exit ${result.status}): ${result.stderr.trim()}`,
   )
 }
-
-export function ghApiRaw(args: string[]): { status: number; stdout: string; stderr: string } {
-  const result = spawnSync("gh", ["api", ...args], { encoding: "utf8" })
-  if (result.error) {
-    throw new Error(`failed to launch gh: ${result.error.message}`)
-  }
-  return { status: result.status ?? -1, stdout: result.stdout, stderr: result.stderr }
-}

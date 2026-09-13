@@ -134,13 +134,6 @@ export function stripRulesetMetadata(ruleset: Record<string, unknown>): Record<s
   return stripped
 }
 
-export function rulesetMatches(
-  existing: Record<string, unknown>,
-  canonical: RulesetPayload,
-): boolean {
-  return stableStringify(stripRulesetMetadata(existing)) === stableStringify(canonical)
-}
-
 /**
  * Drops the `required_status_checks` rule, since which checks (if any) are
  * required is a separate, repo-specific decision reported on its own via
