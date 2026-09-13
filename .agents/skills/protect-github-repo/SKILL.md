@@ -11,9 +11,10 @@ branch, blocks deletion and force-push, restricts merges to squash-only, and let
 owner bypass. Optionally requires selected CI status checks to pass and the branch to be up to
 date before merge.
 
-The actual GitHub writes are done by a deterministic script
-(`scripts/protect-repo.mts`, run with `node --experimental-strip-types`), not by hand-rolled
-`gh api` calls in this document — see [Run the script](#run-the-script). The script itself uses
+The actual GitHub writes are done by a deterministic script (`scripts/protect-repo.mts`), not by
+hand-rolled `gh api` calls in this document — see [Run the script](#run-the-script). It's
+executable directly (`./protect-repo.mts ...`) via a `#!/usr/bin/env -S node
+--experimental-strip-types` shebang, so there's no separate build step. The script itself uses
 the `gh` CLI for every API call, so it inherits whatever account is currently `gh auth`'d — it
 never touches a token directly.
 
@@ -68,7 +69,7 @@ updated in place wherever GitHub already finds one):
 
 ```bash
 cd .agents/skills/protect-github-repo/scripts
-node --experimental-strip-types protect-repo.mts inspect <owner>/<repo> --json
+./protect-repo.mts inspect <owner>/<repo> --json
 ```
 
 This is read-only. **Always pass `--json` when you (the agent) are the one reading the output** —
@@ -84,8 +85,8 @@ Either form reports:
   currently requires (if any)
 - any *other* branch rulesets present (the script never touches these — just warns)
 - whether CODEOWNERS already exists, where, and whether its content matches canonical
-- the repo's available status-check contexts, gathered from active Actions workflows and the
-  check-runs actually seen on the default branch's tip commit
+- the repo's available status-check contexts — real check-run names actually seen on the default
+  branch's tip commit, each flagged as already-required or addable
 
 **Read the result before doing anything else.** Specifically:
 
@@ -106,7 +107,7 @@ Either form reports:
 Then apply:
 
 ```bash
-node --experimental-strip-types protect-repo.mts apply <owner>/<repo> [--status-checks <ctx1,ctx2 | none>] \
+./protect-repo.mts apply <owner>/<repo> [--status-checks <ctx1,ctx2 | none>] \
   [--overwrite-ruleset] [--overwrite-codeowners] [--skip-ruleset] [--skip-codeowners] \
   [--bypass-user <login>]
 ```
@@ -166,13 +167,16 @@ broken token rather than a pending invite. Always tell the user an invite is wai
   admin-of-the-role (e.g. a promoted collaborator) would also bypass under `RepositoryRole`. This
   skill locks bypass to the one named person instead. It's a different choice than some
   pre-existing repos may use — don't treat those as the template to match.
-- **Status-check context strings must match exactly** what GitHub shows on a PR, which for
-  Actions is usually `<job name>`, not the workflow file's `name:`. `inspect`'s
-  `availableStatusChecks` pulls both the workflow list and real check-run names seen on the
-  default branch tip, but if the repo has never run a check on that branch (e.g. checks only run
-  on PR branches), the check-run list may be empty even though workflows exist — mention this to
-  the user if `--status-checks` picks turn out to reference something that never shows up
-  required.
+- **Status-check contexts are per-job check-run names, not the workflow's own name.** A workflow
+  declared `name: validate` with a job `kustomize-build` registers as the check-run
+  `"kustomize-build"` — never `"validate"`. `inspect`'s `availableStatusChecks` is sourced only
+  from real check-runs on the default branch's tip commit for exactly this reason: the Actions
+  workflows list (`repos/{owner}/{repo}/actions/workflows`) returns workflow names, which can
+  never satisfy a required status check — offering one as a candidate would let someone require a
+  check that never passes, permanently blocking merges. One consequence: if the repo has never
+  run a check against that exact commit (e.g. checks only fire on `pull_request`, not `push` to
+  the default branch), `availableStatusChecks` can come back empty even though workflows exist —
+  mention this to the user rather than falling back to the workflow name.
 - **Private repos need a paid plan.** Rulesets enforce on public repos on any plan, but on
   private repos only with Pro, Team, or Enterprise. On a Free account a ruleset on a private repo
   will not be enforced — check the plan before promising protection.
