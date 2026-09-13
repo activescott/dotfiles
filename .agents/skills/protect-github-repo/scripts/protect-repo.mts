@@ -1,3 +1,4 @@
+#!/usr/bin/env -S node --experimental-strip-types
 import { Buffer } from "node:buffer"
 import { ghApi, ghApiJson } from "./lib/gh.mts"
 import {
@@ -36,8 +37,8 @@ function usageAndExit(): never {
   console.error(
     [
       "usage:",
-      "  protect-repo.mts inspect <owner>/<repo> [--bypass-user <login>] [--json]",
-      "  protect-repo.mts apply <owner>/<repo> [--status-checks <comma-list|none>] " +
+      "  ./protect-repo.mts inspect <owner>/<repo> [--bypass-user <login>] [--json]",
+      "  ./protect-repo.mts apply <owner>/<repo> [--status-checks <comma-list|none>] " +
         "[--bypass-user <login>] [--overwrite-ruleset] [--overwrite-codeowners] " +
         "[--skip-ruleset] [--skip-codeowners]",
       "    omitted --status-checks / --overwrite-* / --skip-* fall back to an interactive " +
@@ -254,9 +255,11 @@ function printInspectReport(report: InspectReport): void {
     printDiffEntries(named.diff)
   }
   const currentChecks = named?.currentRequiredStatusChecks ?? []
-  console.log(
-    `  status checks required: ${currentChecks.length > 0 ? currentChecks.join(", ") : dim("none")}`,
-  )
+  if (currentChecks.length > 0) {
+    console.log(`  ${green("✔")} required status checks: ${currentChecks.join(", ")}`)
+  } else {
+    console.log(`  ${yellow("⚠")} no required status checks`)
+  }
   for (const other of others) {
     console.log(
       `  ${yellow("⚠")} other ruleset present: "${other.name}" (id ${String(other.id)}) — apply leaves this untouched`,
@@ -275,22 +278,43 @@ function printInspectReport(report: InspectReport): void {
     console.log(`      canonical: ${JSON.stringify(canonicalCodeownersPreview)}`)
   }
 
+  const requiredContexts = new Set(currentChecks)
+  const addableChecks = availableStatusChecks.filter((check) => !requiredContexts.has(check.context))
+
   console.log()
   console.log(bold("Available status checks"))
   if (availableStatusChecks.length === 0) {
     console.log(`  ${dim("none observed yet")}`)
   } else {
     for (const check of availableStatusChecks) {
-      console.log(`  - ${check.context} ${dim(`(${check.source})`)}`)
+      const status = requiredContexts.has(check.context)
+        ? green("✔ required")
+        : yellow("○ not required — could add")
+      const flagHint = check.label === check.context ? "" : ` ${dim(`[--status-checks value: ${check.context}]`)}`
+      console.log(`  - ${check.label}${flagHint} ${status}`)
     }
   }
 
   console.log()
   const rulesetNeedsOverwrite = named !== undefined && !named.coreMatchesCanonical
   const codeownersNeedsOverwrite = codeowners.exists && !codeowners.matchesCanonical
-  if (!rulesetNeedsOverwrite && !codeownersNeedsOverwrite && named !== undefined && codeowners.exists) {
+  const hasAddableChecks = addableChecks.length > 0
+  if (
+    !rulesetNeedsOverwrite &&
+    !codeownersNeedsOverwrite &&
+    !hasAddableChecks &&
+    named !== undefined &&
+    codeowners.exists
+  ) {
     console.log(`${green("✔")} already matches canonical — nothing to apply`)
   } else {
+    if (hasAddableChecks) {
+      console.log(
+        `${yellow("⚠")} ${addableChecks.length} status check(s) available but not required: ` +
+          `${addableChecks.map((check) => check.context).join(", ")}`,
+      )
+      console.log()
+    }
     const statusChecksArg = availableStatusChecks.length === 0 ? "none" : "<ctx1,ctx2|none>"
     const overwriteFlags = [
       rulesetNeedsOverwrite ? "--overwrite-ruleset" : "",
@@ -302,7 +326,7 @@ function printInspectReport(report: InspectReport): void {
     console.log(`To ${verb} the canonical settings shown above, run:`)
     console.log()
     console.log(
-      `  node --experimental-strip-types protect-repo.mts apply ${repo.owner}/${repo.repo} ` +
+      `  ./protect-repo.mts apply ${repo.owner}/${repo.repo} ` +
         `--status-checks ${statusChecksArg}${overwriteFlags ? ` ${overwriteFlags}` : ""}`,
     )
     if (statusChecksArg !== "none") {
@@ -335,7 +359,7 @@ async function resolveRequiredStatusCheckContexts(
   }
   return multiselectPrompt(
     "Which status checks should be required to pass before merging?",
-    available.map((check) => check.context),
+    available.map((check) => ({ label: check.label, value: check.context })),
   )
 }
 

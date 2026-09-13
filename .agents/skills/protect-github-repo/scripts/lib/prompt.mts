@@ -17,13 +17,16 @@ export async function confirmPrompt(message: string): Promise<boolean> {
   return response.value
 }
 
-export async function multiselectPrompt(message: string, choices: string[]): Promise<string[]> {
+export async function multiselectPrompt(
+  message: string,
+  choices: Array<{ label: string; value: string }>,
+): Promise<string[]> {
   assertInteractive(message, "--status-checks")
   const response = await prompts({
     type: "multiselect",
     name: "value",
     message,
-    choices: choices.map((choice) => ({ title: choice, value: choice })),
+    choices: choices.map((choice) => ({ title: choice.label, value: choice.value })),
     instructions: false,
     hint: "- space to select, return to submit, zero is fine",
   })
