@@ -1,6 +1,6 @@
 ---
 name: protect-github-repo
-description: Protect a GitHub repo's default branch and ownership — add a CODEOWNERS file naming the owner as owner of everything, and a ruleset requiring PR + code-owner review, squash-only merges, no deletion/force-push, with only the owner able to bypass. Optionally requires selected status checks to pass. Runs a deterministic .mts script (via gh CLI) that inspects current state, backs up anything it would overwrite, and never overwrites without confirmation. Trigger: asked to protect/lock down a repo, set up branch protection, add CODEOWNERS, or apply "the usual" repo protection to a new or existing repo.
+description: Protect a GitHub repo's default branch and ownership — add a CODEOWNERS file naming the owner as owner of everything, a ruleset requiring PR + code-owner review, squash-only merges, no deletion/force-push, with only the owner able to bypass, and enable repo-level auto-merge so PR authors can turn on "Auto-merge". Optionally requires selected status checks to pass. Runs a deterministic .mts script (via gh CLI) that inspects current state, backs up anything it would overwrite, and never overwrites without confirmation. Trigger: asked to protect/lock down a repo, set up branch protection, add CODEOWNERS, enable auto-merge, or apply "the usual" repo protection to a new or existing repo.
 ---
 
 # Protect a GitHub repo
@@ -65,6 +65,11 @@ updated in place wherever GitHub already finds one):
 * @<owner>
 ```
 
+And on the repo itself, `allow_auto_merge: true` — this enables the "Auto-merge" button GitHub
+shows on a PR; it does not merge anything by itself. A PR still needs its required review(s) and
+status checks (if any) to pass before GitHub actually merges it. Skip with `--skip-auto-merge` if
+you don't want this.
+
 ## Run the script
 
 ```bash
@@ -109,13 +114,16 @@ Then apply:
 ```bash
 ./protect-repo.mts apply <owner>/<repo> [--status-checks <ctx1,ctx2 | none>] \
   [--overwrite-ruleset] [--overwrite-codeowners] [--skip-ruleset] [--skip-codeowners] \
-  [--bypass-user <login>]
+  [--skip-auto-merge] [--bypass-user <login>]
 ```
 
 - **As the agent, always pass every flag explicitly** — `--status-checks`, and
   `--overwrite-ruleset`/`--skip-ruleset` and `--overwrite-codeowners`/`--skip-codeowners`
   whenever `inspect` showed an existing, differing mechanism. Pass the exact contexts the user
   picked in step 2, comma-separated, or the literal string `none`.
+- Auto-merge has no overwrite decision — it's a single boolean, and enabling it doesn't merge
+  anything or change existing PRs. `apply` turns it on unless `inspect` already showed it enabled,
+  or you pass `--skip-auto-merge`.
 - If a flag needed for a decision is left out, `apply` falls back to an interactive terminal
   prompt (via the `prompts` npm package) — a convenience for a human running this directly in
   their own terminal, **not for you**. Run from the agent's non-interactive shell, a prompt has
@@ -134,9 +142,10 @@ Then apply:
   the repo is left with one updated and one not — re-run `apply` to finish the other; the backup
   from the completed step is already on disk if you need to compare or revert it.
 
-Re-run `inspect --json` afterward and confirm the report now shows `coreMatchesCanonical: true`
-and `codeowners.matchesCanonical: true` (plus the status checks the user chose), and report that
-back to the user along with the backup path(s) if anything was overwritten.
+Re-run `inspect --json` afterward and confirm the report now shows `coreMatchesCanonical: true`,
+`codeowners.matchesCanonical: true`, and `autoMerge.enabled: true` (plus the status checks the
+user chose), and report that back to the user along with the backup path(s) if anything was
+overwritten.
 
 ## Add a collaborator (optional)
 

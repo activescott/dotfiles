@@ -24,6 +24,7 @@ interface RepoInfo {
   default_branch: string
   private: boolean
   permissions?: { admin?: boolean }
+  allow_auto_merge?: boolean
 }
 
 interface RulesetSummary {
@@ -40,7 +41,7 @@ function usageAndExit(): never {
       "  ./protect-repo.mts inspect <owner>/<repo> [--bypass-user <login>] [--json]",
       "  ./protect-repo.mts apply <owner>/<repo> [--status-checks <comma-list|none>] " +
         "[--bypass-user <login>] [--overwrite-ruleset] [--overwrite-codeowners] " +
-        "[--skip-ruleset] [--skip-codeowners]",
+        "[--skip-ruleset] [--skip-codeowners] [--skip-auto-merge]",
       "    omitted --status-checks / --overwrite-* / --skip-* fall back to an interactive " +
         "prompt (requires a TTY)",
     ].join("\n"),
@@ -62,6 +63,7 @@ const BOOLEAN_FLAGS = new Set([
   "overwrite-codeowners",
   "skip-ruleset",
   "skip-codeowners",
+  "skip-auto-merge",
 ])
 
 type Flags = Map<string, string | boolean>
@@ -177,6 +179,7 @@ interface InspectReport {
   codeowners: CodeownersReport
   canonicalCodeownersPreview: string
   availableStatusChecks: AvailableCheck[]
+  autoMerge: { enabled: boolean }
 }
 
 function buildInspectReport(owner: string, repo: string, bypassLogin: string): InspectReport {
@@ -220,6 +223,7 @@ function buildInspectReport(owner: string, repo: string, bypassLogin: string): I
     codeowners,
     canonicalCodeownersPreview: canonicalCodeowners,
     availableStatusChecks: listAvailableChecks(owner, repo, repoInfo.default_branch),
+    autoMerge: { enabled: repoInfo.allow_auto_merge ?? false },
   }
 }
 
@@ -232,7 +236,7 @@ function printDiffEntries(diff: DiffEntry[]): void {
 }
 
 function printInspectReport(report: InspectReport): void {
-  const { repo, rulesets, codeowners, canonicalCodeownersPreview, availableStatusChecks } = report
+  const { repo, rulesets, codeowners, canonicalCodeownersPreview, availableStatusChecks, autoMerge } = report
 
   console.log(
     `${bold(`${repo.owner}/${repo.repo}`)}  ${dim(
@@ -278,6 +282,14 @@ function printInspectReport(report: InspectReport): void {
     console.log(`      canonical: ${JSON.stringify(canonicalCodeownersPreview)}`)
   }
 
+  console.log()
+  console.log(bold("Auto-merge"))
+  if (autoMerge.enabled) {
+    console.log(`  ${green("✔")} enabled — PR authors can turn on "Auto-merge" once checks pass`)
+  } else {
+    console.log(`  ${yellow("⚠")} disabled — apply will enable it`)
+  }
+
   const requiredContexts = new Set(currentChecks)
   const addableChecks = availableStatusChecks.filter((check) => !requiredContexts.has(check.context))
 
@@ -299,10 +311,12 @@ function printInspectReport(report: InspectReport): void {
   const rulesetNeedsOverwrite = named !== undefined && !named.coreMatchesCanonical
   const codeownersNeedsOverwrite = codeowners.exists && !codeowners.matchesCanonical
   const hasAddableChecks = addableChecks.length > 0
+  const autoMergeNeedsEnable = !autoMerge.enabled
   if (
     !rulesetNeedsOverwrite &&
     !codeownersNeedsOverwrite &&
     !hasAddableChecks &&
+    !autoMergeNeedsEnable &&
     named !== undefined &&
     codeowners.exists
   ) {
@@ -479,6 +493,15 @@ async function apply(owner: string, repo: string, flags: Flags): Promise<void> {
       console.log("created .github/CODEOWNERS")
     }
   }
+
+  if (!flagBoolean(flags, "skip-auto-merge")) {
+    if (repoInfo.allow_auto_merge) {
+      console.log("auto-merge already enabled; no change")
+    } else {
+      ghApi([`repos/${owner}/${repo}`, "-X", "PATCH", "-F", "allow_auto_merge=true"])
+      console.log("enabled auto-merge (PR authors can now turn on \"Auto-merge\")")
+    }
+  }
 }
 
 async function main(): Promise<void> {
@@ -507,6 +530,7 @@ async function main(): Promise<void> {
         "overwrite-codeowners",
         "skip-ruleset",
         "skip-codeowners",
+        "skip-auto-merge",
       ]),
     )
     await apply(owner, repo, flags)

@@ -1,0 +1,9 @@
+{
+  "name": "add-github-collaborator-script",
+  "private": true,
+  "type": "module",
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "typescript": "^5.7.2"
+  }
+}
