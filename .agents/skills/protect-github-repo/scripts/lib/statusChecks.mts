@@ -1,3 +1,4 @@
+import { spawnSync } from "node:child_process"
 import { ghApiJsonOrNull } from "./gh.mts"
 
 export interface AvailableCheck {
@@ -18,16 +19,23 @@ interface CheckRunsResponse {
 }
 
 interface WorkflowRunsResponse {
-  workflow_runs: Array<{ id: number; name: string | null }>
+  workflow_runs: Array<{ id: number; name: string | null; path: string }>
 }
 
 interface WorkflowJobsResponse {
   jobs: Array<{ name: string }>
 }
 
-/** Maps job name -> parent workflow name, for every Actions workflow run against this commit. */
-function buildJobToWorkflowNameMap(owner: string, repo: string, sha: string): Map<string, string> {
-  const jobToWorkflowName = new Map<string, string>()
+interface JobMetadata {
+  /** Parent workflow's declared name, e.g. "doctor-lint". */
+  workflowName: string
+  /** Workflow file path, e.g. ".github/workflows/doctor-lint.yaml" — used to check its `on:` triggers. */
+  path: string
+}
+
+/** Maps job name -> parent workflow metadata, for every Actions workflow run against this commit. */
+function buildJobMetadataMap(owner: string, repo: string, sha: string): Map<string, JobMetadata> {
+  const jobMetadata = new Map<string, JobMetadata>()
   const runsResponse = ghApiJsonOrNull<WorkflowRunsResponse>([
     `repos/${owner}/${repo}/actions/runs`,
     "-X",
@@ -43,14 +51,83 @@ function buildJobToWorkflowNameMap(owner: string, repo: string, sha: string): Ma
       `repos/${owner}/${repo}/actions/runs/${run.id}/jobs`,
     ])
     for (const job of jobsResponse?.jobs ?? []) {
-      jobToWorkflowName.set(job.name, run.name)
+      jobMetadata.set(job.name, { workflowName: run.name, path: run.path })
     }
   }
-  return jobToWorkflowName
+  return jobMetadata
+}
+
+interface ContentResponse {
+  content: string
+  encoding: string
+}
+
+/** Fetches a workflow file's `on:` trigger names (e.g. ["push", "pull_request"]) at `ref`. */
+function fetchWorkflowTriggers(owner: string, repo: string, path: string, ref: string): string[] | null {
+  const contentResponse = ghApiJsonOrNull<ContentResponse>([
+    `repos/${owner}/${repo}/contents/${path}`,
+    "-X",
+    "GET",
+    "-f",
+    `ref=${ref}`,
+  ])
+  if (!contentResponse || contentResponse.encoding !== "base64") {
+    return null
+  }
+  const yaml = Buffer.from(contentResponse.content, "base64").toString("utf8")
+
+  const result = spawnSync("yq", ["-o=json", ".on", "-"], { encoding: "utf8", input: yaml })
+  if (result.status !== 0) {
+    return null
+  }
+  try {
+    const onValue: unknown = JSON.parse(result.stdout)
+    if (typeof onValue === "string") {
+      return [onValue]
+    }
+    if (Array.isArray(onValue)) {
+      return onValue.filter((entry): entry is string => typeof entry === "string")
+    }
+    if (onValue && typeof onValue === "object") {
+      return Object.keys(onValue)
+    }
+    return []
+  } catch {
+    return null
+  }
+}
+
+/**
+ * Whether a check-run's workflow can ever run against a pull request's head commit — i.e. its
+ * `on:` includes `pull_request` or `pull_request_target`. A workflow triggered only by `push` /
+ * `workflow_dispatch` / tags never reports a check-run against a PR, so requiring it would
+ * permanently block every PR. Returns true (fail open) when the trigger list can't be determined,
+ * so a lookup failure never silently hides an otherwise-valid check.
+ */
+function canRunOnPullRequest(
+  owner: string,
+  repo: string,
+  path: string,
+  defaultBranch: string,
+  cache: Map<string, boolean>,
+): boolean {
+  const cached = cache.get(path)
+  if (cached !== undefined) {
+    return cached
+  }
+  const triggers = fetchWorkflowTriggers(owner, repo, path, defaultBranch)
+  const result = triggers === null ? true : triggers.includes("pull_request") || triggers.includes("pull_request_target")
+  cache.set(path, result)
+  return result
 }
 
 /**
  * Enumerates status-check contexts actually observed on the default branch's tip commit.
+ *
+ * Excludes any Actions check-run whose workflow currently has no `pull_request` /
+ * `pull_request_target` trigger (checked via `canRunOnPullRequest`): a `push`-only or
+ * `workflow_dispatch`-only workflow never posts a check-run against a PR's head commit,
+ * so requiring it would permanently block every PR even though it "was observed" here.
  *
  * Deliberately NOT sourced from the Actions workflows list
  * (`repos/{owner}/{repo}/actions/workflows`): a workflow's own declared name (e.g. "validate")
@@ -62,6 +139,7 @@ function buildJobToWorkflowNameMap(owner: string, repo: string, sha: string): Ma
  */
 export function listAvailableChecks(owner: string, repo: string, defaultBranch: string): AvailableCheck[] {
   const checks = new Map<string, AvailableCheck>()
+  const pullRequestTriggerCache = new Map<string, boolean>()
 
   const commit = ghApiJsonOrNull<CommitResponse>([`repos/${owner}/${repo}/commits/${defaultBranch}`])
   if (!commit) {
@@ -76,10 +154,13 @@ export function listAvailableChecks(owner: string, repo: string, defaultBranch: 
     return []
   }
 
-  const jobToWorkflowName = buildJobToWorkflowNameMap(owner, repo, commit.sha)
+  const jobMetadata = buildJobMetadataMap(owner, repo, commit.sha)
   for (const run of runs) {
-    const workflowName = jobToWorkflowName.get(run.name)
-    const label = workflowName ? `${workflowName} / ${run.name}` : run.name
+    const metadata = jobMetadata.get(run.name)
+    if (metadata && !canRunOnPullRequest(owner, repo, metadata.path, defaultBranch, pullRequestTriggerCache)) {
+      continue
+    }
+    const label = metadata ? `${metadata.workflowName} / ${run.name}` : run.name
     checks.set(run.name, { context: run.name, label })
   }
 
