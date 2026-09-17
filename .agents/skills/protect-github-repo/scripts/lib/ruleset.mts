@@ -147,10 +147,44 @@ export function withoutStatusChecksRule(ruleset: Record<string, unknown>): Recor
   return { ...ruleset, rules: coreRules }
 }
 
+/** Whether `ruleset` already has a `DeployKey` bypass actor (any write-access deploy key bypasses). */
+export function hasDeployKeyBypassActor(ruleset: Record<string, unknown>): boolean {
+  const actors = ruleset.bypass_actors
+  if (!Array.isArray(actors)) {
+    return false
+  }
+  return actors.some((actor) => isRecord(actor) && actor.actor_type === "DeployKey")
+}
+
+/**
+ * Drops any `DeployKey` bypass actor, since whether one is present is a separate, repo-specific
+ * decision (added additively via `withDeployKeyBypassActor`, reported on its own via
+ * `hasDeployKeyBypassActor`) rather than part of the canonical core comparison.
+ */
+export function withoutDeployKeyBypassActor(ruleset: Record<string, unknown>): Record<string, unknown> {
+  const actors = ruleset.bypass_actors
+  const coreActors = Array.isArray(actors)
+    ? actors.filter((actor) => !isRecord(actor) || actor.actor_type !== "DeployKey")
+    : actors
+  return { ...ruleset, bypass_actors: coreActors }
+}
+
+/** Returns a copy of `ruleset` with a `DeployKey` bypass actor appended, unless it already has one. */
+export function withDeployKeyBypassActor(ruleset: Record<string, unknown>): Record<string, unknown> {
+  if (hasDeployKeyBypassActor(ruleset)) {
+    return ruleset
+  }
+  const actors = Array.isArray(ruleset.bypass_actors) ? ruleset.bypass_actors : []
+  return {
+    ...ruleset,
+    bypass_actors: [...actors, { actor_id: null, actor_type: "DeployKey", bypass_mode: "always" }],
+  }
+}
+
 export function rulesetCoreMatches(
   existing: Record<string, unknown>,
   canonicalWithoutStatusChecks: RulesetPayload,
 ): boolean {
-  const core = withoutStatusChecksRule(stripRulesetMetadata(existing))
+  const core = withoutDeployKeyBypassActor(withoutStatusChecksRule(stripRulesetMetadata(existing)))
   return stableStringify(core) === stableStringify(canonicalWithoutStatusChecks)
 }

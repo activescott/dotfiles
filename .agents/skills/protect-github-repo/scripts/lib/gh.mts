@@ -17,8 +17,8 @@ export function ghApi(args: string[], input?: string): string {
   return result.stdout
 }
 
-export function ghApiJson<T>(args: string[]): T {
-  return JSON.parse(ghApi(args))
+export function ghApiJson<T>(args: string[], input?: string): T {
+  return JSON.parse(ghApi(args, input))
 }
 
 /**

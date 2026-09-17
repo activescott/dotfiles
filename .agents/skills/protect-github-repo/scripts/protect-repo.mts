@@ -1,22 +1,29 @@
 #!/usr/bin/env -S node --experimental-strip-types
 import { Buffer } from "node:buffer"
+import { readFileSync } from "node:fs"
+import { basename } from "node:path"
 import { ghApi, ghApiJson } from "./lib/gh.mts"
 import {
   RULESET_NAME,
   buildCanonicalRuleset,
   extractRequiredStatusCheckContexts,
+  hasDeployKeyBypassActor,
   rulesetCoreMatches,
   stripRulesetMetadata,
+  withDeployKeyBypassActor,
+  withoutDeployKeyBypassActor,
   withoutStatusChecksRule,
 } from "./lib/ruleset.mts"
 import { buildCanonicalCodeowners, findExistingCodeowners } from "./lib/codeowners.mts"
 import { listAvailableChecks } from "./lib/statusChecks.mts"
 import type { AvailableCheck } from "./lib/statusChecks.mts"
+import { addDeployKey, findDeployKeyByMaterial, listDeployKeys } from "./lib/deployKeys.mts"
+import type { DeployKeySummary } from "./lib/deployKeys.mts"
 import { backupDirFor, writeBackup } from "./lib/backup.mts"
 import { diffValues } from "./lib/diff.mts"
 import type { DiffEntry } from "./lib/diff.mts"
 import { bold, dim, green, red, yellow } from "./lib/color.mts"
-import { confirmPrompt, multiselectPrompt } from "./lib/prompt.mts"
+import { confirmPrompt, multiselectPrompt, textPrompt } from "./lib/prompt.mts"
 
 const DEFAULT_BYPASS_LOGIN = "activescott"
 
@@ -41,9 +48,14 @@ function usageAndExit(): never {
       "  ./protect-repo.mts inspect <owner>/<repo> [--bypass-user <login>] [--json]",
       "  ./protect-repo.mts apply <owner>/<repo> [--status-checks <comma-list|none>] " +
         "[--bypass-user <login>] [--overwrite-ruleset] [--overwrite-codeowners] " +
-        "[--skip-ruleset] [--skip-codeowners] [--skip-auto-merge]",
+        "[--skip-ruleset] [--skip-codeowners] [--skip-auto-merge] " +
+        "[(--deploy-key <public-key-value> | --deploy-key-file <path>) [--deploy-key-title <title>] " +
+        "| --skip-deploy-key]",
       "    omitted --status-checks / --overwrite-* / --skip-* fall back to an interactive " +
         "prompt (requires a TTY)",
+      "    omitted --deploy-key / --deploy-key-file / --skip-deploy-key: on a TTY, prompts " +
+        "whether to add one (accepts a pasted key or a file path); otherwise leaves deploy-key " +
+        "bypass untouched (no prompt, no error)",
     ].join("\n"),
   )
   process.exit(1)
@@ -64,6 +76,7 @@ const BOOLEAN_FLAGS = new Set([
   "skip-ruleset",
   "skip-codeowners",
   "skip-auto-merge",
+  "skip-deploy-key",
 ])
 
 type Flags = Map<string, string | boolean>
@@ -180,6 +193,7 @@ interface InspectReport {
   canonicalCodeownersPreview: string
   availableStatusChecks: AvailableCheck[]
   autoMerge: { enabled: boolean }
+  deployKeyBypass: { rulesetAllows: boolean; writeAccessKeys: DeployKeySummary[] }
 }
 
 function buildInspectReport(owner: string, repo: string, bypassLogin: string): InspectReport {
@@ -188,7 +202,7 @@ function buildInspectReport(owner: string, repo: string, bypassLogin: string): I
   const canonical = buildCanonicalRuleset({ bypassUserId, requiredStatusCheckContexts: [] })
 
   const rulesets = findBranchRulesets(owner, repo).map((ruleset) => {
-    const core = withoutStatusChecksRule(stripRulesetMetadata(ruleset))
+    const core = withoutDeployKeyBypassActor(withoutStatusChecksRule(stripRulesetMetadata(ruleset)))
     return {
       id: typeof ruleset.id === "number" ? ruleset.id : null,
       name: typeof ruleset.name === "string" ? ruleset.name : "",
@@ -210,6 +224,8 @@ function buildInspectReport(owner: string, repo: string, bypassLogin: string): I
       }
     : { exists: false, path: null, matchesCanonical: false, content: null }
 
+  const namedRuleset = rulesets.find((ruleset) => ruleset.name === RULESET_NAME)
+
   return {
     repo: {
       owner,
@@ -224,6 +240,10 @@ function buildInspectReport(owner: string, repo: string, bypassLogin: string): I
     canonicalCodeownersPreview: canonicalCodeowners,
     availableStatusChecks: listAvailableChecks(owner, repo, repoInfo.default_branch),
     autoMerge: { enabled: repoInfo.allow_auto_merge ?? false },
+    deployKeyBypass: {
+      rulesetAllows: namedRuleset !== undefined && hasDeployKeyBypassActor(namedRuleset.raw),
+      writeAccessKeys: listDeployKeys(owner, repo).filter((key) => !key.read_only),
+    },
   }
 }
 
@@ -236,7 +256,8 @@ function printDiffEntries(diff: DiffEntry[]): void {
 }
 
 function printInspectReport(report: InspectReport): void {
-  const { repo, rulesets, codeowners, canonicalCodeownersPreview, availableStatusChecks, autoMerge } = report
+  const { repo, rulesets, codeowners, canonicalCodeownersPreview, availableStatusChecks, autoMerge, deployKeyBypass } =
+    report
 
   console.log(
     `${bold(`${repo.owner}/${repo.repo}`)}  ${dim(
@@ -280,6 +301,21 @@ function printInspectReport(report: InspectReport): void {
     console.log(`  ${red("✘")} exists at ${codeowners.path} but differs from canonical:`)
     console.log(`      current:   ${JSON.stringify(codeowners.content)}`)
     console.log(`      canonical: ${JSON.stringify(canonicalCodeownersPreview)}`)
+  }
+
+  console.log()
+  console.log(bold("Deploy-key bypass"))
+  if (deployKeyBypass.rulesetAllows) {
+    console.log(`  ${green("✔")} ruleset allows any write-access deploy key to bypass`)
+  } else {
+    console.log(`  ${dim("○")} not enabled — pass --deploy-key-file to add one`)
+  }
+  if (deployKeyBypass.writeAccessKeys.length > 0) {
+    for (const key of deployKeyBypass.writeAccessKeys) {
+      console.log(`      write-access deploy key: "${key.title}" (id ${key.id})`)
+    }
+  } else if (deployKeyBypass.rulesetAllows) {
+    console.log(`      ${yellow("⚠")} no write-access deploy key on the repo yet — the bypass has nothing to apply to`)
   }
 
   console.log()
@@ -377,6 +413,72 @@ async function resolveRequiredStatusCheckContexts(
   )
 }
 
+interface DeployKeyRequest {
+  publicKey: string
+  title: string
+}
+
+/** SSH public-key line prefixes, e.g. "ssh-ed25519 AAAA... comment" or "ecdsa-sha2-nistp256 AAAA...". */
+const PUBLIC_KEY_PATTERN = /^(ssh-(rsa|ed25519|dss)|ecdsa-sha2-\S+|sk-(ssh-ed25519|ecdsa-sha2-nistp256)@openssh\.com)\s+\S/
+
+function looksLikePublicKey(value: string): boolean {
+  return PUBLIC_KEY_PATTERN.test(value.trim())
+}
+
+/** Resolves user input that's either the public key pasted directly, or a path to a file containing it. */
+function resolveDeployKeyMaterial(input: string): string {
+  const trimmed = input.trim()
+  if (looksLikePublicKey(trimmed)) {
+    return trimmed
+  }
+  return readFileSync(trimmed, "utf8").trim()
+}
+
+/** For a pasted key, its trailing comment (e.g. "release@fernfiles"); for a file path, the basename. */
+function defaultDeployKeyTitle(input: string): string {
+  const trimmed = input.trim()
+  if (looksLikePublicKey(trimmed)) {
+    const [, , comment] = trimmed.split(/\s+/)
+    return comment ?? "deploy-key"
+  }
+  return basename(trimmed).replace(/\.pub$/, "")
+}
+
+/**
+ * Deploy-key bypass is opt-in and additive (see withDeployKeyBypassActor), unlike the other
+ * apply() decisions — so unlike resolveRequiredStatusCheckContexts, an omitted flag on a
+ * non-interactive run means "leave it untouched" rather than "fail fast" or "turn it off".
+ */
+async function resolveDeployKeyBypass(flags: Flags): Promise<DeployKeyRequest | null> {
+  if (flagBoolean(flags, "skip-deploy-key")) {
+    return null
+  }
+  const fileFlag = flags.get("deploy-key-file")
+  const keyFlag = flags.get("deploy-key")
+  if (typeof fileFlag === "string" && typeof keyFlag === "string") {
+    throw new Error("pass only one of --deploy-key-file or --deploy-key, not both")
+  }
+  const flagInput = typeof keyFlag === "string" ? keyFlag : typeof fileFlag === "string" ? fileFlag : undefined
+  if (flagInput !== undefined) {
+    return {
+      publicKey: resolveDeployKeyMaterial(flagInput),
+      title: flagString(flags, "deploy-key-title", defaultDeployKeyTitle(flagInput)),
+    }
+  }
+  if (!process.stdin.isTTY) {
+    return null
+  }
+  const wantsOne = await confirmPrompt(
+    "Add an SSH deploy key with write access as a ruleset bypass actor (e.g. so a CI job can push past the PR requirement)?",
+  )
+  if (!wantsOne) {
+    return null
+  }
+  const input = await textPrompt("Public key — paste it directly, or a path to a file containing it:")
+  const title = await textPrompt("Deploy key title:", { initial: defaultDeployKeyTitle(input) })
+  return { publicKey: resolveDeployKeyMaterial(input), title }
+}
+
 /**
  * Decides whether to overwrite an existing, differing mechanism: the matching --overwrite-*
  * flag, or a prompt. Callers only reach this after their own --skip-* guard has already let the
@@ -415,6 +517,15 @@ async function apply(owner: string, repo: string, flags: Flags): Promise<void> {
   })
   const backupDir = backupDirFor(owner, repo)
 
+  const deployKeyRequest = await resolveDeployKeyBypass(flags)
+  if (deployKeyRequest && flagBoolean(flags, "skip-ruleset")) {
+    throw new Error(
+      "--deploy-key-file/deploy-key prompt requires the ruleset (bypass actors live on it) — remove --skip-ruleset or pass --skip-deploy-key",
+    )
+  }
+
+  let rulesetId: number | null = null
+
   if (!flagBoolean(flags, "skip-ruleset")) {
     const existingRulesets = findBranchRulesets(owner, repo)
     const named = existingRulesets.find((ruleset) => ruleset.name === RULESET_NAME)
@@ -428,6 +539,7 @@ async function apply(owner: string, repo: string, flags: Flags): Promise<void> {
     }
 
     if (named) {
+      rulesetId = typeof named.id === "number" ? named.id : null
       const coreMatches = rulesetCoreMatches(named, canonicalWithoutStatusChecks)
       const checksMatch =
         JSON.stringify(extractRequiredStatusCheckContexts(named).slice().sort()) ===
@@ -459,8 +571,44 @@ async function apply(owner: string, repo: string, flags: Flags): Promise<void> {
         }
       }
     } else {
-      ghApi([`repos/${owner}/${repo}/rulesets`, "-X", "POST", "--input", "-"], JSON.stringify(canonical))
+      const created = ghApiJson<{ id: number }>(
+        [`repos/${owner}/${repo}/rulesets`, "-X", "POST", "--input", "-"],
+        JSON.stringify(canonical),
+      )
+      rulesetId = created.id
       console.log(`created ruleset "${RULESET_NAME}"`)
+    }
+  }
+
+  if (deployKeyRequest) {
+    const publicKey = deployKeyRequest.publicKey
+    const existingKey = findDeployKeyByMaterial(owner, repo, publicKey)
+    if (existingKey?.read_only) {
+      throw new Error(
+        `deploy key "${existingKey.title}" (id ${existingKey.id}) already exists on ${owner}/${repo} as read-only; ` +
+          "remove it or add a different key so it can have write access",
+      )
+    }
+    if (existingKey) {
+      console.log(`deploy key "${existingKey.title}" (id ${existingKey.id}) already present with write access`)
+    } else {
+      const created = addDeployKey(owner, repo, deployKeyRequest.title, publicKey)
+      console.log(`added deploy key "${created.title}" (id ${created.id}) with write access`)
+    }
+
+    if (rulesetId === null) {
+      console.log(`no "${RULESET_NAME}" ruleset id available — skipping bypass actor`)
+    } else {
+      const current = ghApiJson<Record<string, unknown>>([`repos/${owner}/${repo}/rulesets/${String(rulesetId)}`])
+      if (hasDeployKeyBypassActor(current)) {
+        console.log(`ruleset "${RULESET_NAME}" already allows deploy-key bypass; no change`)
+      } else {
+        ghApi(
+          [`repos/${owner}/${repo}/rulesets/${String(rulesetId)}`, "-X", "PUT", "--input", "-"],
+          JSON.stringify(withDeployKeyBypassActor(stripRulesetMetadata(current))),
+        )
+        console.log(`added deploy-key bypass actor to ruleset "${RULESET_NAME}"`)
+      }
     }
   }
 
@@ -531,6 +679,10 @@ async function main(): Promise<void> {
         "skip-ruleset",
         "skip-codeowners",
         "skip-auto-merge",
+        "deploy-key",
+        "deploy-key-file",
+        "deploy-key-title",
+        "skip-deploy-key",
       ]),
     )
     await apply(owner, repo, flags)

@@ -17,6 +17,15 @@ export async function confirmPrompt(message: string): Promise<boolean> {
   return response.value
 }
 
+export async function textPrompt(message: string, options: { initial?: string } = {}): Promise<string> {
+  assertInteractive(message, "--deploy-key-file / --deploy-key-title")
+  const response = await prompts({ type: "text", name: "value", message, initial: options.initial })
+  if (!response.value) {
+    throw new Error("prompt cancelled")
+  }
+  return response.value
+}
+
 export async function multiselectPrompt(
   message: string,
   choices: Array<{ label: string; value: string }>,

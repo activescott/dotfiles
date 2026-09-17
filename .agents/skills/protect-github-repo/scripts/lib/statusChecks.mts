@@ -26,6 +26,10 @@ interface WorkflowJobsResponse {
   jobs: Array<{ name: string }>
 }
 
+interface PullRequestSummary {
+  head: { sha: string }
+}
+
 interface JobMetadata {
   /** Parent workflow's declared name, e.g. "doctor-lint". */
   workflowName: string
@@ -122,12 +126,45 @@ function canRunOnPullRequest(
 }
 
 /**
- * Enumerates status-check contexts actually observed on the default branch's tip commit.
+ * Head commit SHA of the most recently updated pull request (any state), or null if the repo has
+ * none. Tries open PRs first, then falls back to closed/merged ones — a merged PR's head commit
+ * still has real check-run history even though its branch may be long gone.
+ */
+function fetchRecentPullRequestHeadSha(owner: string, repo: string): string | null {
+  for (const state of ["open", "closed"] as const) {
+    const pulls = ghApiJsonOrNull<PullRequestSummary[]>([
+      `repos/${owner}/${repo}/pulls`,
+      "-X",
+      "GET",
+      "-f",
+      `state=${state}`,
+      "-f",
+      "sort=updated",
+      "-f",
+      "direction=desc",
+      "-f",
+      "per_page=1",
+    ])
+    const [first] = pulls ?? []
+    if (first) {
+      return first.head.sha
+    }
+  }
+  return null
+}
+
+/**
+ * Enumerates status-check contexts actually observed either on the default branch's tip commit,
+ * or on a recent pull request's head commit.
  *
- * Excludes any Actions check-run whose workflow currently has no `pull_request` /
- * `pull_request_target` trigger (checked via `canRunOnPullRequest`): a `push`-only or
- * `workflow_dispatch`-only workflow never posts a check-run against a PR's head commit,
- * so requiring it would permanently block every PR even though it "was observed" here.
+ * Both sources matter and catch different things a single source misses: a check that only runs
+ * `on: push` never posts against a PR's head commit, so requiring it would permanently block
+ * every PR — `canRunOnPullRequest` excludes those (skipped for PR-sourced checks, since running
+ * on a PR's head commit already proves the check can run on a PR). A check that only runs
+ * `on: pull_request` (e.g. a PR-title linter) is the opposite case: it's a perfectly valid,
+ * commonly-required check, but it never runs on a push to the default branch, so it never posts a
+ * check-run there no matter how long you wait — the default-branch-tip source alone can never see
+ * it. Sourcing from a recent PR's head commit as well is what surfaces those.
  *
  * Deliberately NOT sourced from the Actions workflows list
  * (`repos/{owner}/{repo}/actions/workflows`): a workflow's own declared name (e.g. "validate")
@@ -142,26 +179,35 @@ export function listAvailableChecks(owner: string, repo: string, defaultBranch: 
   const pullRequestTriggerCache = new Map<string, boolean>()
 
   const commit = ghApiJsonOrNull<CommitResponse>([`repos/${owner}/${repo}/commits/${defaultBranch}`])
-  if (!commit) {
-    return []
-  }
-
-  const checkRuns = ghApiJsonOrNull<CheckRunsResponse>([
-    `repos/${owner}/${repo}/commits/${commit.sha}/check-runs`,
-  ])
-  const runs = checkRuns?.check_runs ?? []
-  if (runs.length === 0) {
-    return []
-  }
-
-  const jobMetadata = buildJobMetadataMap(owner, repo, commit.sha)
-  for (const run of runs) {
-    const metadata = jobMetadata.get(run.name)
-    if (metadata && !canRunOnPullRequest(owner, repo, metadata.path, defaultBranch, pullRequestTriggerCache)) {
-      continue
+  if (commit) {
+    const checkRuns = ghApiJsonOrNull<CheckRunsResponse>([
+      `repos/${owner}/${repo}/commits/${commit.sha}/check-runs`,
+    ])
+    const jobMetadata = buildJobMetadataMap(owner, repo, commit.sha)
+    for (const run of checkRuns?.check_runs ?? []) {
+      const metadata = jobMetadata.get(run.name)
+      if (metadata && !canRunOnPullRequest(owner, repo, metadata.path, defaultBranch, pullRequestTriggerCache)) {
+        continue
+      }
+      const label = metadata ? `${metadata.workflowName} / ${run.name}` : run.name
+      checks.set(run.name, { context: run.name, label })
     }
-    const label = metadata ? `${metadata.workflowName} / ${run.name}` : run.name
-    checks.set(run.name, { context: run.name, label })
+  }
+
+  const prHeadSha = fetchRecentPullRequestHeadSha(owner, repo)
+  if (prHeadSha) {
+    const prCheckRuns = ghApiJsonOrNull<CheckRunsResponse>([
+      `repos/${owner}/${repo}/commits/${prHeadSha}/check-runs`,
+    ])
+    const prJobMetadata = buildJobMetadataMap(owner, repo, prHeadSha)
+    for (const run of prCheckRuns?.check_runs ?? []) {
+      if (checks.has(run.name)) {
+        continue
+      }
+      const metadata = prJobMetadata.get(run.name)
+      const label = metadata ? `${metadata.workflowName} / ${run.name}` : run.name
+      checks.set(run.name, { context: run.name, label })
+    }
   }
 
   return Array.from(checks.values())

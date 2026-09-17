@@ -70,6 +70,11 @@ shows on a PR; it does not merge anything by itself. A PR still needs its requir
 status checks (if any) to pass before GitHub actually merges it. Skip with `--skip-auto-merge` if
 you don't want this.
 
+Optionally, a `DeployKey` bypass actor — lets any deploy key with write access on the repo push
+straight to the default branch, bypassing the PR requirement. This is for automation (e.g. a
+release job) that needs to push without going through a PR; it is off by default and never added
+implicitly — see [Deploy-key bypass (optional)](#deploy-key-bypass-optional).
+
 ## Run the script
 
 ```bash
@@ -114,7 +119,8 @@ Then apply:
 ```bash
 ./protect-repo.mts apply <owner>/<repo> [--status-checks <ctx1,ctx2 | none>] \
   [--overwrite-ruleset] [--overwrite-codeowners] [--skip-ruleset] [--skip-codeowners] \
-  [--skip-auto-merge] [--bypass-user <login>]
+  [--skip-auto-merge] [--bypass-user <login>] \
+  [(--deploy-key <public-key-value> | --deploy-key-file <path>) [--deploy-key-title <title>] | --skip-deploy-key]
 ```
 
 - **As the agent, always pass every flag explicitly** — `--status-checks`, and
@@ -165,6 +171,50 @@ is misconfigured.
 permission reads `none` and everything they attempt fails to authenticate, which looks like a
 broken token rather than a pending invite. Always tell the user an invite is waiting.
 
+## Deploy-key bypass (optional)
+
+For automation that needs to push straight to the default branch (e.g. a release job that bumps a
+version and pushes the commit itself, rather than opening a PR): add its SSH public key to the
+repo as a deploy key with write access, and let it bypass the ruleset. This is a separate,
+opt-in decision from the rest of `apply` — it's never added implicitly, and it's additive (running
+`apply` again without it never removes an existing deploy-key bypass).
+
+```bash
+./protect-repo.mts apply <owner>/<repo> --deploy-key "ssh-ed25519 AAAA... comment" \
+  [--deploy-key-title <title>] --status-checks <...> ...
+# or, from a file:
+./protect-repo.mts apply <owner>/<repo> --deploy-key-file <path-to-public-key> \
+  [--deploy-key-title <title>] --status-checks <...> ...
+```
+
+- `--deploy-key` — the **public** key value itself (e.g. pasted from a password manager — it's
+  not secret, so this is fine on the command line or at the interactive prompt). `--deploy-key-file`
+  — same thing, but read from a file instead. Pass exactly one. Either way, the script adds it to
+  the repo via `POST /repos/{owner}/{repo}/keys` with `read_only: false` — **skipped if that exact
+  key material is already registered on the repo with write access** (compared by algorithm +
+  base64 body, ignoring the trailing comment, via `findDeployKeyByMaterial`) — then, if the
+  ruleset doesn't already have one, appends a `DeployKey` bypass actor
+  (`{ actor_id: null, actor_type: "DeployKey", bypass_mode: "always" }`) to it. It never touches a
+  private key; only the public half is ever read.
+- `--deploy-key-title` — defaults to the pasted key's trailing comment (e.g. `release@fernfiles`),
+  or the file's basename with any `.pub` suffix stripped when using `--deploy-key-file`.
+- `--skip-deploy-key` — explicitly skip; no prompt.
+- **Omitting all three, as the agent, means "leave it alone"** — unlike every other `apply`
+  decision, an omitted deploy-key flag on non-interactive stdin does not fail fast. It's opt-in
+  and rare enough that a human running this directly instead gets a confirm prompt followed by a
+  single free-text prompt that accepts **either the pasted public key or a path to a file
+  containing it** (detected by whether it starts with a known key-type prefix like `ssh-ed25519`),
+  matching the `prompts`-based fallback used elsewhere in this script — but a non-interactive
+  `apply` call that doesn't mention it just skips it; there is nothing to decide by default.
+- **Requires the ruleset itself** (bypass actors live on it) — combining `--deploy-key`/
+  `--deploy-key-file` with `--skip-ruleset` is an error.
+- A deploy key already on the repo as **read-only** cannot be reused for this — GitHub's bypass
+  applies to any deploy key with write access, so a read-only match makes `apply` fail rather than
+  silently do nothing; remove it or use a different key.
+- `inspect` reports current state under "Deploy-key bypass": whether the ruleset already has a
+  `DeployKey` bypass actor, and which of the repo's deploy keys (if any) currently have write
+  access.
+
 ## Gotchas
 
 - **Needs Node ≥22.6** for `--experimental-strip-types` (unflagged by default starting in Node
@@ -179,12 +229,19 @@ broken token rather than a pending invite. Always tell the user an invite is wai
 - **Status-check contexts are per-job check-run names, not the workflow's own name.** A workflow
   declared `name: validate` with a job `kustomize-build` registers as the check-run
   `"kustomize-build"` — never `"validate"`. `inspect`'s `availableStatusChecks` is sourced only
-  from real check-runs on the default branch's tip commit for exactly this reason: the Actions
-  workflows list (`repos/{owner}/{repo}/actions/workflows`) returns workflow names, which can
-  never satisfy a required status check — offering one as a candidate would let someone require a
-  check that never passes, permanently blocking merges. One consequence: if the repo has never
-  run a check against that exact commit (e.g. checks only fire on `pull_request`, not `push` to
-  the default branch), `availableStatusChecks` can come back empty even though workflows exist —
+  from real check-runs — never from the Actions workflows list
+  (`repos/{owner}/{repo}/actions/workflows`), which returns workflow names, not check-run names,
+  and offering one as a candidate would let someone require a check that never passes, permanently
+  blocking merges.
+  It reads check-runs from two places: the default branch's tip commit, and a recent pull
+  request's head commit. Both matter, because each source misses a different kind of check.
+  Push-triggered checks (most CI) show up on the tip commit but not necessarily on a PR — those
+  get filtered out unless their workflow's `on:` includes `pull_request`/`pull_request_target`,
+  since requiring one that can't run on a PR would permanently block every merge.
+  `pull_request`-only checks (e.g. a PR-title linter) are the opposite: entirely valid to require,
+  but they never run on a push to the default branch, so they'd never show up from the tip-commit
+  source alone no matter how long you wait — the PR-head source is what surfaces those. If the
+  repo has no commit history and no PRs yet, `availableStatusChecks` can still come back empty —
   mention this to the user rather than falling back to the workflow name.
 - **Private repos need a paid plan.** Rulesets enforce on public repos on any plan, but on
   private repos only with Pro, Team, or Enterprise. On a Free account a ruleset on a private repo
@@ -237,4 +294,6 @@ hand-copied (the script is the source of truth):
 
 `~DEFAULT_BRANCH` is a GitHub-provided alias, so the ruleset follows a renamed default branch
 instead of pointing at a branch that no longer exists. The `required_status_checks` rule is
-omitted entirely when the user chose zero checks.
+omitted entirely when the user chose zero checks. Likewise, `bypass_actors` gets a second entry —
+`{ "actor_id": null, "actor_type": "DeployKey", "bypass_mode": "always" }` — only when the user
+opted into [deploy-key bypass](#deploy-key-bypass-optional); omitted here as it's off by default.
