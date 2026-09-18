@@ -19,13 +19,15 @@ import { listAvailableChecks } from "./lib/statusChecks.mts"
 import type { AvailableCheck } from "./lib/statusChecks.mts"
 import { addDeployKey, findDeployKeyByMaterial, listDeployKeys } from "./lib/deployKeys.mts"
 import type { DeployKeySummary } from "./lib/deployKeys.mts"
+import { listSecretNames, setSecretFromFile, setSecretFromValue } from "./lib/secrets.mts"
 import { backupDirFor, writeBackup } from "./lib/backup.mts"
 import { diffValues } from "./lib/diff.mts"
 import type { DiffEntry } from "./lib/diff.mts"
 import { bold, dim, green, red, yellow } from "./lib/color.mts"
-import { confirmPrompt, multiselectPrompt, textPrompt } from "./lib/prompt.mts"
+import { confirmPrompt, multiselectPrompt, pastedSecretPrompt, textPrompt } from "./lib/prompt.mts"
 
 const DEFAULT_BYPASS_LOGIN = "activescott"
+const DEFAULT_DEPLOY_KEY_SECRET_NAME = "RELEASE_DEPLOY_KEY"
 
 interface RepoInfo {
   default_branch: string
@@ -50,12 +52,17 @@ function usageAndExit(): never {
         "[--bypass-user <login>] [--overwrite-ruleset] [--overwrite-codeowners] " +
         "[--skip-ruleset] [--skip-codeowners] [--skip-auto-merge] " +
         "[(--deploy-key <public-key-value> | --deploy-key-file <path>) [--deploy-key-title <title>] " +
-        "| --skip-deploy-key]",
+        "| --skip-deploy-key] " +
+        "[--deploy-key-private-key-file <path> [--deploy-key-secret-name <name>] | --skip-deploy-key-secret]",
       "    omitted --status-checks / --overwrite-* / --skip-* fall back to an interactive " +
         "prompt (requires a TTY)",
       "    omitted --deploy-key / --deploy-key-file / --skip-deploy-key: on a TTY, prompts " +
         "whether to add one (accepts a pasted key or a file path); otherwise leaves deploy-key " +
         "bypass untouched (no prompt, no error)",
+      "    omitted --deploy-key-private-key-file / --skip-deploy-key-secret: on a TTY, prompts " +
+        `whether to also store the matching private key as a secret (default name ` +
+        `"${DEFAULT_DEPLOY_KEY_SECRET_NAME}") in both Actions and Dependabot; otherwise leaves ` +
+        "secrets untouched (no prompt, no error)",
     ].join("\n"),
   )
   process.exit(1)
@@ -77,6 +84,7 @@ const BOOLEAN_FLAGS = new Set([
   "skip-codeowners",
   "skip-auto-merge",
   "skip-deploy-key",
+  "skip-deploy-key-secret",
 ])
 
 type Flags = Map<string, string | boolean>
@@ -194,6 +202,7 @@ interface InspectReport {
   availableStatusChecks: AvailableCheck[]
   autoMerge: { enabled: boolean }
   deployKeyBypass: { rulesetAllows: boolean; writeAccessKeys: DeployKeySummary[] }
+  secrets: { actions: string[]; dependabot: string[] }
 }
 
 function buildInspectReport(owner: string, repo: string, bypassLogin: string): InspectReport {
@@ -244,6 +253,10 @@ function buildInspectReport(owner: string, repo: string, bypassLogin: string): I
       rulesetAllows: namedRuleset !== undefined && hasDeployKeyBypassActor(namedRuleset.raw),
       writeAccessKeys: listDeployKeys(owner, repo).filter((key) => !key.read_only),
     },
+    secrets: {
+      actions: listSecretNames(owner, repo, "actions"),
+      dependabot: listSecretNames(owner, repo, "dependabot"),
+    },
   }
 }
 
@@ -256,8 +269,16 @@ function printDiffEntries(diff: DiffEntry[]): void {
 }
 
 function printInspectReport(report: InspectReport): void {
-  const { repo, rulesets, codeowners, canonicalCodeownersPreview, availableStatusChecks, autoMerge, deployKeyBypass } =
-    report
+  const {
+    repo,
+    rulesets,
+    codeowners,
+    canonicalCodeownersPreview,
+    availableStatusChecks,
+    autoMerge,
+    deployKeyBypass,
+    secrets,
+  } = report
 
   console.log(
     `${bold(`${repo.owner}/${repo.repo}`)}  ${dim(
@@ -317,6 +338,11 @@ function printInspectReport(report: InspectReport): void {
   } else if (deployKeyBypass.rulesetAllows) {
     console.log(`      ${yellow("⚠")} no write-access deploy key on the repo yet — the bypass has nothing to apply to`)
   }
+
+  console.log()
+  console.log(bold("Secrets (names only — values are never fetched)"))
+  console.log(`  Actions:    ${secrets.actions.length > 0 ? secrets.actions.join(", ") : dim("none")}`)
+  console.log(`  Dependabot: ${secrets.dependabot.length > 0 ? secrets.dependabot.join(", ") : dim("none")}`)
 
   console.log()
   console.log(bold("Auto-merge"))
@@ -474,9 +500,60 @@ async function resolveDeployKeyBypass(flags: Flags): Promise<DeployKeyRequest | 
   if (!wantsOne) {
     return null
   }
-  const input = await textPrompt("Public key — paste it directly, or a path to a file containing it:")
+  const input = await textPrompt(
+    "Public key — must be a unique key generated just for this repo (GitHub rejects a key " +
+      "already registered as a deploy key elsewhere, or as anyone's personal account key). " +
+      "Paste it directly, or a path to a file containing it:",
+  )
   const title = await textPrompt("Deploy key title:", { initial: defaultDeployKeyTitle(input) })
   return { publicKey: resolveDeployKeyMaterial(input), title }
+}
+
+type DeploySecretRequest = { secretName: string } & ({ source: "file"; path: string } | { source: "value"; value: string })
+
+/**
+ * Mirrors resolveDeployKeyBypass's "opt-in, untouched-by-default" shape: an omitted flag on
+ * non-interactive stdin leaves secrets alone rather than failing fast, since most `apply` runs
+ * don't need this.
+ *
+ * The flag path only ever accepts a file path — never a literal value — because a CLI argument is
+ * visible in `ps`/argv and gets written to shell history; no amount of masking fixes that. The
+ * interactive prompt is different: it explicitly asks whether you're pasting or pointing at a
+ * file, and a paste goes through pastedSecretPrompt (echo fully suppressed, multi-line safe), so
+ * a key that only ever lives in a password manager never has to touch disk.
+ */
+async function resolveDeploySecretRequest(flags: Flags): Promise<DeploySecretRequest | null> {
+  if (flagBoolean(flags, "skip-deploy-key-secret")) {
+    return null
+  }
+  const fileFlag = flags.get("deploy-key-private-key-file")
+  if (typeof fileFlag === "string") {
+    return {
+      source: "file",
+      path: fileFlag,
+      secretName: flagString(flags, "deploy-key-secret-name", DEFAULT_DEPLOY_KEY_SECRET_NAME),
+    }
+  }
+  if (!process.stdin.isTTY) {
+    return null
+  }
+  const wantsOne = await confirmPrompt(
+    `Also store the matching private key as a secret (Actions + Dependabot) named "${DEFAULT_DEPLOY_KEY_SECRET_NAME}" by default?`,
+  )
+  if (!wantsOne) {
+    return null
+  }
+  const secretName = await textPrompt("Secret name:", { initial: DEFAULT_DEPLOY_KEY_SECRET_NAME })
+  const wantsPaste = await confirmPrompt("Paste the private key value directly (instead of pointing at a file)?")
+  if (wantsPaste) {
+    const value = await pastedSecretPrompt(
+      "Paste the private key now — input is hidden. It stops automatically at the key's own " +
+        '"-----END ... PRIVATE KEY-----" line, or press Ctrl+D when done:',
+    )
+    return { source: "value", value, secretName }
+  }
+  const privateKeyFile = await textPrompt("Path to the private key file:")
+  return { source: "file", path: privateKeyFile, secretName }
 }
 
 /**
@@ -592,7 +669,23 @@ async function apply(owner: string, repo: string, flags: Flags): Promise<void> {
     if (existingKey) {
       console.log(`deploy key "${existingKey.title}" (id ${existingKey.id}) already present with write access`)
     } else {
-      const created = addDeployKey(owner, repo, deployKeyRequest.title, publicKey)
+      let created: DeployKeySummary
+      try {
+        created = addDeployKey(owner, repo, deployKeyRequest.title, publicKey)
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error)
+        if (message.includes("key is already in use")) {
+          throw new Error(
+            `GitHub rejected this key: "key is already in use". Did you use a unique key? It is ` +
+              "important that every repo's deploy key is its own dedicated keypair — GitHub " +
+              "rejects a key that's already registered as a deploy key on another repo, or that " +
+              "matches anyone's personal account SSH key. Generate a fresh keypair for this repo " +
+              `(e.g. \`ssh-keygen -t ed25519 -f ./deploy-key -C "release@${repo}" -N ""\`) and ` +
+              "retry with that one.",
+          )
+        }
+        throw error
+      }
       console.log(`added deploy key "${created.title}" (id ${created.id}) with write access`)
     }
 
@@ -610,6 +703,19 @@ async function apply(owner: string, repo: string, flags: Flags): Promise<void> {
         console.log(`added deploy-key bypass actor to ruleset "${RULESET_NAME}"`)
       }
     }
+  }
+
+  const deploySecretRequest = await resolveDeploySecretRequest(flags)
+  if (deploySecretRequest) {
+    const { secretName } = deploySecretRequest
+    const setSecret = (app: "actions" | "dependabot"): void =>
+      deploySecretRequest.source === "file"
+        ? setSecretFromFile(owner, repo, secretName, deploySecretRequest.path, app)
+        : setSecretFromValue(owner, repo, secretName, deploySecretRequest.value, app)
+    setSecret("actions")
+    console.log(`set Actions secret "${secretName}"`)
+    setSecret("dependabot")
+    console.log(`set Dependabot secret "${secretName}"`)
   }
 
   if (!flagBoolean(flags, "skip-codeowners")) {
@@ -683,6 +789,9 @@ async function main(): Promise<void> {
         "deploy-key-file",
         "deploy-key-title",
         "skip-deploy-key",
+        "deploy-key-private-key-file",
+        "deploy-key-secret-name",
+        "skip-deploy-key-secret",
       ]),
     )
     await apply(owner, repo, flags)

@@ -120,7 +120,8 @@ Then apply:
 ./protect-repo.mts apply <owner>/<repo> [--status-checks <ctx1,ctx2 | none>] \
   [--overwrite-ruleset] [--overwrite-codeowners] [--skip-ruleset] [--skip-codeowners] \
   [--skip-auto-merge] [--bypass-user <login>] \
-  [(--deploy-key <public-key-value> | --deploy-key-file <path>) [--deploy-key-title <title>] | --skip-deploy-key]
+  [(--deploy-key <public-key-value> | --deploy-key-file <path>) [--deploy-key-title <title>] | --skip-deploy-key] \
+  [--deploy-key-private-key-file <path> [--deploy-key-secret-name <name>] | --skip-deploy-key-secret]
 ```
 
 - **As the agent, always pass every flag explicitly** — `--status-checks`, and
@@ -215,7 +216,62 @@ opt-in decision from the rest of `apply` — it's never added implicitly, and it
   `DeployKey` bypass actor, and which of the repo's deploy keys (if any) currently have write
   access.
 
+### Storing the matching private key as a secret
+
+A deploy key's public half alone doesn't help a GitHub Actions workflow authenticate as it — the
+workflow needs the **private** key, e.g. passed as `ssh-key:` to `actions/checkout` so a release
+job's push can use the bypass actor above (see `tinkerbell`'s `ci.yaml` `release` job for the
+pattern). Dependabot can use the same key (e.g. for a private git dependency) via its own,
+separate secret store — repo Actions secrets and Dependabot secrets are not the same list, so the
+key has to be uploaded to both explicitly.
+
+```bash
+./protect-repo.mts apply <owner>/<repo> --deploy-key-private-key-file <path-to-private-key> \
+  [--deploy-key-secret-name <name>] --status-checks <...> ...
+```
+
+- `--deploy-key-private-key-file` — path to the **private** key file only. There is no flag that
+  takes the value directly — a private key must never appear as a CLI argument, since that's
+  visible in `ps`/argv and gets written to shell history regardless of masking. The script wires
+  the file straight to `gh secret set`'s stdin (an open file descriptor, not a JS string), so the
+  key's bytes pass through `gh`'s own client-side encryption without this script or its caller
+  ever holding or printing the plaintext.
+- `--deploy-key-secret-name` — defaults to `RELEASE_DEPLOY_KEY`.
+- Sets the same value as both an Actions secret and a Dependabot secret (`gh secret set --app
+  actions` / `--app dependabot`), always both — never one without the other.
+- `--skip-deploy-key-secret` — explicitly skip; no prompt.
+- **Omitting both, as the agent, means "leave it alone"** — same non-interactive-stdin shape as
+  the deploy key itself: no prompt, no error. A human running this directly gets a confirm prompt,
+  a secret-name prompt (defaulting to `RELEASE_DEPLOY_KEY`), then a choice: paste the key value
+  directly, or point at a file. A pasted value goes through `pastedSecretPrompt` — echo fully
+  suppressed (nothing appears on screen, like a `sudo` password prompt), multi-line safe (see
+  [Gotchas](#gotchas) for why a naive masked prompt isn't) — so a key that only ever lives in a
+  password manager never has to touch disk.
+  - The flag form (`--deploy-key-private-key-file`) is still file-only — a CLI argument is
+    visible in `ps`/argv and lands in shell history regardless of masking, so there's no flag
+    equivalent for a literal value.
+- Independent of the deploy-key-bypass flags above — it doesn't require a new deploy key to be
+  added this run (the key may already be registered from a previous `apply`), and it doesn't
+  require the ruleset.
+- `inspect` reports existing secret **names only** (never values) under "Secrets", for both
+  Actions and Dependabot, so you can tell whether `RELEASE_DEPLOY_KEY` (or whatever name was
+  chosen) is already set without ever fetching its value — GitHub's API doesn't expose secret
+  values anyway.
+
 ## Gotchas
+
+- **Pasting the private key uses a custom reader (`pastedSecretPrompt`), not the `prompts`
+  package.** SSH private keys are multi-line PEM text, and the `prompts` npm package (used for
+  every other interactive fallback in this script) is line-based: its text/password prompts treat
+  the first newline in your input as Enter, submitting right after the key's first line —
+  everything after that spills onto the terminal raw, past the library's control, unmasked
+  (masking doesn't help; a `password`-style `prompts` field has the exact same bug). Instead,
+  `pastedSecretPrompt` reads directly via Node's core `readline`, whose `'line'` event correctly
+  fires once per embedded newline in a pasted chunk without dropping any, with echo fully
+  suppressed via `readline`'s undocumented `_writeToOutput` hook (declared via a `declare module
+  "node:readline"` augmentation in `lib/prompt.mts`, not an `any`/`as` cast — a long-standing,
+  dependency-free technique for hiding input with core `readline`). It stops automatically at the
+  key's own `-----END ... PRIVATE KEY-----` trailer line, or on Ctrl+D.
 
 - **Needs Node ≥22.6** for `--experimental-strip-types` (unflagged by default starting in Node
   23.6+, but the flag works fine on 22.x too — verified against 22.23.2). Its one runtime
