@@ -81,14 +81,15 @@ export async function pastedSecretPrompt(message: string): Promise<string> {
 
 export async function multiselectPrompt(
   message: string,
-  choices: Array<{ label: string; value: string }>,
+  choices: Array<{ label: string; value: string; selected?: boolean }>,
+  options: { flagHint?: string } = {},
 ): Promise<string[]> {
-  assertInteractive(message, "--status-checks")
+  assertInteractive(message, options.flagHint ?? "--status-checks")
   const response = await prompts({
     type: "multiselect",
     name: "value",
     message,
-    choices: choices.map((choice) => ({ title: choice.label, value: choice.value })),
+    choices: choices.map((choice) => ({ title: choice.label, value: choice.value, selected: choice.selected })),
     instructions: false,
     hint: "- space to select, return to submit, zero is fine",
   })

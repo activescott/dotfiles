@@ -1,8 +1,12 @@
 export const RULESET_NAME = "protect-default-branch"
 
+export const ALLOWED_MERGE_METHODS = ["merge", "squash", "rebase"] as const
+export type MergeMethod = (typeof ALLOWED_MERGE_METHODS)[number]
+
 export interface RulesetOptions {
   bypassUserId: number
   requiredStatusCheckContexts: string[]
+  allowedMergeMethods: MergeMethod[]
 }
 
 export interface RulesetRule {
@@ -37,7 +41,7 @@ export function buildCanonicalRuleset(options: RulesetOptions): RulesetPayload {
         require_last_push_approval: false,
         required_review_thread_resolution: false,
         require_extra_approval_for_unattributed_changes: true,
-        allowed_merge_methods: ["squash"],
+        allowed_merge_methods: options.allowedMergeMethods,
       },
     },
     { type: "deletion" },
@@ -96,6 +100,50 @@ export function extractRequiredStatusCheckContexts(ruleset: Record<string, unkno
     }
   }
   return contexts
+}
+
+/** Reads the merge methods an existing ruleset's `pull_request` rule already allows, if any. */
+export function extractAllowedMergeMethods(ruleset: Record<string, unknown>): string[] {
+  const rules = ruleset.rules
+  if (!Array.isArray(rules)) {
+    return []
+  }
+  for (const rule of rules) {
+    if (!isRecord(rule) || rule.type !== "pull_request") {
+      continue
+    }
+    const parameters = rule.parameters
+    if (!isRecord(parameters)) {
+      continue
+    }
+    const methods = parameters.allowed_merge_methods
+    if (Array.isArray(methods)) {
+      return methods.filter((method): method is string => typeof method === "string")
+    }
+  }
+  return []
+}
+
+/**
+ * Which merge methods are allowed is a repo-specific decision reported on its own via
+ * extractAllowedMergeMethods, so it's blanked out here before comparing a ruleset's core rules
+ * against canonical — same reasoning as withoutStatusChecksRule.
+ */
+export function withoutAllowedMergeMethods(
+  ruleset: Record<string, unknown> | RulesetPayload,
+): Record<string, unknown> {
+  const rules = ruleset.rules
+  if (!Array.isArray(rules)) {
+    return { ...ruleset, rules }
+  }
+  const coreRules = rules.map((rule) => {
+    if (!isRecord(rule) || rule.type !== "pull_request" || !isRecord(rule.parameters)) {
+      return rule
+    }
+    const { allowed_merge_methods, ...restParameters } = rule.parameters
+    return { ...rule, parameters: restParameters }
+  })
+  return { ...ruleset, rules: coreRules }
 }
 
 const METADATA_KEYS = new Set([
@@ -185,6 +233,9 @@ export function rulesetCoreMatches(
   existing: Record<string, unknown>,
   canonicalWithoutStatusChecks: RulesetPayload,
 ): boolean {
-  const core = withoutDeployKeyBypassActor(withoutStatusChecksRule(stripRulesetMetadata(existing)))
-  return stableStringify(core) === stableStringify(canonicalWithoutStatusChecks)
+  const core = withoutAllowedMergeMethods(
+    withoutDeployKeyBypassActor(withoutStatusChecksRule(stripRulesetMetadata(existing))),
+  )
+  const canonicalCore = withoutAllowedMergeMethods(canonicalWithoutStatusChecks)
+  return stableStringify(core) === stableStringify(canonicalCore)
 }
