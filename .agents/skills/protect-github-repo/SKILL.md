@@ -133,10 +133,12 @@ Then apply:
 - **As the agent, always pass every flag explicitly** — `--status-checks`, `--merge-methods`, and
   `--overwrite-ruleset`/`--skip-ruleset` and `--overwrite-codeowners`/`--skip-codeowners`
   whenever `inspect` showed an existing, differing mechanism. Pass the exact contexts the user
-  picked in step 2, comma-separated, or the literal string `none`. Pass the merge methods the
-  user picked in step 4 (comma-separated, e.g. `squash,rebase`) — omit only if they accepted the
-  squash-only default. `apply` updates an existing ruleset's `allowed_merge_methods` in place
-  when it differs from the ones passed; re-running with the same ones is a no-op.
+  picked in step 2, comma-separated, or the literal string `none`. Always pass `--merge-methods`
+  too, even for the squash-only default (e.g. `--merge-methods squash`) — with no TTY to fall
+  back to, omitting it makes `apply` throw `refusing to prompt (...) pass --merge-methods
+  explicitly`. Re-running with the same methods already in place is a no-op; different methods
+  count as a difference from canonical like any other field, and `apply` only changes them as
+  part of replacing the whole ruleset — see the next point.
 - Auto-merge has no overwrite decision — it's a single boolean, and enabling it doesn't merge
   anything or change existing PRs. `apply` turns it on unless `inspect` already showed it enabled,
   or you pass `--skip-auto-merge`.
@@ -148,6 +150,14 @@ Then apply:
   have supplied was missing, not a bug in the script.
 - When a mechanism already matches canonical, or doesn't exist yet, `apply` never prompts for
   it — there's nothing to decide. Only a mismatch triggers the overwrite decision.
+- **An overwrite replaces the whole ruleset, not just the field that differed** — `apply` only
+  ever `PUT`s the full canonical payload (`protect-repo.mts` around line 699), so if the existing
+  ruleset has a deploy-key bypass actor from a previous run, overwriting to change merge methods
+  (or anything else) drops that bypass unless you also pass the matching `--deploy-key*` flags on
+  this call. The canonical ruleset built without those flags has only the owner's `User` bypass
+  (`lib/ruleset.mts:67`). Check `inspect`'s "Deploy-key bypass" section before an overwrite — if
+  it's enabled and something (e.g. a release job) depends on it, re-supply `--deploy-key-file`
+  (or `--deploy-key`) alongside `--overwrite-ruleset` or the overwrite silently removes it.
 - Before any overwrite, the script writes the current ruleset JSON / CODEOWNERS content to
   `scripts/.protect-github-repo-backups/<owner>-<repo>/<timestamp>/` (anchored to the script's
   own directory, not wherever you ran it from) and prints the path. Tell the user where the

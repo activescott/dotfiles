@@ -191,7 +191,7 @@ interface RulesetReportEntry {
   name: string
   coreMatchesCanonical: boolean
   currentRequiredStatusChecks: string[]
-  currentAllowedMergeMethods: string[]
+  currentAllowedMergeMethods: string[] | null
   diff: DiffEntry[]
   raw: Record<string, unknown>
 }
@@ -320,8 +320,12 @@ function printInspectReport(report: InspectReport): void {
   } else {
     console.log(`  ${yellow("⚠")} no required status checks`)
   }
-  const currentMergeMethods = named?.currentAllowedMergeMethods ?? []
-  console.log(`  ${dim("○")} allowed merge methods: ${currentMergeMethods.join(", ") || "(none)"}`)
+  const currentMergeMethods = named ? named.currentAllowedMergeMethods : []
+  console.log(
+    `  ${dim("○")} allowed merge methods: ${
+      currentMergeMethods === null ? "all (unset)" : currentMergeMethods.join(", ") || "(none)"
+    }`,
+  )
   for (const other of others) {
     console.log(
       `  ${yellow("⚠")} other ruleset present: "${other.name}" (id ${String(other.id)}) — apply leaves this untouched`,
@@ -456,10 +460,14 @@ async function resolveRequiredStatusCheckContexts(
 }
 
 function parseMergeMethods(rawValue: string): MergeMethod[] {
-  const methods = rawValue
-    .split(",")
-    .map((method) => method.trim())
-    .filter((method) => method.length > 0)
+  const methods = [
+    ...new Set(
+      rawValue
+        .split(",")
+        .map((method) => method.trim())
+        .filter((method) => method.length > 0),
+    ),
+  ]
   for (const method of methods) {
     if (!ALLOWED_MERGE_METHODS.includes(method as MergeMethod)) {
       throw new Error(`--merge-methods: "${method}" is not one of ${ALLOWED_MERGE_METHODS.join(", ")}`)
@@ -482,7 +490,7 @@ async function resolveAllowedMergeMethods(flags: Flags): Promise<MergeMethod[]> 
   const selected = await multiselectPrompt(
     "Which merge methods should the merge button offer?",
     ALLOWED_MERGE_METHODS.map((method) => ({ label: method, value: method, selected: method === "squash" })),
-    { flagHint: "--merge-methods" },
+    { flagHint: "--merge-methods", zeroIsFine: false },
   )
   if (selected.length === 0) {
     throw new Error(`must allow at least one merge method (${ALLOWED_MERGE_METHODS.join(", ")})`)
@@ -675,7 +683,7 @@ async function apply(owner: string, repo: string, flags: Flags): Promise<void> {
         JSON.stringify(extractRequiredStatusCheckContexts(named).slice().sort()) ===
         JSON.stringify(requiredStatusCheckContexts.slice().sort())
       const mergeMethodsMatch =
-        JSON.stringify(extractAllowedMergeMethods(named).slice().sort()) ===
+        JSON.stringify((extractAllowedMergeMethods(named) ?? []).slice().sort()) ===
         JSON.stringify(allowedMergeMethods.slice().sort())
       if (coreMatches && checksMatch && mergeMethodsMatch) {
         console.log(`ruleset "${RULESET_NAME}" already matches canonical; no change`)

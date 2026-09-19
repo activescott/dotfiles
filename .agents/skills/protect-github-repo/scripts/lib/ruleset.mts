@@ -102,11 +102,15 @@ export function extractRequiredStatusCheckContexts(ruleset: Record<string, unkno
   return contexts
 }
 
-/** Reads the merge methods an existing ruleset's `pull_request` rule already allows, if any. */
-export function extractAllowedMergeMethods(ruleset: Record<string, unknown>): string[] {
+/**
+ * Reads the merge methods an existing ruleset's `pull_request` rule already allows.
+ * Returns `null` when the rule has no `allowed_merge_methods` field at all — GitHub treats a
+ * missing field as "all methods allowed," not "none."
+ */
+export function extractAllowedMergeMethods(ruleset: Record<string, unknown>): string[] | null {
   const rules = ruleset.rules
   if (!Array.isArray(rules)) {
-    return []
+    return null
   }
   for (const rule of rules) {
     if (!isRecord(rule) || rule.type !== "pull_request") {
@@ -120,8 +124,9 @@ export function extractAllowedMergeMethods(ruleset: Record<string, unknown>): st
     if (Array.isArray(methods)) {
       return methods.filter((method): method is string => typeof method === "string")
     }
+    return null
   }
-  return []
+  return null
 }
 
 /**
