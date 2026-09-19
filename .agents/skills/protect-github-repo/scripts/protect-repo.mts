@@ -4,16 +4,20 @@ import { readFileSync } from "node:fs"
 import { basename } from "node:path"
 import { ghApi, ghApiJson } from "./lib/gh.mts"
 import {
+  ALLOWED_MERGE_METHODS,
   RULESET_NAME,
   buildCanonicalRuleset,
+  extractAllowedMergeMethods,
   extractRequiredStatusCheckContexts,
   hasDeployKeyBypassActor,
   rulesetCoreMatches,
   stripRulesetMetadata,
   withDeployKeyBypassActor,
+  withoutAllowedMergeMethods,
   withoutDeployKeyBypassActor,
   withoutStatusChecksRule,
 } from "./lib/ruleset.mts"
+import type { MergeMethod } from "./lib/ruleset.mts"
 import { buildCanonicalCodeowners, findExistingCodeowners } from "./lib/codeowners.mts"
 import { listAvailableChecks } from "./lib/statusChecks.mts"
 import type { AvailableCheck } from "./lib/statusChecks.mts"
@@ -28,6 +32,7 @@ import { confirmPrompt, multiselectPrompt, pastedSecretPrompt, textPrompt } from
 
 const DEFAULT_BYPASS_LOGIN = "activescott"
 const DEFAULT_DEPLOY_KEY_SECRET_NAME = "RELEASE_DEPLOY_KEY"
+const DEFAULT_ALLOWED_MERGE_METHODS: MergeMethod[] = ["squash"]
 
 interface RepoInfo {
   default_branch: string
@@ -49,13 +54,14 @@ function usageAndExit(): never {
       "usage:",
       "  ./protect-repo.mts inspect <owner>/<repo> [--bypass-user <login>] [--json]",
       "  ./protect-repo.mts apply <owner>/<repo> [--status-checks <comma-list|none>] " +
+        "[--merge-methods <comma-list of merge,squash,rebase>] " +
         "[--bypass-user <login>] [--overwrite-ruleset] [--overwrite-codeowners] " +
         "[--skip-ruleset] [--skip-codeowners] [--skip-auto-merge] " +
         "[(--deploy-key <public-key-value> | --deploy-key-file <path>) [--deploy-key-title <title>] " +
         "| --skip-deploy-key] " +
         "[--deploy-key-private-key-file <path> [--deploy-key-secret-name <name>] | --skip-deploy-key-secret]",
-      "    omitted --status-checks / --overwrite-* / --skip-* fall back to an interactive " +
-        "prompt (requires a TTY)",
+      "    omitted --status-checks / --merge-methods / --overwrite-* / --skip-* fall back to an " +
+        "interactive prompt (requires a TTY); --merge-methods defaults to squash-only when accepted",
       "    omitted --deploy-key / --deploy-key-file / --skip-deploy-key: on a TTY, prompts " +
         "whether to add one (accepts a pasted key or a file path); otherwise leaves deploy-key " +
         "bypass untouched (no prompt, no error)",
@@ -185,6 +191,7 @@ interface RulesetReportEntry {
   name: string
   coreMatchesCanonical: boolean
   currentRequiredStatusChecks: string[]
+  currentAllowedMergeMethods: string[] | null
   diff: DiffEntry[]
   raw: Record<string, unknown>
 }
@@ -208,16 +215,23 @@ interface InspectReport {
 function buildInspectReport(owner: string, repo: string, bypassLogin: string): InspectReport {
   const repoInfo = getRepoInfo(owner, repo)
   const bypassUserId = resolveUserId(bypassLogin)
-  const canonical = buildCanonicalRuleset({ bypassUserId, requiredStatusCheckContexts: [] })
+  const canonical = buildCanonicalRuleset({
+    bypassUserId,
+    requiredStatusCheckContexts: [],
+    allowedMergeMethods: DEFAULT_ALLOWED_MERGE_METHODS,
+  })
 
   const rulesets = findBranchRulesets(owner, repo).map((ruleset) => {
-    const core = withoutDeployKeyBypassActor(withoutStatusChecksRule(stripRulesetMetadata(ruleset)))
+    const core = withoutAllowedMergeMethods(
+      withoutDeployKeyBypassActor(withoutStatusChecksRule(stripRulesetMetadata(ruleset))),
+    )
     return {
       id: typeof ruleset.id === "number" ? ruleset.id : null,
       name: typeof ruleset.name === "string" ? ruleset.name : "",
       coreMatchesCanonical: rulesetCoreMatches(ruleset, canonical),
       currentRequiredStatusChecks: extractRequiredStatusCheckContexts(ruleset),
-      diff: diffValues(canonical, core),
+      currentAllowedMergeMethods: extractAllowedMergeMethods(ruleset),
+      diff: diffValues(withoutAllowedMergeMethods(canonical), core),
       raw: stripRulesetMetadata(ruleset),
     }
   })
@@ -306,6 +320,12 @@ function printInspectReport(report: InspectReport): void {
   } else {
     console.log(`  ${yellow("⚠")} no required status checks`)
   }
+  const currentMergeMethods = named ? named.currentAllowedMergeMethods : []
+  console.log(
+    `  ${dim("○")} allowed merge methods: ${
+      currentMergeMethods === null ? "all (unset)" : currentMergeMethods.join(", ") || "(none)"
+    }`,
+  )
   for (const other of others) {
     console.log(
       `  ${yellow("⚠")} other ruleset present: "${other.name}" (id ${String(other.id)}) — apply leaves this untouched`,
@@ -437,6 +457,45 @@ async function resolveRequiredStatusCheckContexts(
     "Which status checks should be required to pass before merging?",
     available.map((check) => ({ label: check.label, value: check.context })),
   )
+}
+
+function parseMergeMethods(rawValue: string): MergeMethod[] {
+  const methods = [
+    ...new Set(
+      rawValue
+        .split(",")
+        .map((method) => method.trim())
+        .filter((method) => method.length > 0),
+    ),
+  ]
+  for (const method of methods) {
+    if (!ALLOWED_MERGE_METHODS.includes(method as MergeMethod)) {
+      throw new Error(`--merge-methods: "${method}" is not one of ${ALLOWED_MERGE_METHODS.join(", ")}`)
+    }
+  }
+  if (methods.length === 0) {
+    throw new Error("--merge-methods requires at least one of " + ALLOWED_MERGE_METHODS.join(", "))
+  }
+  return methods as MergeMethod[]
+}
+
+async function resolveAllowedMergeMethods(flags: Flags): Promise<MergeMethod[]> {
+  const mergeMethodsFlag = flags.get("merge-methods")
+  if (mergeMethodsFlag !== undefined) {
+    if (typeof mergeMethodsFlag !== "string") {
+      throw new Error(`--merge-methods requires a value: a comma-separated list of ${ALLOWED_MERGE_METHODS.join(", ")}`)
+    }
+    return parseMergeMethods(mergeMethodsFlag)
+  }
+  const selected = await multiselectPrompt(
+    "Which merge methods should the merge button offer?",
+    ALLOWED_MERGE_METHODS.map((method) => ({ label: method, value: method, selected: method === "squash" })),
+    { flagHint: "--merge-methods", zeroIsFine: false },
+  )
+  if (selected.length === 0) {
+    throw new Error(`must allow at least one merge method (${ALLOWED_MERGE_METHODS.join(", ")})`)
+  }
+  return selected as MergeMethod[]
 }
 
 interface DeployKeyRequest {
@@ -587,10 +646,12 @@ async function apply(owner: string, repo: string, flags: Flags): Promise<void> {
     repoInfo.default_branch,
     flags,
   )
-  const canonical = buildCanonicalRuleset({ bypassUserId, requiredStatusCheckContexts })
+  const allowedMergeMethods = flagBoolean(flags, "skip-ruleset") ? [] : await resolveAllowedMergeMethods(flags)
+  const canonical = buildCanonicalRuleset({ bypassUserId, requiredStatusCheckContexts, allowedMergeMethods })
   const canonicalWithoutStatusChecks = buildCanonicalRuleset({
     bypassUserId,
     requiredStatusCheckContexts: [],
+    allowedMergeMethods,
   })
   const backupDir = backupDirFor(owner, repo)
 
@@ -621,7 +682,10 @@ async function apply(owner: string, repo: string, flags: Flags): Promise<void> {
       const checksMatch =
         JSON.stringify(extractRequiredStatusCheckContexts(named).slice().sort()) ===
         JSON.stringify(requiredStatusCheckContexts.slice().sort())
-      if (coreMatches && checksMatch) {
+      const mergeMethodsMatch =
+        JSON.stringify((extractAllowedMergeMethods(named) ?? []).slice().sort()) ===
+        JSON.stringify(allowedMergeMethods.slice().sort())
+      if (coreMatches && checksMatch && mergeMethodsMatch) {
         console.log(`ruleset "${RULESET_NAME}" already matches canonical; no change`)
       } else {
         console.log(`ruleset "${RULESET_NAME}" exists and differs from canonical:`)
@@ -780,6 +844,7 @@ async function main(): Promise<void> {
       new Set([
         "bypass-user",
         "status-checks",
+        "merge-methods",
         "overwrite-ruleset",
         "overwrite-codeowners",
         "skip-ruleset",

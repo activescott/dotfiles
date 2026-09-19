@@ -1,15 +1,15 @@
 ---
 name: protect-github-repo
-description: Protect a GitHub repo's default branch and ownership — add a CODEOWNERS file naming the owner as owner of everything, a ruleset requiring PR + code-owner review, squash-only merges, no deletion/force-push, with only the owner able to bypass, and enable repo-level auto-merge so PR authors can turn on "Auto-merge". Optionally requires selected status checks to pass. Runs a deterministic .mts script (via gh CLI) that inspects current state, backs up anything it would overwrite, and never overwrites without confirmation. Trigger: asked to protect/lock down a repo, set up branch protection, add CODEOWNERS, enable auto-merge, or apply "the usual" repo protection to a new or existing repo.
+description: Protect a GitHub repo's default branch and ownership — add a CODEOWNERS file naming the owner as owner of everything, a ruleset requiring PR + code-owner review, squash-only merges by default (merge/rebase selectable), no deletion/force-push, with only the owner able to bypass, and enable repo-level auto-merge so PR authors can turn on "Auto-merge". Optionally requires selected status checks to pass. Runs a deterministic .mts script (via gh CLI) that inspects current state, backs up anything it would overwrite, and never overwrites without confirmation. Trigger: asked to protect/lock down a repo, set up branch protection, add CODEOWNERS, enable auto-merge, or apply "the usual" repo protection to a new or existing repo.
 ---
 
 # Protect a GitHub repo
 
 Standard repo-protection setup: a CODEOWNERS file naming one person as owner of everything, and
 a ruleset that requires a pull request with that owner's approval before merging to the default
-branch, blocks deletion and force-push, restricts merges to squash-only, and lets only the named
-owner bypass. Optionally requires selected CI status checks to pass and the branch to be up to
-date before merge.
+branch, blocks deletion and force-push, restricts the merge button to squash-only by default (the
+user can allow merge and/or rebase too), and lets only the named owner bypass. Optionally
+requires selected CI status checks to pass and the branch to be up to date before merge.
 
 The actual GitHub writes are done by a deterministic script (`scripts/protect-repo.mts`), not by
 hand-rolled `gh api` calls in this document — see [Run the script](#run-the-script). It's
@@ -48,7 +48,9 @@ On the default branch, via a ruleset named `protect-default-branch`:
 
 - `pull_request` — 1 approving review required, **and** review from a code owner required
   (`require_code_owner_review: true`)
-- `allowed_merge_methods: ["squash"]` — squash is the only merge method the merge button offers
+- `allowed_merge_methods` — which merge methods the merge button offers; defaults to
+  `["squash"]`, but the user can allow `merge` and/or `rebase` too (multi-select prompt, or
+  `--merge-methods` — see [Run the script](#run-the-script))
 - `deletion` — branch cannot be deleted
 - `non_fast_forward` — no force-push
 - bypass: only the named owner (a `User` bypass actor, not the `Repository admin` role — see
@@ -113,21 +115,30 @@ Either form reports:
 3. **If `availableStatusChecks` is empty**, don't ask — there's nothing to require yet, and
    `strict_required_status_checks_policy` (branch-up-to-date) has no effect without at least one
    required check.
+4. **Ask which merge methods to allow** (multi-select over merge/squash/rebase, squash-only if
+   the user just accepts the default). `rulesets[].currentAllowedMergeMethods` shows what's
+   currently allowed, if a ruleset already exists.
 
 Then apply:
 
 ```bash
 ./protect-repo.mts apply <owner>/<repo> [--status-checks <ctx1,ctx2 | none>] \
+  [--merge-methods <merge,squash,rebase subset>] \
   [--overwrite-ruleset] [--overwrite-codeowners] [--skip-ruleset] [--skip-codeowners] \
   [--skip-auto-merge] [--bypass-user <login>] \
   [(--deploy-key <public-key-value> | --deploy-key-file <path>) [--deploy-key-title <title>] | --skip-deploy-key] \
   [--deploy-key-private-key-file <path> [--deploy-key-secret-name <name>] | --skip-deploy-key-secret]
 ```
 
-- **As the agent, always pass every flag explicitly** — `--status-checks`, and
+- **As the agent, always pass every flag explicitly** — `--status-checks`, `--merge-methods`, and
   `--overwrite-ruleset`/`--skip-ruleset` and `--overwrite-codeowners`/`--skip-codeowners`
   whenever `inspect` showed an existing, differing mechanism. Pass the exact contexts the user
-  picked in step 2, comma-separated, or the literal string `none`.
+  picked in step 2, comma-separated, or the literal string `none`. Always pass `--merge-methods`
+  too, even for the squash-only default (e.g. `--merge-methods squash`) — with no TTY to fall
+  back to, omitting it makes `apply` throw `refusing to prompt (...) pass --merge-methods
+  explicitly`. Re-running with the same methods already in place is a no-op; different methods
+  count as a difference from canonical like any other field, and `apply` only changes them as
+  part of replacing the whole ruleset — see the next point.
 - Auto-merge has no overwrite decision — it's a single boolean, and enabling it doesn't merge
   anything or change existing PRs. `apply` turns it on unless `inspect` already showed it enabled,
   or you pass `--skip-auto-merge`.
@@ -139,6 +150,14 @@ Then apply:
   have supplied was missing, not a bug in the script.
 - When a mechanism already matches canonical, or doesn't exist yet, `apply` never prompts for
   it — there's nothing to decide. Only a mismatch triggers the overwrite decision.
+- **An overwrite replaces the whole ruleset, not just the field that differed** — `apply` only
+  ever `PUT`s the full canonical payload (`protect-repo.mts` around line 699), so if the existing
+  ruleset has a deploy-key bypass actor from a previous run, overwriting to change merge methods
+  (or anything else) drops that bypass unless you also pass the matching `--deploy-key*` flags on
+  this call. The canonical ruleset built without those flags has only the owner's `User` bypass
+  (`lib/ruleset.mts:67`). Check `inspect`'s "Deploy-key bypass" section before an overwrite — if
+  it's enabled and something (e.g. a release job) depends on it, re-supply `--deploy-key-file`
+  (or `--deploy-key`) alongside `--overwrite-ruleset` or the overwrite silently removes it.
 - Before any overwrite, the script writes the current ruleset JSON / CODEOWNERS content to
   `scripts/.protect-github-repo-backups/<owner>-<repo>/<timestamp>/` (anchored to the script's
   own directory, not wherever you ran it from) and prints the path. Tell the user where the
@@ -332,7 +351,7 @@ hand-copied (the script is the source of truth):
         "require_last_push_approval": false,
         "required_review_thread_resolution": false,
         "require_extra_approval_for_unattributed_changes": true,
-        "allowed_merge_methods": ["squash"]
+        "allowed_merge_methods": ["<squash by default; merge and/or rebase if the user opted in>"]
       }
     },
     { "type": "deletion" },
