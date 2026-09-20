@@ -10,6 +10,7 @@ import {
   extractAllowedMergeMethods,
   extractRequiredStatusCheckContexts,
   hasDeployKeyBypassActor,
+  hasVisibleBypassActors,
   rulesetCoreMatches,
   stripRulesetMetadata,
   withDeployKeyBypassActor,
@@ -208,7 +209,8 @@ interface InspectReport {
   canonicalCodeownersPreview: string
   availableStatusChecks: AvailableCheck[]
   autoMerge: { enabled: boolean }
-  deployKeyBypass: { rulesetAllows: boolean; writeAccessKeys: DeployKeySummary[] }
+  /** rulesetAllows is null when GitHub redacted bypass_actors, i.e. the caller has no admin. */
+  deployKeyBypass: { rulesetAllows: boolean | null; writeAccessKeys: DeployKeySummary[] }
   secrets: { actions: string[]; dependabot: string[] }
 }
 
@@ -264,7 +266,12 @@ function buildInspectReport(owner: string, repo: string, bypassLogin: string): I
     availableStatusChecks: listAvailableChecks(owner, repo, repoInfo.default_branch),
     autoMerge: { enabled: repoInfo.allow_auto_merge ?? false },
     deployKeyBypass: {
-      rulesetAllows: namedRuleset !== undefined && hasDeployKeyBypassActor(namedRuleset.raw),
+      rulesetAllows:
+        namedRuleset === undefined
+          ? false
+          : hasVisibleBypassActors(namedRuleset.raw)
+            ? hasDeployKeyBypassActor(namedRuleset.raw)
+            : null,
       writeAccessKeys: listDeployKeys(owner, repo).filter((key) => !key.read_only),
     },
     secrets: {
@@ -346,7 +353,11 @@ function printInspectReport(report: InspectReport): void {
 
   console.log()
   console.log(bold("Deploy-key bypass"))
-  if (deployKeyBypass.rulesetAllows) {
+  if (deployKeyBypass.rulesetAllows === null) {
+    console.log(
+      `  ${yellow("⚠")} unknown: GitHub omits bypass_actors without admin on the repo; re-run as an admin`,
+    )
+  } else if (deployKeyBypass.rulesetAllows) {
     console.log(`  ${green("✔")} ruleset allows any write-access deploy key to bypass`)
   } else {
     console.log(`  ${dim("○")} not enabled — pass --deploy-key-file to add one`)
@@ -355,7 +366,7 @@ function printInspectReport(report: InspectReport): void {
     for (const key of deployKeyBypass.writeAccessKeys) {
       console.log(`      write-access deploy key: "${key.title}" (id ${key.id})`)
     }
-  } else if (deployKeyBypass.rulesetAllows) {
+  } else if (deployKeyBypass.rulesetAllows === true) {
     console.log(`      ${yellow("⚠")} no write-access deploy key on the repo yet — the bypass has nothing to apply to`)
   }
 
@@ -756,14 +767,31 @@ async function apply(owner: string, repo: string, flags: Flags): Promise<void> {
     if (rulesetId === null) {
       console.log(`no "${RULESET_NAME}" ruleset id available — skipping bypass actor`)
     } else {
-      const current = ghApiJson<Record<string, unknown>>([`repos/${owner}/${repo}/rulesets/${String(rulesetId)}`])
+      const rulesetPath = `repos/${owner}/${repo}/rulesets/${String(rulesetId)}`
+      const current = ghApiJson<Record<string, unknown>>([rulesetPath])
+      if (!hasVisibleBypassActors(current)) {
+        throw new Error(
+          `GitHub omitted bypass_actors from ruleset "${RULESET_NAME}" (id ${String(rulesetId)}), so its ` +
+            "existing bypass list cannot be read and writing one now would drop whatever is already " +
+            `there. This is what GitHub returns without admin on ${owner}/${repo}. Ruleset as read: ` +
+            JSON.stringify(current),
+        )
+      }
       if (hasDeployKeyBypassActor(current)) {
         console.log(`ruleset "${RULESET_NAME}" already allows deploy-key bypass; no change`)
       } else {
         ghApi(
-          [`repos/${owner}/${repo}/rulesets/${String(rulesetId)}`, "-X", "PUT", "--input", "-"],
+          [rulesetPath, "-X", "PUT", "--input", "-"],
           JSON.stringify(withDeployKeyBypassActor(stripRulesetMetadata(current))),
         )
+        const written = ghApiJson<Record<string, unknown>>([rulesetPath])
+        if (!hasDeployKeyBypassActor(written)) {
+          throw new Error(
+            `GitHub accepted the update but ruleset "${RULESET_NAME}" (id ${String(rulesetId)}) has no ` +
+              "DeployKey bypass actor when read back, so the deploy key cannot push past the rules. " +
+              `Ruleset as read back: ${JSON.stringify(written)}`,
+          )
+        }
         console.log(`added deploy-key bypass actor to ruleset "${RULESET_NAME}"`)
       }
     }
