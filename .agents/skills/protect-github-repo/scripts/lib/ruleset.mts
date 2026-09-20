@@ -200,6 +200,16 @@ export function withoutStatusChecksRule(ruleset: Record<string, unknown>): Recor
   return { ...ruleset, rules: coreRules }
 }
 
+/**
+ * Whether GitHub returned the ruleset's bypass list at all. It omits `bypass_actors` from the
+ * response for callers without admin on the repo, and an omitted list is indistinguishable from an
+ * empty one unless you check for the key: an admin reading a ruleset with no bypass actors gets
+ * `[]`. Without this check, `hasDeployKeyBypassActor` reads a redacted response as "no bypass".
+ */
+export function hasVisibleBypassActors(ruleset: Record<string, unknown>): boolean {
+  return Array.isArray(ruleset.bypass_actors)
+}
+
 /** Whether `ruleset` already has a `DeployKey` bypass actor (any write-access deploy key bypasses). */
 export function hasDeployKeyBypassActor(ruleset: Record<string, unknown>): boolean {
   const actors = ruleset.bypass_actors
