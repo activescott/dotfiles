@@ -35,6 +35,16 @@ or an explicit range) instead of defaulting to the most recent workweek: $ARGUME
 
    Exclude from all counts any PR merged before the window that merely got touched inside it.
 
+   For any open PR that's been open more than one day, also pull its commits:
+
+   ```bash
+   gh pr view <n> --repo RapidSOS/<repo> --json commits
+   ```
+
+   Use commit messages/timestamps as evidence of progress on that PR during the window
+   (what changed, in what order, whether work is still active vs. stalled) — fold that into
+   the theme narrative. Do not enumerate commits in the output.
+
 2. Jira — my tickets. Note JQL precedence: parenthesize the OR.
 
    ```
