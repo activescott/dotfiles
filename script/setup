@@ -3,7 +3,7 @@ THISDIR=$(cd $(dirname "$0"); pwd) #this script's directory
 
 DATE=`date "+%Y-%m-%dT%H_%M_%S"`
 
-cpsafe() {
+linksafe() {
  SRC=$1
  DST=$2
  if [ -f "$SRC" ]; then 
@@ -16,14 +16,14 @@ cpsafe() {
  fi
 }
 
-cpsafe_dir() {
+linksafe_dir() {
  SRCDIR=$1
  DSTDIR=$2
  
 [ -d "$DSTDIR" ] || mkdir -p "$DSTDIR"
 for filepath in $SRCDIR/*; do
     filename=`basename $filepath`
-    cpsafe "$filepath" "$DSTDIR/$filename"
+    linksafe "$filepath" "$DSTDIR/$filename"
 done
  
 }
@@ -36,7 +36,7 @@ echo "\n########## Copying $DOTFILESDIR/bin files... ##########"
 for filepath in $DOTFILESDIR/bin/*; do
     filename=`basename $filepath`
     #echo "hi $filepath -> $filename"
-    cpsafe "$filepath" ~/bin/$filename
+    linksafe "$filepath" ~/bin/$filename
 done 
 
 # ~/lib
@@ -45,54 +45,54 @@ echo "\n########## Copying $DOTFILESDIR/lib files... ##########"
 for filepath in $DOTFILESDIR/lib/*; do
     filename=`basename $filepath`
     #echo "hi $filepath -> $filename"
-    cpsafe "$filepath" ~/lib/$filename
+    linksafe "$filepath" ~/lib/$filename
 done
 
 # Midnight Commander:
 echo "\n########## Copying Midnight Commander files... ##########"
-cpsafe_dir "$DOTFILESDIR/.config/mc" ~/.config/mc
+linksafe_dir "$DOTFILESDIR/.config/mc" ~/.config/mc
 
 echo "\n########## Copying 1Password config files... ##########"
-cpsafe_dir "$DOTFILESDIR/.config/1Password/ssh" ~/.config/1Password/ssh
+linksafe_dir "$DOTFILESDIR/.config/1Password/ssh" ~/.config/1Password/ssh
 
 echo "\n########## Copying k9s config files... ##########"
 # k9s uses ~/Library/Application Support/k9s/ on macOS (not ~/.config/k9s/)
-cpsafe_dir "$DOTFILESDIR/.config/k9s" "$HOME/Library/Application Support/k9s"
+linksafe_dir "$DOTFILESDIR/.config/k9s" "$HOME/Library/Application Support/k9s"
 
 # misc apps, etc.
 echo "\n########## Copying misc files... ##########"
-cpsafe "$DOTFILESDIR/.bash_secrets" ~/.bash_secrets
+linksafe "$DOTFILESDIR/.bash_secrets" ~/.bash_secrets
 
 # source common .<shell>rc stuff for bash and zsh:
-cpsafe "$DOTFILESDIR/.shrc" ~/.shrc
+linksafe "$DOTFILESDIR/.shrc" ~/.shrc
 
 # bash:
-cpsafe "$DOTFILESDIR/.bashrc" ~/.bashrc
-cpsafe "$DOTFILESDIR/.bash_profile" ~/.bash_profile
-cpsafe "$DOTFILESDIR/.inputrc" ~/.inputrc
+linksafe "$DOTFILESDIR/.bashrc" ~/.bashrc
+linksafe "$DOTFILESDIR/.bash_profile" ~/.bash_profile
+linksafe "$DOTFILESDIR/.inputrc" ~/.inputrc
 
 # tmux:
-cpsafe "$DOTFILESDIR/.tmux.conf" ~/.tmux.conf
+linksafe "$DOTFILESDIR/.tmux.conf" ~/.tmux.conf
 
 # zsh: https://linuxhint.com/configure-setup-zshrc-zsh/
-cpsafe "$DOTFILESDIR/.zshrc" ~/.zshrc
-cpsafe "$DOTFILESDIR/.zprofile" ~/.zprofile
+linksafe "$DOTFILESDIR/.zshrc" ~/.zshrc
+linksafe "$DOTFILESDIR/.zprofile" ~/.zprofile
 
 
 echo "\n########## Copying SSH & git config files... ##########"
 [ -d "$HOME/.ssh/config" ] || mkdir -p "$HOME/.ssh/config"
-cpsafe "$DOTFILESDIR/.ssh/config" ~/.ssh/config
+linksafe "$DOTFILESDIR/.ssh/config" ~/.ssh/config
 
-cpsafe "$DOTFILESDIR/.config/1Password/ssh/agent.toml" ~/.config/1Password/ssh/agent.toml
+linksafe "$DOTFILESDIR/.config/1Password/ssh/agent.toml" ~/.config/1Password/ssh/agent.toml
 
 
 echo "\n########## Copying git config files... ##########"
-cpsafe "$DOTFILESDIR/.gitconfig" ~/.gitconfig
-cpsafe "$DOTFILESDIR/.ssh/authorized_keys" ~/.ssh/authorized_keys # for general ssh authorized access
-cpsafe "$DOTFILESDIR/.ssh/allowed_signers" ~/.ssh/allowed_signers # for git's SSH commit verification
-cpsafe "$DOTFILESDIR/.gitconfig.commit-signing-1p.include" ~/.gitconfig.commit-signing-1p.include
-cpsafe "$DOTFILESDIR/.gitconfig.commit-signing-local.include" ~/.gitconfig.commit-signing-local.include
-cpsafe "$DOTFILESDIR/.gitconfig.commit-signing-onlykey.include" ~/.gitconfig.commit-signing-onlykey.include
+linksafe "$DOTFILESDIR/.gitconfig" ~/.gitconfig
+linksafe "$DOTFILESDIR/.ssh/authorized_keys" ~/.ssh/authorized_keys # for general ssh authorized access
+linksafe "$DOTFILESDIR/.ssh/allowed_signers" ~/.ssh/allowed_signers # for git's SSH commit verification
+linksafe "$DOTFILESDIR/.gitconfig.commit-signing-1p.include" ~/.gitconfig.commit-signing-1p.include
+linksafe "$DOTFILESDIR/.gitconfig.commit-signing-local.include" ~/.gitconfig.commit-signing-local.include
+linksafe "$DOTFILESDIR/.gitconfig.commit-signing-onlykey.include" ~/.gitconfig.commit-signing-onlykey.include
 
 # Symlinks the repo-managed parts of the cross-harness ~/.agents/ directory.
 # opencode and other agent-compatible tools auto-discover AGENTS.md, skills,
@@ -111,7 +111,7 @@ setup_agents_dir() {
    ln -vs "$DOTFILESDIR/.agents/$sub" "$dst"
  done
  # AGENTS.md: single-file symlink.
- cpsafe "$DOTFILESDIR/.agents/AGENTS.md" "$agents_dir/AGENTS.md"
+ linksafe "$DOTFILESDIR/.agents/AGENTS.md" "$agents_dir/AGENTS.md"
 }
 
 # Symlinks the repo-managed parts of a Claude Code config directory. Called once
@@ -129,11 +129,11 @@ setup_agents_dir() {
 setup_claude_dir() {
  claude_dir=$1
  [ -d "$claude_dir" ] || mkdir -p "$claude_dir"
- cpsafe "$DOTFILESDIR/.claude/CLAUDE.md" "$claude_dir/CLAUDE.md"
- cpsafe "$HOME/.agents/AGENTS.md" "$claude_dir/AGENTS.md"
- cpsafe "$DOTFILESDIR/.claude/settings.json" "$claude_dir/settings.json"
+ linksafe "$DOTFILESDIR/.claude/CLAUDE.md" "$claude_dir/CLAUDE.md"
+ linksafe "$HOME/.agents/AGENTS.md" "$claude_dir/AGENTS.md"
+ linksafe "$DOTFILESDIR/.claude/settings.json" "$claude_dir/settings.json"
  [ -d "$claude_dir/hooks" ] || mkdir -p "$claude_dir/hooks"
- cpsafe "$DOTFILESDIR/.claude/hooks/confirm-before-run.sh" "$claude_dir/hooks/confirm-before-run.sh"
+ linksafe "$DOTFILESDIR/.claude/hooks/confirm-before-run.sh" "$claude_dir/hooks/confirm-before-run.sh"
  # Replace ~/.claude/skills, ~/.claude/rules, and ~/.claude/commands with
  # whole-dir symlinks to their ~/.agents/ counterparts (set up by
  # setup_agents_dir). Claude Code only looks at .claude/, not .agents/, so each
@@ -184,9 +184,9 @@ setup_opencode_dir() {
  ocdir="$HOME/.config/opencode"
  [ -d "$ocdir" ] || mkdir -p "$ocdir"
  [ -d "$ocdir/plugins" ] || mkdir -p "$ocdir/plugins"
- cpsafe "$DOTFILESDIR/.config/opencode/opencode.jsonc" "$ocdir/opencode.jsonc"
- cpsafe "$DOTFILESDIR/.config/opencode/plugins/confirm-before-run.ts" "$ocdir/plugins/confirm-before-run.ts"
- cpsafe "$DOTFILESDIR/.config/opencode/plugins/package.json" "$ocdir/plugins/package.json"
+ linksafe "$DOTFILESDIR/.config/opencode/opencode.jsonc" "$ocdir/opencode.jsonc"
+ linksafe "$DOTFILESDIR/.config/opencode/plugins/confirm-before-run.ts" "$ocdir/plugins/confirm-before-run.ts"
+ linksafe "$DOTFILESDIR/.config/opencode/plugins/package.json" "$ocdir/plugins/package.json"
  # Slash commands: opencode and Claude share the canonical source under
  # ~/.agents/commands/ (set up by setup_agents_dir). opencode only looks at
  # ~/.config/opencode/commands/, so symlink to the shared source.
@@ -204,7 +204,7 @@ echo "\n########## Setting up opencode config in ~/.config/opencode/... ########
 setup_opencode_dir
 
 echo "\n########## Copying misc config files... ##########"
-[ -f "$DOTFILESDIR/.shrc-rsos" ] && cpsafe "$DOTFILESDIR/.shrc-rsos" ~/.shrc-rsos
+[ -f "$DOTFILESDIR/.shrc-rsos" ] && linksafe "$DOTFILESDIR/.shrc-rsos" ~/.shrc-rsos
 
 # Install xterm-ghostty terminfo for root so `sudo nano` etc. work under Ghostty.
 # Ghostty installs its terminfo to the user's ~/.terminfo, but root doesn't see it,

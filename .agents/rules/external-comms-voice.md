@@ -62,34 +62,35 @@ uses ` — ` as its separator and stays that way).
 - **Over-hedged summary sentences** that restate what was just said in more
   abstract terms.
 
-## Example: the 2026-09-23 expired-token message
+## Example: an expired-token message
 
-Same facts, same audience. The first is the draft, the second is what Scott
-actually posted.
+Same facts, same audience. The first is the draft, the second is the edit that
+was actually sent. Names and packages here are anonymized stand-ins for a real
+2026-09-23 exchange.
 
 ### Before (what not to write)
 
 ```
-:information_source: FYI — `assemble-helloworld`'s `NPM_GITHUB_TOKEN` secret has expired.
+:information_source: FYI — `example-template`'s `NPM_GITHUB_TOKEN` secret has expired.
 
 It was last set *2026-06-25*, so it died right around the 90-day mark yesterday.
 Nothing announced it.
 
 *The symptom:* `ci.yml` uses `${{ secrets.NPM_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}`,
-and the built-in `GITHUB_TOKEN` can't fetch org-`internal` `@rapidsos/*` from GitHub
+and the built-in `GITHUB_TOKEN` can't fetch org-`internal` `@exampleorg/*` from GitHub
 Packages. So when the PAT stops working, the fallback silently turns into this on
-*every* `@rapidsos` package:
+*every* `@exampleorg/*` package:
 
-> YN0041: @rapidsos/data-plane-core@npm:0.2.116: Invalid authentication (as an unknown user)
+> YN0041: @exampleorg/some-lib@npm:0.2.116: Invalid authentication (as an unknown user)
 
 *Why nobody noticed:* it needs a yarn cache miss to show up. Every recent PR left
 `yarn.lock` untouched, so yarn served from cache and never authenticated. Clean
-control: `event-queue` got the identical change the same day and passed, and its
+control: `sibling-repo` got the identical change the same day and passed, and its
 token was refreshed 09-21.
 
 *Ask:* I only have push on that repo — could someone with admin rotate it? A
-`read:packages` PAT, SSO-authorized for RapidSOS, then:
-```gh secret set NPM_GITHUB_TOKEN --repo RapidSOS/assemble-helloworld```
+`read:packages` PAT, SSO-authorized for the org, then:
+```gh secret set NPM_GITHUB_TOKEN --repo ExampleOrg/example-template```
 
 *Worth considering while we're in there:* a personal PAT on a shared template repo
 will do this again every ~90 days, and it'll be just as invisible next time. An
@@ -101,18 +102,18 @@ observational, bolded section headers, an em dash, a blockquote for the error,
 the entire cache/control forensics paragraph, a how-to aimed at people who own
 the repo, and a closing paragraph of unsolicited advice.
 
-### After (what Scott actually posted)
+### After (what was actually sent)
 
 ```
-Looks like assemble-helloworld's `NPM_GITHUB_TOKEN` secret has expired. I saw that
+Looks like example-template's `NPM_GITHUB_TOKEN` secret has expired. I saw that
 it was last set 2026-06-25, and it seems to have died right around the 90-day mark
 yesterday.
 
 `ci.yml` uses `${{ secrets.NPM_GITHUB_TOKEN || secrets.GITHUB_TOKEN }}`, and the
-built-in `GITHUB_TOKEN` can't fetch org-internal `@rapidsos/*` from GitHub
+built-in `GITHUB_TOKEN` can't fetch org-internal `@exampleorg/*` from GitHub
 Packages. So now I'm seeing errors like this trying to run ci on a PR:
 
-```➤ YN0041: @rapidsos/data-plane-auth-client@npm:0.4.4::__archiveUrl=...: Invalid authentication (as an unknown user)```
+```➤ YN0041: @exampleorg/some-lib@npm:0.4.4::__archiveUrl=...: Invalid authentication (as an unknown user)```
 Example run: <link to the failing job> (for <link to the PR>).
 
 Ask: I only have push on that repo, could someone with admin rotate it?

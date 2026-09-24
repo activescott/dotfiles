@@ -22,10 +22,11 @@ Personal dotfiles for zsh/bash on macOS and Linux.
 
 ## How `script/setup` installs
 
-It symlinks (not copies, despite the name) sources from this repo into `~/`:
+It symlinks sources from this repo into `~/`:
 
-- `cpsafe SRC DST` — if `DST` is an existing symlink, removes it; if a real file, renames to `DST.old-<timestamp>`; then `ln -s SRC DST`.
-- `cpsafe_dir SRCDIR DSTDIR` — `mkdir -p DSTDIR`, then `cpsafe` each file in `SRCDIR`.
+- `linksafe SRC DST` — if `DST` is an existing symlink, removes it; if a real file, renames to `DST.old-<timestamp>`; then `ln -s SRC DST`.
+- `linksafe_dir SRCDIR DSTDIR` — `mkdir -p DSTDIR`, then `linksafe` each file in `SRCDIR`.
+- These were called `cpsafe` / `cpsafe_dir` until 2026-09-24. The old name said copy while the implementation symlinked, which is exactly backwards for the thing that matters: editing the file in `~/` edits this repo. Older entries under `docs/` and `specs/` still use the old name and are left as written.
 - `setup_agents_dir` symlinks whole dirs (`skills`, `rules`, `commands`) from the repo into `~/.agents/`; `setup_claude_dir` symlinks `~/.claude/skills|rules|commands` to their `~/.agents/` counterparts.
 - The `.claude/CLAUDE.md`, `.claude/settings.json`, and `.claude/hooks/confirm-before-run.sh` are individually symlinked, so editing them in this repo edits the live globals.
 - `setup_claude_dir <dir>` does all the Claude symlinking, and runs twice: for `~/.claude` (personal) and `~/.claude-work` (see below).
