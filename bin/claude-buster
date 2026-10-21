@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 # Launch Claude Code under the "buster" profile so a separate Claude Pro subscription
-# (buster@pingpoet.com) is used instead of the personal one.
+# is used instead of the personal one.
 #
 # CLAUDE_CONFIG_DIR redirects everything account-specific to that directory:
 #   <dir>/.claude.json      global state: OAuth account, MCP servers, project history
@@ -14,7 +14,7 @@
 # are symlinked into ~/.claude-buster by script/setup, so both profiles read the same
 # instructions and settings out of this repo.
 #
-# First run needs an OAuth login with the buster@pingpoet.com account; Claude Code prompts for
+# First run needs an OAuth login with the buster account; Claude Code prompts for
 # it automatically because ~/.claude-buster has no credentials yet.
 #
 # Note: the Claude Code background daemon is disabled whenever CLAUDE_CONFIG_DIR is

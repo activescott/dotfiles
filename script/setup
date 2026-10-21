@@ -162,7 +162,7 @@ echo "\n########## Copying Claude config files... ##########"
 setup_claude_dir "$HOME/.claude"
 
 # "buster" profile: separate Claude account/credentials for a different Claude Pro
-# subscription (buster@pingpoet.com). Launch it with ~/bin/claude-buster. First run prompts for an
+# subscription. Launch it with ~/bin/claude-buster. First run prompts for an
 # OAuth login because ~/.claude-buster has no credentials yet.
 # Reference: https://docs.runmaestro.ai/multi-claude (its ~/.claude/.claude.json
 # shuffle is obsolete; CLAUDE_CONFIG_DIR alone redirects state and credentials).
