@@ -116,7 +116,7 @@ setup_agents_dir() {
 
 # Symlinks the repo-managed parts of a Claude Code config directory. Called once
 # for the default ~/.claude and once per additional account profile. A profile is
-# selected at runtime with CLAUDE_CONFIG_DIR (see bin/claude-work); Claude Code
+# selected at runtime with CLAUDE_CONFIG_DIR (see bin/claude-buster); Claude Code
 # then keeps .claude.json, .credentials.json, projects/ and history in that
 # directory, so each profile authenticates to its own Claude subscription while
 # reading the same instructions, settings, rules and skills from this repo.
@@ -161,13 +161,13 @@ setup_agents_dir
 echo "\n########## Copying Claude config files... ##########"
 setup_claude_dir "$HOME/.claude"
 
-# "work" profile: separate Claude account/credentials so a client's subscription is
-# billed for their work. Launch it with ~/bin/claude-work. First run prompts for an
-# OAuth login because ~/.claude-work has no credentials yet.
+# "buster" profile: separate Claude account/credentials for a different Claude Pro
+# subscription. Launch it with ~/bin/claude-buster. First run prompts for an
+# OAuth login because ~/.claude-buster has no credentials yet.
 # Reference: https://docs.runmaestro.ai/multi-claude (its ~/.claude/.claude.json
 # shuffle is obsolete; CLAUDE_CONFIG_DIR alone redirects state and credentials).
-echo "\n########## Setting up Claude 'work' profile in ~/.claude-work... ##########"
-setup_claude_dir "$HOME/.claude-work"
+echo "\n########## Setting up Claude 'buster' profile in ~/.claude-buster... ##########"
+setup_claude_dir "$HOME/.claude-buster"
 
 # Symlinks the repo-managed parts of an opencode config directory. opencode reads
 # ~/.config/opencode/opencode.json(c) for global config, AGENTS.md for global rules,
