@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
-# Launch Claude Code under the "work" profile so a client's Claude subscription
-# is billed instead of the personal one.
+# Launch Claude Code under the "buster" profile so a separate Claude Pro subscription
+# (buster@pingpoet.com) is used instead of the personal one.
 #
 # CLAUDE_CONFIG_DIR redirects everything account-specific to that directory:
 #   <dir>/.claude.json      global state: OAuth account, MCP servers, project history
@@ -11,11 +11,11 @@
 #   <dir>/projects, history.jsonl, sessions, todos, shell-snapshots
 #
 # The shared, repo-managed parts (CLAUDE.md, settings.json, rules, hooks, skills)
-# are symlinked into ~/.claude-work by script/setup, so both profiles read the same
+# are symlinked into ~/.claude-buster by script/setup, so both profiles read the same
 # instructions and settings out of this repo.
 #
-# First run needs an OAuth login with the client's account; Claude Code prompts for
-# it automatically because ~/.claude-work has no credentials yet.
+# First run needs an OAuth login with the buster@pingpoet.com account; Claude Code prompts for
+# it automatically because ~/.claude-buster has no credentials yet.
 #
 # Note: the Claude Code background daemon is disabled whenever CLAUDE_CONFIG_DIR is
 # set (it bails early on that env var), so `claude --bg` style background work is
@@ -25,7 +25,7 @@
 # but its step of moving ~/.claude/.claude.json aside is obsolete: setting
 # CLAUDE_CONFIG_DIR before the first login is enough, no copying required.
 
-CLAUDE_CONFIG_DIR="$HOME/.claude-work"
+CLAUDE_CONFIG_DIR="$HOME/.claude-buster"
 export CLAUDE_CONFIG_DIR
 
 if [ ! -d "$CLAUDE_CONFIG_DIR" ]; then

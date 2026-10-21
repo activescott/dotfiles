@@ -29,7 +29,7 @@ It symlinks sources from this repo into `~/`:
 - These were called `cpsafe` / `cpsafe_dir` until 2026-09-24. The old name said copy while the implementation symlinked, which is exactly backwards for the thing that matters: editing the file in `~/` edits this repo. Older entries under `docs/` and `specs/` still use the old name and are left as written.
 - `setup_agents_dir` symlinks whole dirs (`skills`, `rules`, `commands`) from the repo into `~/.agents/`; `setup_claude_dir` symlinks `~/.claude/skills|rules|commands` to their `~/.agents/` counterparts.
 - The `.claude/CLAUDE.md`, `.claude/settings.json`, and `.claude/hooks/confirm-before-run.sh` are individually symlinked, so editing them in this repo edits the live globals.
-- `setup_claude_dir <dir>` does all the Claude symlinking, and runs twice: for `~/.claude` (personal) and `~/.claude-work` (see below).
+- `setup_claude_dir <dir>` does all the Claude symlinking, and runs twice: for `~/.claude` (personal) and `~/.claude-buster` (see below).
 - On macOS, sets Terminal.app's `useOptionAsMetaKey` so Option+Backspace works as backward-kill-word.
 
 Re-running `setup` is safe: existing symlinks are replaced, real files are backed up with a timestamp.
@@ -41,10 +41,10 @@ Re-running `setup` is safe: existing symlinks are replaced, real files are backe
 Two Claude Code accounts live side by side, selected by the `CLAUDE_CONFIG_DIR`
 environment variable:
 
-| Profile  | Config dir       | How to launch                        |
-| -------- | ---------------- | ------------------------------------ |
-| personal | `~/.claude`      | `claude` (default, env var unset)     |
-| work     | `~/.claude-work` | `claude-work` (from `bin/claude-work`) |
+| Profile  | Config dir         | How to launch                          |
+| -------- | ------------------ | -------------------------------------- |
+| personal | `~/.claude`        | `claude` (default, env var unset)       |
+| buster   | `~/.claude-buster` | `claude-buster` (from `bin/claude-buster`) |
 
 `CLAUDE_CONFIG_DIR` is the only knob needed. Claude Code resolves its config dir
 as `process.env.CLAUDE_CONFIG_DIR ?? ~/.claude`, and derives from it:
@@ -60,11 +60,11 @@ as `process.env.CLAUDE_CONFIG_DIR ?? ~/.claude`, and derives from it:
 
 Older multi-account guides that copy `~/.claude` and move a `~/.claude/.claude.json`
 out of the way are obsolete — just create the directory and log in with the env var
-set, which `script/setup` plus `bin/claude-work` do. The setup is adapted from
+set, which `script/setup` plus `bin/claude-buster` do. The setup is adapted from
 <https://docs.runmaestro.ai/multi-claude>.
 
 Caveat: the Claude Code background daemon is disabled whenever `CLAUDE_CONFIG_DIR`
-is set, so background jobs are unavailable in the work profile.
+is set, so background jobs are unavailable in the buster profile.
 
 ## Conventions
 
